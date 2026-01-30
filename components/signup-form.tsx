@@ -45,16 +45,22 @@ export function SignupForm({
     }
 
     try {
-      await signUp.email({
+      const { data, error } = await signUp.email({
         email,
         password,
         name,
       })
+
+      if (error) {
+        toast.error(error.message || "Failed to create account")
+        setIsLoading(false)
+        return
+      }
+
       toast.success("Account created successfully!")
       router.push("/dashboard")
     } catch (error: any) {
       toast.error(error.message || "Failed to create account")
-    } finally {
       setIsLoading(false)
     }
   }

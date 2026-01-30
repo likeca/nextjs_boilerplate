@@ -38,15 +38,21 @@ export function LoginForm({
     const password = formData.get("password") as string
 
     try {
-      await signIn.email({
+      const { data, error } = await signIn.email({
         email,
         password,
       })
+
+      if (error) {
+        toast.error(error.message || "Invalid email or password")
+        setIsLoading(false)
+        return
+      }
+
       toast.success("Logged in successfully!")
       router.push("/dashboard")
     } catch (error: any) {
       toast.error(error.message || "Failed to login")
-    } finally {
       setIsLoading(false)
     }
   }
