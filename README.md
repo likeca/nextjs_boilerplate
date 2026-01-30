@@ -1,6 +1,6 @@
 # 🚀 Next.js SaaS Boilerplate
 
-A modern, production-ready SaaS boilerplate built with Next.js 15, Better Auth, Prisma, and Shadcn UI. Get your SaaS up and running in minutes, not weeks.
+A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, Prisma, and Shadcn UI. Get your SaaS up and running in minutes, not weeks.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
