@@ -15,6 +15,7 @@ import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LogOut, Mail, User, Calendar } from "lucide-react";
+import { appConfig } from "@/lib/config";
 
 interface Session {
   user: {
@@ -54,20 +55,28 @@ export function DashboardContent({ session }: { session: Session }) {
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="mx-auto max-w-4xl space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">
-              Welcome back, {session.user.name}!
-            </p>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-semibold">{appConfig.name}</h1>
           </div>
-          <Button variant="outline" onClick={handleSignOut}>
+          <Button variant="outline" size="sm" onClick={handleSignOut}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout
           </Button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="container mx-auto max-w-4xl space-y-6 p-6">
+        {/* Welcome Section */}
+        <div>
+          <h2 className="text-3xl font-bold">Dashboard</h2>
+          <p className="text-muted-foreground">
+            Welcome back, {session.user.name}!
+          </p>
         </div>
 
         {/* User Profile Card */}
