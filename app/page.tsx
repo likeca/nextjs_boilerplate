@@ -1,4 +1,5 @@
-import { Logo } from "@/components/logo";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { appConfig } from "@/lib/config";
@@ -11,26 +12,13 @@ export default async function Home() {
     headers: await headers(),
   });
 
-  if (session) {
-    redirect("/dashboard");
-  }
+  // if (session) {
+  //   redirect("/dashboard");
+  // }
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header */}
-      <header className="border-b">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <Logo />
-          <nav className="flex items-center gap-4">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/signup">Sign Up</Link>
-            </Button>
-          </nav>
-        </div>
-      </header>
+      <Header user={session?.user} />
 
       {/* Hero Section */}
       <main className="flex flex-1 flex-col items-center justify-center px-4 text-center">
@@ -55,12 +43,7 @@ export default async function Home() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t py-6">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} {appConfig.company.name}. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

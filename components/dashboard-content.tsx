@@ -11,11 +11,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { signOut } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { LogOut, Mail, User, Calendar } from "lucide-react";
-import { appConfig } from "@/lib/config";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { Mail, User, Calendar, LogOut } from "lucide-react";
 
 interface Session {
   user: {
@@ -33,18 +31,6 @@ interface Session {
 }
 
 export function DashboardContent({ session }: { session: Session }) {
-  const router = useRouter();
-
-  async function handleSignOut() {
-    try {
-      await signOut();
-      toast.success("Logged out successfully!");
-      router.push("/login");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to logout");
-    }
-  }
-
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -55,22 +41,11 @@ export function DashboardContent({ session }: { session: Session }) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold">{appConfig.name}</h1>
-          </div>
-          <Button variant="outline" size="sm" onClick={handleSignOut}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-      </header>
+    <div className="flex min-h-screen flex-col">
+      <Header user={session.user} />
 
       {/* Main Content */}
-      <div className="container mx-auto max-w-4xl space-y-6 p-6">
+      <div className="container mx-auto max-w-4xl flex-1 space-y-6 p-6">
         {/* Welcome Section */}
         <div>
           <h2 className="text-3xl font-bold">Dashboard</h2>
@@ -182,26 +157,30 @@ export function DashboardContent({ session }: { session: Session }) {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-3">
-              <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-                <User className="h-6 w-6" />
-                <span>Edit Profile</span>
+              <Button variant="outline" className="h-auto flex-col gap-2 p-4" asChild>
+                <a href="/profile">
+                  <User className="h-6 w-6" />
+                  <span>Edit Profile</span>
+                </a>
               </Button>
-              <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-                <Mail className="h-6 w-6" />
-                <span>Email Settings</span>
+              <Button variant="outline" className="h-auto flex-col gap-2 p-4" asChild>
+                <a href="/billing">
+                  <Mail className="h-6 w-6" />
+                  <span>Billing</span>
+                </a>
               </Button>
-              <Button
-                variant="outline"
-                className="h-auto flex-col gap-2 p-4"
-                onClick={handleSignOut}
-              >
-                <LogOut className="h-6 w-6" />
-                <span>Sign Out</span>
+              <Button variant="outline" className="h-auto flex-col gap-2 p-4" asChild>
+                <a href="/dashboard">
+                  <User className="h-6 w-6" />
+                  <span>Dashboard</span>
+                </a>
               </Button>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <Footer />
     </div>
   );
 }

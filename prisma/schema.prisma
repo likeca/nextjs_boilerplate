@@ -44,9 +44,9 @@ model Account {
   providerId   String
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken  String?  @db.Text
-  refreshToken String?  @db.Text
-  idToken      String?  @db.Text
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
   expiresAt    DateTime?
   password     String?
   
@@ -72,7 +72,7 @@ model Log {
   id        Int      @id @default(autoincrement())
   message   String
   level     String   @default("info")
-  metadata  String?  @db.Text
+  metadata  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
