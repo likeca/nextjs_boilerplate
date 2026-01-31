@@ -1,6 +1,7 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
+import { useUserAdmin } from "@/hooks/use-user-admin";
 import { ProfileForm } from "@/components/profile-form";
 import { PasswordChangeForm } from "@/components/password-change-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Footer } from "@/components/footer";
 
 export default function ProfilePage() {
   const { data: session, isPending } = useSession();
+  const { isAdmin } = useUserAdmin(session?.user?.id);
 
   if (isPending) {
     return (
@@ -24,7 +26,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header user={session?.user} />
+      <Header user={session?.user} isAdmin={isAdmin} />
 
       <div className="container max-w-4xl mx-auto flex-1 py-10 px-4">
         <div className="mb-8">

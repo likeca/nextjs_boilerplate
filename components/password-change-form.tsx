@@ -135,7 +135,7 @@ export function PasswordChangeForm() {
           </Label>
         </div>
 
-        <div className="bg-muted/50 border border-border rounded-lg p-4">
+        {/* <div className="bg-muted/50 border border-border rounded-lg p-4">
           <div className="flex items-start space-x-3">
             <Checkbox
               id="revokeOtherSessions"
@@ -157,7 +157,7 @@ export function PasswordChangeForm() {
               </p>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex justify-end pt-4">

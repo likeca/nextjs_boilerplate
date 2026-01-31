@@ -6,11 +6,14 @@ import { appConfig } from "@/lib/config";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { isUserAdmin } from "@/lib/auth-utils";
 
 export default async function Home() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+
+  const isAdmin = await isUserAdmin(session?.user?.id);
 
   // if (session) {
   //   redirect("/dashboard");
@@ -18,7 +21,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <Header user={session?.user} />
+      <Header user={session?.user} isAdmin={isAdmin} />
 
       {/* Hero Section */}
       <main className="flex flex-1 flex-col items-center justify-center px-4 text-center">

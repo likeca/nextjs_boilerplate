@@ -23,6 +23,8 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 - **Password Change** - Secure password update with current password verification
 - **Email Verification Status** - Track email verification state
 - **Session Control** - Log out from all devices option
+- **Admin System** - Built-in admin flag and role-based permissions
+- **Admin Setup Script** - Interactive CLI to create admin accounts
 
 ### 🎨 UI & Design
 - **Shadcn UI Components** - Beautiful, accessible component library
@@ -38,6 +40,7 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 - **PostgreSQL** - Production-ready database (Neon compatible)
 - **Migration System** - Version-controlled schema changes
 - **Better Auth Tables** - Pre-configured user, session, and account tables
+- **RBAC System** - Role-based access control with permissions
 
 ### 🛠️ Developer Experience
 - **TypeScript** - Full type safety
@@ -132,7 +135,30 @@ npx prisma migrate dev
 bunx prisma migrate dev
 ```
 
-### 5. Run the Development Server
+### 5. Create Admin Account
+
+Create your first admin user:
+
+```bash
+npm run setup:admin
+# or
+bun run setup:admin
+```
+
+Follow the interactive prompts to enter:
+- Admin name
+- Admin email
+- Admin password
+
+The script will:
+- Create an admin user with `isAdmin: true`
+- Hash and securely store the password
+- Mark the email as verified
+- Allow login immediately
+
+**Note:** If the email already exists, you'll be given the option to promote that user to admin.
+
+### 6. Run the Development Server
 
 ```bash
 npm run dev
@@ -224,11 +250,49 @@ All UI components are located in `components/ui/` and can be customized using Ta
 
 The boilerplate includes pre-configured tables:
 
-- **User** - User profiles and information
+- **User** - User profiles, authentication, and admin status
+- **Role** - User roles for role-based access control
+- **Permission** - Granular permissions (resource + action)
+- **RolePermission** - Many-to-many relationship between roles and permissions
 - **Session** - Active user sessions
 - **Account** - Authentication providers and credentials
 - **Verification** - Email verification tokens
 - **Log** - Application logs (optional)
+
+### Admin Access
+
+Users with `isAdmin: true` have administrative privileges. Create admin users using:
+
+```bash
+npm run setup:admin
+```
+
+## 🔐 Role-Based Access Control (RBAC)
+
+The boilerplate includes a complete RBAC system:
+
+- **Roles**: Define user roles (e.g., Admin, Editor, Viewer)
+- **Permissions**: Granular permissions with resource and action
+- **Flexible Authorization**: Use `isAdmin` flag or role-based permissions
+
+Example permission structure:
+- Resource: `user`, `post`, `settings`
+- Action: `create`, `read`, `update`, `delete`
+- Result: `user:create`, `post:delete`, etc.
+
+To check admin status in your code:
+
+```typescript
+// In server components or API routes
+const user = await prisma.user.findUnique({
+  where: { id: userId },
+  select: { isAdmin: true }
+});
+
+if (!user?.isAdmin) {
+  return unauthorized();
+}
+```
 
 ## 🚀 Deployment
 
