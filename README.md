@@ -30,38 +30,38 @@ A modern, production-ready admin dashboard boilerplate built with Next.js 16, Be
 - **Two-Tier Permission System** - `isAdmin` flag for admin page access + role-based permissions for actions
 - **Role Management** - Create and manage roles with granular permissions
 - **Permission System** - Resource-action based permissions (e.g., `user:create`, `role:update`)
-- **Sidebar Navigation** - Collapsible sidebar with nested menus
-- **Data Tables** - Sortable, searchable tables with pagination
+- **System Roles** - Protected system roles that cannot be deleted
 - **16 Built-in Permissions** - Full CRUD for users, roles, permissions, and settings
 - **Admin Setup Script** - Creates Super Admin role with all permissions automatically
 
 ### 🎨 UI & Design
-- **Shadcn UI Components** - Beautiful, acce with PostgreSQL adapter
+- **Shadcn UI Components** - Beautiful, accessible component library
+- **Radix UI Primitives** - Unstyled, accessible components
+- **Tailwind CSS** - Utility-first CSS framework
+- **Sidebar Navigation** - Collapsible sidebar with nested menus
+- **Data Tables** - Sortable, searchable tables with pagination
+- **Responsive Design** - Mobile-first approach
+- **Toast Notifications** - User feedback with Sonner
+- **Custom Branding** - Environment-based configuration
+
+### 🗄️ Database
+- **Prisma ORM** - Type-safe database client with PostgreSQL adapter
 - **PostgreSQL** - Production-ready database (Neon compatible)
 - **Migration System** - Version-controlled schema changes
 - **Better Auth Tables** - Pre-configured user, session, account, and verification tables
 - **RBAC Tables** - Role, Permission, RolePermission junction table
 - **Settings Table** - Key-value settings storage
-- **Audit Logging** - Log table for tracking important event
-- **Toast Notifications** - User feedback with Sonner
-- **Custom Branding** - Envi6 App Router with React 19
+- **Audit Logging** - Log table for tracking important events
+
+### 🛠️ Developer Experience
+- **TypeScript** - Full type safety
+- **App Router** - Next.js 16 App Router with React 19
 - **Server Actions** - Type-safe server actions for data mutations
 - **ESLint** - Code linting
 - **Environment Variables** - Easy configuration
 - **Component-based Architecture** - Reusable, modular components
 - **API Routes** - Built-in API endpoints
-- **Utility Scripts** - create-admin.ts, delete-user.ts for management taskbase (Neon compatible)
-- **Migration System** - Version-controlled schema changes
-- **Better Auth Tables** - Pre-configured user, session, and account tables
-- **RBAC System** - Role-based access control with permissions
-
-### 🛠️ Developer Experience
-- **TypeScript** - Full type safety
-- **App Router** - Next.js 15 App Router
-- **ESLint** - Code linting
-- **Environment Variables** - Easy configuration
-- **Component-based Architecture** - Reusable, modular components
-- **API Routes** - Built-in API endpoints
+- **Utility Scripts** - create-admin.ts, delete-user.ts for management tasks
 
 ## 🏗️ Tech Stack
 
@@ -85,8 +85,8 @@ A modern, production-ready admin dashboard boilerplate built with Next.js 16, Be
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/nextjs-saas-boilerplate.git
-cd nextjs-saas-boilerplate
+git clone https://github.com/yourusername/nextjs-admin-boilerplate.git
+cd nextjs-admin-boilerplate
 ```
 
 ### 2. Install Dependencies
@@ -107,12 +107,12 @@ DATABASE_URL="postgresql://user:password@localhost:5432/database"
 
 # App Configuration
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-NEXT_PUBLIC_APP_NAME="Your SaaS Name"
-NEXT_PUBLIC_APP_DESCRIPTION="Your SaaS Application"
+NEXT_PUBLIC_APP_NAME="Your App Name"
+NEXT_PUBLIC_APP_DESCRIPTION="Your Admin Application"
 NEXT_PUBLIC_COMPANY_NAME="Your Company"
 
 # Branding
-NEXT_PUBLIC_LOGO_TEXT="YS"
+NEXT_PUBLIC_LOGO_TEXT="YA"
 NEXT_PUBLIC_LOGO_ICON="GalleryVerticalEnd"
 
 # Theme
@@ -160,18 +160,18 @@ bun run setup:admin
 
 Follow the interactive prompts to enter:
 - Admin name
-- Admin eor retrieve the **Super Admin** system role
+- Admin email
+- Admin password
+
+The script will:
+- Create or retrieve the **Super Admin** system role
 - Create all 16 permissions (user, role, permission, setting × CRUD)
 - Assign all permissions to the Super Admin role
 - Create an admin user with `isAdmin: true` and assigned to Super Admin role
 - Hash and securely store the password
 - Mark the email as verified
 
-**Note:** If the email already exists, you'll be given the option to promote that user to admin and assign the Super Admin role
-- Mark the email as verified
-- Allow login immediately
-
-**Note:** If the email already exists, you'll be given the option to promote that user to admin.
+**Note:** If the email already exists, you'll be given the option to promote that user to admin and assign the Super Admin role.
 
 ### 6. Run the Development Server
 
@@ -183,7 +183,12 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📁 Projec(admin)/          # Admin-only routes
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── (protected)/          # Protected routes with auth layout
+│   │   ├── (admin)/          # Admin-only routes
 │   │   │   ├── dashboard/    # Admin dashboard
 │   │   │   ├── account/      # User CRUD management
 │   │   │   ├── roles/        # Role management
@@ -223,11 +228,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ├── scripts/
 │   ├── create-admin.ts       # Create admin with Super Admin role
 │   └── delete-user.ts        # Delete user by email
-│   ├── prisma.ts             # Prisma client
-│   └── utils.ts              # Utility functions
-├── prisma/
-│   ├── schema.prisma         # Database schema
-│   └── migrations/           # Database migrations
 └── public/                   # Static assets
 ```
 
@@ -238,9 +238,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 1. **Sign Up:** `/signup` - Create account with name, email, and password
 2. **Login:** `/login` - Authenticate with email and password
 3. **Protected Routes:** Automatic redirect to login if not authenticated
-4. *Components
+4. **Session Management:** Server-side session validation
 
-All UI components are located in `components/ui/` and can be customized using Tailwind classes. The boilerplate uses Shadcn UI components which are fully customizable
+### Google OAuth
+
+1. Click "Login with Google" button
+2. Authenticate with Google
+3. Automatic account creation and login
 4. Redirect to dashboard
 
 ## 🎨 Customization
@@ -255,8 +259,24 @@ NEXT_PUBLIC_LOGO_TEXT="YA"
 NEXT_PUBLIC_PRIMARY_COLOR="#your-color"
 ```
 
-### Theme
- with roleId, isAdmin flag, phone, avatar
+### Components
+
+All UI components are located in `components/ui/` and can be customized using Tailwind classes. The boilerplate uses Shadcn UI components which are fully customizable.
+
+## 🔒 Security Features
+
+- **Secure Password Hashing** - Better Auth handles password encryption
+- **Session Management** - Database-backed sessions with expiration
+- **CSRF Protection** - Built-in protection against CSRF attacks
+- **Environment Variables** - Sensitive data stored in env files
+- **Protected API Routes** - Server-side authentication checks
+- **Password Requirements** - Minimum 8 characters enforced
+
+## 📊 Database Schema
+
+The boilerplate includes pre-configured tables:
+
+- **User** - User profiles with roleId, isAdmin flag, phone, avatar
 - **Role** - User roles with isSystem flag (system roles cannot be deleted)
 - **Permission** - Granular permissions (resource + action, e.g., `user:create`)
 - **RolePermission** - Many-to-many junction table between roles and permissions
@@ -324,29 +344,7 @@ function MyComponent() {
 2. Click **Create New Role**
 3. Enter role name and description
 4. Select permissions from the 16 available options
-5. Assign users to the role in **Users** section*Permissions**: Granular permissions with resource and action
-- **Flexible Authorization**: Use `isAdmin` flag or role-based permissions
-x] Admin dashboard
-- [x] User roles & permissions
-- [x] Role-based access control (RBAC)
-- [x] Settings management
-- [ ] Email verification
-- [ ] Forgot password flow
-- [ ] Two-factor authentication (2FA)
-- [ ] Team/Organization support
-- [ ] Subscription & payment integration (Stripe)
-- [ ] API key management
-- [ ] Enhanced audit logs with user tracking
-// In server components or API routes
-const user = await prisma.user.findUnique({
-  where: { id: userId },
-  select: { isAdmin: true }
-});
-
-if (!user?.isAdmin) {
-  return unauthorized();
-}
-```
+5. Assign users to the role in **Users** section
 
 ## 🚀 Deployment
 
@@ -374,15 +372,17 @@ The boilerplate works with any platform supporting Next.js:
 
 ## 🛣️ Roadmap
 
+- [x] Admin dashboard
+- [x] User roles & permissions
+- [x] Role-based access control (RBAC)
+- [x] Settings management
 - [ ] Email verification
 - [ ] Forgot password flow
 - [ ] Two-factor authentication (2FA)
 - [ ] Team/Organization support
 - [ ] Subscription & payment integration (Stripe)
-- [ ] Admin dashboard
 - [ ] API key management
-- [ ] Audit logs
-- [ ] User roles & permissions
+- [ ] Enhanced audit logs with user tracking
 - [ ] Email notifications
 
 ## 🤝 Contributing
