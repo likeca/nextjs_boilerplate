@@ -1,7 +1,6 @@
-"use client";
-
-import { useSession } from "@/lib/auth-client";
-import { useUserAdmin } from "@/hooks/use-user-admin";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { isUserAdmin } from "@/lib/auth-utils";
 import { ProfileForm } from "@/components/profile-form";
 import { PasswordChangeForm } from "@/components/password-change-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,20 +8,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
-export default function ProfilePage() {
-  const { data: session, isPending } = useSession();
-  const { isAdmin } = useUserAdmin(session?.user?.id);
+export default async function ProfilePage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  const isAdmin = await isUserAdmin(session?.user?.id);
 
   return (
     <div className="flex min-h-screen flex-col">
