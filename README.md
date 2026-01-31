@@ -10,10 +10,10 @@ A modern, production-ready admin dashboard boilerplate built with Next.js 16, Be
 ## 📸 Screenshots
 
 ### Frontend
-![Frontend Screenshot](frontend_screenshot.png)
+![Frontend Screenshot](public/frontend_screenshot.png)
 
 ### Admin Dashboard
-![Admin Dashboard Screenshot](admin_screenshot.png)
+![Admin Dashboard Screenshot](public/admin_screenshot.png)
 
 ## ✨ Features
 

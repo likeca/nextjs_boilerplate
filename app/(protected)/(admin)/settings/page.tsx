@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { usePermission } from '@/hooks/use-permission';
-import { AppSidebar } from '@/components/app-sidebar';
-import { SiteHeader } from '@/components/site-header';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -147,70 +144,33 @@ export default function SettingsPage() {
 
   if (permissionLoading || loading) {
     return (
-      <SidebarProvider
-        style={
-          {
-            '--sidebar-width': 'calc(var(--spacing) * 72)',
-            '--header-height': 'calc(var(--spacing) * 12)',
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar variant="inset" />
-        <SidebarInset>
-          <SiteHeader />
-          <div className="flex flex-1 flex-col">
-            <div className="flex items-center justify-center h-96">
-              <IconLoader2 className="h-8 w-8 animate-spin" />
-            </div>
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
+      <div className="flex flex-1 flex-col">
+        <div className="flex items-center justify-center h-96">
+          <IconLoader2 className="h-8 w-8 animate-spin" />
+        </div>
+      </div>
     );
   }
 
   if (!hasPermission) {
     return (
-      <SidebarProvider
-        style={
-          {
-            '--sidebar-width': 'calc(var(--spacing) * 72)',
-            '--header-height': 'calc(var(--spacing) * 12)',
-          } as React.CSSProperties
-        }
-      >
-        <AppSidebar variant="inset" />
-        <SidebarInset>
-          <SiteHeader />
-          <div className="flex flex-1 flex-col">
-            <div className="text-center py-12">
-              <h2 className="text-2xl font-bold">Access Denied</h2>
-              <p className="text-muted-foreground mt-2">
-                You don&apos;t have permission to access this page.
-              </p>
-            </div>
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
+      <div className="flex flex-1 flex-col">
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold">Access Denied</h2>
+          <p className="text-muted-foreground mt-2">
+            You don&apos;t have permission to access this page.
+          </p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          '--sidebar-width': 'calc(var(--spacing) * 72)',
-          '--header-height': 'calc(var(--spacing) * 12)',
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              {/* Breadcrumb */}
-              <div className="px-4 lg:px-6">
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          {/* Breadcrumb */}
+          <div className="px-4 lg:px-6">
                 <Breadcrumb>
                   <BreadcrumbList>
                     <BreadcrumbItem>
@@ -563,7 +523,5 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
   );
 }

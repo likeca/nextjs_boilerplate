@@ -1,4 +1,9 @@
 import { requireAdmin } from "@/lib/auth-utils";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function AdminLayout({
   children,
@@ -9,5 +14,24 @@ export default async function AdminLayout({
   // and to "/login" if not authenticated
   await requireAdmin();
 
-  return <>{children}</>;
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" user={session?.user} />
+      <SidebarInset>
+        <SiteHeader />
+        {children}
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }
