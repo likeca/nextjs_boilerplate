@@ -15,12 +15,10 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
             <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
+              href="/"
               className="dark:text-foreground"
             >
-              GitHub
+              View Site
             </a>
           </Button>
         </div>

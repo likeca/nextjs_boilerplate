@@ -7,10 +7,16 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 
 import data from "./data.json"
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <SidebarProvider
       style={
@@ -20,7 +26,7 @@ export default function Page() {
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" />
+      <AppSidebar variant="inset" user={session?.user} />
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col">
