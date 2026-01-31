@@ -20,6 +20,7 @@ export async function GET() {
         id: true,
         name: true,
         email: true,
+        phone: true,
         emailVerified: true,
         image: true,
         isAdmin: true,
@@ -51,7 +52,7 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const { name, email } = body;
+    const { name, email, phone } = body;
 
     // Validate input
     if (!name || !email) {
@@ -81,6 +82,7 @@ export async function PATCH(request: Request) {
       data: {
         name,
         email,
+        phone: phone || null,
         // If email changed, set emailVerified to false
         ...(email !== session.user.email && { emailVerified: false }),
       },
@@ -92,6 +94,7 @@ export async function PATCH(request: Request) {
         id: updatedUser.id,
         name: updatedUser.name,
         email: updatedUser.email,
+        phone: updatedUser.phone,
         emailVerified: updatedUser.emailVerified,
       },
     });

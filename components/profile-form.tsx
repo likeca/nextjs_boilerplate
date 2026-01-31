@@ -30,7 +30,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  phone?: string | null;
+  phone?: string;
   image?: string | null;
   emailVerified: boolean;
 }
@@ -65,7 +65,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     const dataToValidate = {
       name: formData.name,
       email: formData.email,
-      phone: formData.phone && formData.phone.trim() !== '' ? formData.phone : undefined,
+      phone: formData.phone || "",
     };
     
     const validation = profileSchema.safeParse(dataToValidate);

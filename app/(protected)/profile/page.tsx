@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { prisma } from "@/lib/prisma";
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({
@@ -14,6 +15,19 @@ export default async function ProfilePage() {
   });
 
   const isAdmin = await isUserAdmin(session?.user?.id);
+
+  // Fetch complete user data including phone
+  const userData = await prisma.user.findUnique({
+    where: { id: session?.user?.id },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      image: true,
+      emailVerified: true,
+    },
+  });
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -42,7 +56,10 @@ export default async function ProfilePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ProfileForm user={session?.user!} />
+                <ProfileForm user={{
+                  ...userData!,
+                  phone: userData!.phone || "",
+                }} />
               </CardContent>
             </Card>
           </TabsContent>
