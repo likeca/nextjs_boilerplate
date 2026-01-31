@@ -27,7 +27,7 @@ import { isValidPhoneNumber, type Value } from "react-phone-number-input"
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  phone: z.string().refine((val) => {
+  phone: z.union([z.string(), z.undefined()]).optional().refine((val) => {
     // Phone is optional - empty or valid
     if (!val || val.length === 0) return true;
     try {
@@ -56,6 +56,8 @@ export function SignupForm({
   const [showOtpVerification, setShowOtpVerification] = useState(false)
   const [email, setEmail] = useState("")
   const [otp, setOtp] = useState("")
+  const [lastResendTime, setLastResendTime] = useState<number>(0)
+  const RESEND_COOLDOWN = 60000 // 60 seconds
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -116,6 +118,7 @@ export function SignupForm({
       setEmail(emailValue)
       setShowOtpVerification(true)
       toast.success("Account created! Please check your email for the verification code.")
+      setLastResendTime(Date.now())
       setIsLoading(false)
     } catch (error: any) {
       toast.error(error.message || "Failed to create account")
@@ -148,6 +151,15 @@ export function SignupForm({
   }
 
   async function handleResendOtp() {
+    const now = Date.now()
+    const timeSinceLastResend = now - lastResendTime
+    
+    if (timeSinceLastResend < RESEND_COOLDOWN) {
+      const remainingSeconds = Math.ceil((RESEND_COOLDOWN - timeSinceLastResend) / 1000)
+      toast.error(`Please wait ${remainingSeconds} seconds before resending`)
+      return
+    }
+
     setIsLoading(true)
     try {
       const { error } = await emailOtp.sendVerificationOtp({
@@ -159,6 +171,7 @@ export function SignupForm({
         toast.error(error.message || "Failed to resend code")
       } else {
         toast.success("Verification code resent!")
+        setLastResendTime(Date.now())
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to resend code")

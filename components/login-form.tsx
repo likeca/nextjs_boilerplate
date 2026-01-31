@@ -17,7 +17,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { signIn } from "@/lib/auth-client"
+import { signIn, emailOtp } from "@/lib/auth-client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -35,6 +35,11 @@ export function LoginForm({
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [showOtpVerification, setShowOtpVerification] = useState(false)
+  const [email, setEmail] = useState("")
+  const [otp, setOtp] = useState("")
+  const [lastResendTime, setLastResendTime] = useState<number>(0)
+  const RESEND_COOLDOWN = 60000 // 60 seconds
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -42,11 +47,11 @@ export function LoginForm({
     setErrors({})
 
     const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
+    const emailValue = formData.get("email") as string
     const password = formData.get("password") as string
 
     // Validate with Zod
-    const validation = loginSchema.safeParse({ email, password })
+    const validation = loginSchema.safeParse({ email: emailValue, password })
 
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {}
@@ -62,11 +67,22 @@ export function LoginForm({
 
     try {
       const { data, error } = await signIn.email({
-        email,
+        email: emailValue,
         password,
       })
 
       if (error) {
+        // Check if error is due to unverified email
+        if (error.message?.toLowerCase().includes("email not verified") || 
+            error.message?.toLowerCase().includes("verify")) {
+          // Send OTP and show verification screen
+          setEmail(emailValue)
+          await handleSendOtp(emailValue)
+          setShowOtpVerification(true)
+          setIsLoading(false)
+          return
+        }
+        
         toast.error(error.message || "Invalid email or password")
         setIsLoading(false)
         return
@@ -78,6 +94,127 @@ export function LoginForm({
       toast.error(error.message || "Failed to login")
       setIsLoading(false)
     }
+  }
+
+  async function handleSendOtp(emailValue: string) {
+    try {
+      const { error } = await emailOtp.sendVerificationOtp({
+        email: emailValue,
+        type: 'email-verification',
+      })
+
+      if (error) {
+        toast.error(error.message || "Failed to send verification code")
+      } else {
+        toast.success("Verification code sent to your email!")
+        setLastResendTime(Date.now())
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send verification code")
+    }
+  }
+
+  async function handleOtpVerification(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const { data, error } = await emailOtp.verifyEmail({
+        email,
+        otp,
+      })
+
+      if (error) {
+        toast.error(error.message || "Invalid verification code")
+        setIsLoading(false)
+        return
+      }
+
+      toast.success("Email verified successfully! Please login again.")
+      setShowOtpVerification(false)
+      setOtp("")
+      setIsLoading(false)
+    } catch (error: any) {
+      toast.error(error.message || "Failed to verify email")
+      setIsLoading(false)
+    }
+  }
+
+  async function handleResendOtp() {
+    const now = Date.now()
+    const timeSinceLastResend = now - lastResendTime
+    
+    if (timeSinceLastResend < RESEND_COOLDOWN) {
+      const remainingSeconds = Math.ceil((RESEND_COOLDOWN - timeSinceLastResend) / 1000)
+      toast.error(`Please wait ${remainingSeconds} seconds before resending`)
+      return
+    }
+
+    setIsLoading(true)
+    await handleSendOtp(email)
+    setIsLoading(false)
+  }
+
+  if (showOtpVerification) {
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">Verify Your Email</CardTitle>
+            <CardDescription>
+              We&apos;ve sent a 6-digit code to {email}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleOtpVerification}>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="otp">Verification Code</FieldLabel>
+                  <Input
+                    id="otp"
+                    type="text"
+                    placeholder="000000"
+                    maxLength={6}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                    required
+                    disabled={isLoading}
+                    className="text-center text-2xl tracking-widest"
+                  />
+                  <FieldDescription>
+                    Enter the 6-digit code sent to your email
+                  </FieldDescription>
+                </Field>
+                <Field>
+                  <Button type="submit" disabled={isLoading || otp.length !== 6}>
+                    {isLoading ? "Verifying..." : "Verify Email"}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    onClick={handleResendOtp}
+                    disabled={isLoading}
+                  >
+                    Resend Code
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => {
+                      setShowOtpVerification(false)
+                      setOtp("")
+                    }}
+                    disabled={isLoading}
+                  >
+                    Back to Login
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   async function handleGoogleSignIn() {
