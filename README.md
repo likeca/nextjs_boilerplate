@@ -102,12 +102,24 @@ NEXT_PUBLIC_LOGO_ICON="GalleryVerticalEnd"
 # Theme
 NEXT_PUBLIC_PRIMARY_COLOR="#0070f3"
 
-# Better Auth Secret (generate with: node -e "console.log(require('crypto').randomBytes(32).toString('base64'))")
+# Better Auth Secret
 BETTER_AUTH_SECRET="your-secret-key-here"
 
 # Google OAuth (optional)
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+**Generate Better Auth Secret:**
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
+
+Or using OpenSSL:
+
+```bash
+openssl rand -base64 32
 ```
 
 ### 4. Set Up the Database
