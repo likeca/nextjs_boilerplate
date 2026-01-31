@@ -16,7 +16,7 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { PhoneInput } from '@/components/ui/phone-input';
-import { isValidPhoneNumber } from 'react-phone-number-input';
+import { isValidPhoneNumber, type Value } from 'react-phone-number-input';
 
 interface Role {
   id: string;
@@ -36,7 +36,7 @@ export default function EditAdminPage() {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState<string>('');
+  const [phone, setPhone] = useState<Value | undefined>();
   const [emailVerified, setEmailVerified] = useState(false);
   const [role, setRole] = useState('user');
   const [isAdmin, setIsAdmin] = useState(false);
@@ -69,7 +69,7 @@ export default function EditAdminPage() {
     }
     setName(result.admin.name);
     setEmail(result.admin.email);
-    setPhone(result.admin.phone || '');
+    setPhone((result.admin.phone || undefined) as Value | undefined);
     setEmailVerified(result.admin.emailVerified);
     setRole(result.admin.role?.id || 'user');
     setIsAdmin(result.admin.isAdmin || false);
@@ -209,7 +209,7 @@ export default function EditAdminPage() {
                         <PhoneInput
                           id="phone"
                           value={phone}
-                          onChange={(value) => setPhone(value || '')}
+                          onChange={(value) => setPhone(value || undefined)}
                           placeholder="+971 50 123 4567"
                         />
                         <p className="text-xs text-muted-foreground">

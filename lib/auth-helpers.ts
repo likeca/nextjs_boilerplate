@@ -4,14 +4,13 @@ import {
   canAccessProtectedRoutes,
   hasPermission,
   hasRole,
-  type Role,
 } from "./permissions";
 
 /**
  * Require authentication and optionally check for specific roles
  * Use this in Server Components and Server Actions
  */
-export async function requireAuth(options?: { roles?: Role[] }) {
+export async function requireAuth(options?: { roles?: string[] }) {
   const session = await auth.api.getSession({
     headers: await import("next/headers").then((mod) => mod.headers()),
   });
@@ -85,7 +84,7 @@ export async function checkPermission(
 /**
  * Check if current user has role without redirecting
  */
-export async function checkRole(roles: Role[]): Promise<boolean> {
+export async function checkRole(roles: string[]): Promise<boolean> {
   const session = await getSession();
   if (!session?.user) return false;
 

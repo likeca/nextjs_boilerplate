@@ -50,7 +50,7 @@ export function LoginForm({
 
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {}
-      validation.error.errors.forEach((err) => {
+      validation.error.issues.forEach((err) => {
         if (err.path[0]) {
           fieldErrors[err.path[0] as string] = err.message
         }
@@ -145,7 +145,7 @@ export function LoginForm({
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <a
-                    href="#"
+                    href="/forgot-password"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                   >
                     Forgot your password?

@@ -8,7 +8,7 @@ import { PhoneInput } from "@/components/ui/phone-input";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { z } from "zod";
-import { isValidPhoneNumber } from "react-phone-number-input";
+import { isValidPhoneNumber, type Value } from "react-phone-number-input";
 
 const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -30,7 +30,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  phone?: string;
+  phone?: string | null;
   image?: string | null;
   emailVerified: boolean;
 }
@@ -45,7 +45,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const [formData, setFormData] = useState({
     name: user.name || "",
     email: user.email || "",
-    phone: user.phone || "",
+    phone: (user.phone || undefined) as Value | undefined,
   });
 
   const getInitials = (name: string) => {
@@ -190,7 +190,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           <PhoneInput
             id="phone"
             value={formData.phone}
-            onChange={(value) => setFormData({ ...formData, phone: value || '' })}
+            onChange={(value) => setFormData({ ...formData, phone: value || undefined })}
             placeholder="+1 (555) 000-0000"
             error={!!errors.phone}
           />

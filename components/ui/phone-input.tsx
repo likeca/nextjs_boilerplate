@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import PhoneInputWithCountrySelect from 'react-phone-number-input';
+import PhoneInputWithCountrySelect, { type Value } from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { cn } from '@/lib/utils';
 
@@ -9,8 +9,8 @@ export type PhoneInputProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   'onChange' | 'value'
 > & {
-  onChange?: (value: string | undefined) => void;
-  value?: string;
+  onChange: (value: Value | undefined) => void;
+  value?: Value | undefined;
   error?: boolean;
 };
 

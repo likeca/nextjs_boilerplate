@@ -17,12 +17,12 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { PhoneInput } from "@/components/ui/phone-input"
-import { signUp } from "@/lib/auth-client"
+import { signUp, emailOtp } from "@/lib/auth-client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { z } from "zod"
-import { isValidPhoneNumber } from "react-phone-number-input"
+import { isValidPhoneNumber, type Value } from "react-phone-number-input"
 
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -52,7 +52,10 @@ export function SignupForm({
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [phone, setPhone] = useState<string>("")
+  const [phone, setPhone] = useState<Value | undefined>()
+  const [showOtpVerification, setShowOtpVerification] = useState(false)
+  const [email, setEmail] = useState("")
+  const [otp, setOtp] = useState("")
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -60,14 +63,14 @@ export function SignupForm({
 
     const formData = new FormData(e.currentTarget)
     const name = formData.get("name") as string
-    const email = formData.get("email") as string
+    const emailValue = formData.get("email") as string
     const password = formData.get("password") as string
     const confirmPassword = formData.get("confirm-password") as string
 
     // Validate with Zod
     const validation = signupSchema.safeParse({ 
       name, 
-      email, 
+      email: emailValue, 
       phone,
       password, 
       confirmPassword 
@@ -91,7 +94,7 @@ export function SignupForm({
 
     try {
       const signupData: any = {
-        email,
+        email: emailValue,
         password,
         name,
       };
@@ -109,12 +112,110 @@ export function SignupForm({
         return
       }
 
-      toast.success("Account created successfully!")
-      router.push("/dashboard")
+      // Show OTP verification form
+      setEmail(emailValue)
+      setShowOtpVerification(true)
+      toast.success("Account created! Please check your email for the verification code.")
+      setIsLoading(false)
     } catch (error: any) {
       toast.error(error.message || "Failed to create account")
       setIsLoading(false)
     }
+  }
+
+  async function handleOtpVerification(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsLoading(true)
+
+    try {
+      const { data, error } = await emailOtp.verifyEmail({
+        email,
+        otp,
+      })
+
+      if (error) {
+        toast.error(error.message || "Invalid verification code")
+        setIsLoading(false)
+        return
+      }
+
+      toast.success("Email verified successfully!")
+      router.push("/login")
+    } catch (error: any) {
+      toast.error(error.message || "Failed to verify email")
+      setIsLoading(false)
+    }
+  }
+
+  async function handleResendOtp() {
+    setIsLoading(true)
+    try {
+      const { error } = await emailOtp.sendVerificationOtp({
+        email,
+        type: 'email-verification',
+      })
+
+      if (error) {
+        toast.error(error.message || "Failed to resend code")
+      } else {
+        toast.success("Verification code resent!")
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to resend code")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (showOtpVerification) {
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">Verify Your Email</CardTitle>
+            <CardDescription>
+              We&apos;ve sent a 6-digit code to {email}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleOtpVerification}>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="otp">Verification Code</FieldLabel>
+                  <Input
+                    id="otp"
+                    type="text"
+                    placeholder="000000"
+                    maxLength={6}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                    required
+                    disabled={isLoading}
+                    className="text-center text-2xl tracking-widest"
+                  />
+                  <FieldDescription>
+                    Enter the 6-digit code sent to your email
+                  </FieldDescription>
+                </Field>
+                <Field>
+                  <Button type="submit" disabled={isLoading || otp.length !== 6}>
+                    {isLoading ? "Verifying..." : "Verify Email"}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    onClick={handleResendOtp}
+                    disabled={isLoading}
+                  >
+                    Resend Code
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
@@ -164,7 +265,7 @@ export function SignupForm({
                 <PhoneInput
                   id="phone"
                   value={phone}
-                  onChange={(value) => setPhone(value || '')}
+                  onChange={(value) => setPhone(value || undefined)}
                   placeholder="+1 (555) 000-0000"
                   disabled={isLoading}
                   error={!!errors.phone}
