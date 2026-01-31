@@ -7,6 +7,14 @@ A modern, production-ready admin dashboard boilerplate built with Next.js 16, Be
 [![Prisma](https://img.shields.io/badge/Prisma-7.3-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
+## 📸 Screenshots
+
+### Frontend
+![Frontend Screenshot](frontend_screenshot.png)
+
+### Admin Dashboard
+![Admin Dashboard Screenshot](admin_screenshot.png)
+
 ## ✨ Features
 
 ### 🔐 Authentication & Security
