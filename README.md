@@ -1,6 +1,6 @@
-# 🚀 Next.js SaaS Boilerplate
+# 🚀 Next.js Admin Boilerplate
 
-A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, Prisma, and Shadcn UI. Get your SaaS up and running in minutes, not weeks.
+A modern, production-ready admin dashboard boilerplate built with Next.js 16, Better Auth, Prisma, and Shadcn UI. Features a complete role-based access control (RBAC) system with users, roles, permissions, and settings management.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
@@ -18,26 +18,39 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 - **Password Management** - Change password with session revocation option
 
 ### 👤 User Management
-- **User Dashboard** - Personalized user dashboard
-- **Profile Management** - Update name, email, and avatar
+- **User Dashboard** - Personalized user dashboard with sidebar navigation
+- **Profile Management** - Update name, email, phone, and avatar
 - **Password Change** - Secure password update with current password verification
-- **Email Verification Status** - Track email verification state
 - **Session Control** - Log out from all devices option
-- **Admin System** - Built-in admin flag and role-based permissions
-- **Admin Setup Script** - Interactive CLI to create admin accounts
+- **User CRUD** - Complete user management (create, read, update, delete)
+- **User Listing** - Searchable and filterable user table with pagination
+- **Role Assignment** - Assign roles to users
+
+### 🔐 Role-Based Access Control (RBAC)
+- **Two-Tier Permission System** - `isAdmin` flag for admin page access + role-based permissions for actions
+- **Role Management** - Create and manage roles with granular permissions
+- **Permission System** - Resource-action based permissions (e.g., `user:create`, `role:update`)
+- **Sidebar Navigation** - Collapsible sidebar with nested menus
+- **Data Tables** - Sortable, searchable tables with pagination
+- **16 Built-in Permissions** - Full CRUD for users, roles, permissions, and settings
+- **Admin Setup Script** - Creates Super Admin role with all permissions automatically
 
 ### 🎨 UI & Design
-- **Shadcn UI Components** - Beautiful, accessible component library
-- **Radix UI Primitives** - Unstyled, accessible components
-- **Tailwind CSS** - Utility-first CSS framework
-- **Dark/Light Theme Support** - Built-in theme switching (ready to implement)
-- **Responsive Design** - Mobile-first approach
-- **Toast Notifications** - User feedback with Sonner
-- **Custom Branding** - Environment-based configuration
-
-### 🗄️ Database
-- **Prisma ORM** - Type-safe database client
+- **Shadcn UI Components** - Beautiful, acce with PostgreSQL adapter
 - **PostgreSQL** - Production-ready database (Neon compatible)
+- **Migration System** - Version-controlled schema changes
+- **Better Auth Tables** - Pre-configured user, session, account, and verification tables
+- **RBAC Tables** - Role, Permission, RolePermission junction table
+- **Settings Table** - Key-value settings storage
+- **Audit Logging** - Log table for tracking important event
+- **Toast Notifications** - User feedback with Sonner
+- **Custom Branding** - Envi6 App Router with React 19
+- **Server Actions** - Type-safe server actions for data mutations
+- **ESLint** - Code linting
+- **Environment Variables** - Easy configuration
+- **Component-based Architecture** - Reusable, modular components
+- **API Routes** - Built-in API endpoints
+- **Utility Scripts** - create-admin.ts, delete-user.ts for management taskbase (Neon compatible)
 - **Migration System** - Version-controlled schema changes
 - **Better Auth Tables** - Pre-configured user, session, and account tables
 - **RBAC System** - Role-based access control with permissions
@@ -147,12 +160,14 @@ bun run setup:admin
 
 Follow the interactive prompts to enter:
 - Admin name
-- Admin email
-- Admin password
-
-The script will:
-- Create an admin user with `isAdmin: true`
+- Admin eor retrieve the **Super Admin** system role
+- Create all 16 permissions (user, role, permission, setting × CRUD)
+- Assign all permissions to the Super Admin role
+- Create an admin user with `isAdmin: true` and assigned to Super Admin role
 - Hash and securely store the password
+- Mark the email as verified
+
+**Note:** If the email already exists, you'll be given the option to promote that user to admin and assign the Super Admin role
 - Mark the email as verified
 - Allow login immediately
 
@@ -168,24 +183,25 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📁 Project Structure
-
-```
-├── app/
-│   ├── (protected)/          # Protected routes with auth layout
-│   │   ├── dashboard/        # User dashboard
-│   │   └── profile/          # User profile & settings
+## 📁 Projec(admin)/          # Admin-only routes
+│   │   │   ├── dashboard/    # Admin dashboard
+│   │   │   ├── account/      # User CRUD management
+│   │   │   ├── roles/        # Role management
+│   │   │   ├── permissions/  # Permission management
+│   │   │   └── settings/     # Settings management
+│   │   ├── profile/          # User profile & password change
+│   │   └── layout.tsx        # Protected layout with sidebar
 │   ├── api/
 │   │   ├── auth/             # Better Auth API routes
-│   │   └── user/             # User management APIs
+│   │   └── user/profile/     # Profile API endpoints
 │   ├── login/                # Login page
 │   ├── signup/               # Signup page
 │   └── layout.tsx            # Root layout
 ├── components/
 │   ├── ui/                   # Shadcn UI components
-│   ├── dashboard-content.tsx
-│   ├── header.tsx
-│   ├── footer.tsx
+│   ├── app-sidebar.tsx       # Main sidebar navigation
+│   ├── nav-main.tsx          # Navigation menu with collapsible items
+│   ├── data-table.tsx        # Reusable data table component
 │   ├── login-form.tsx
 │   ├── signup-form.tsx
 │   ├── profile-form.tsx
@@ -193,6 +209,20 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ├── lib/
 │   ├── auth.ts               # Better Auth server config
 │   ├── auth-client.ts        # Better Auth client
+│   ├── auth-helpers.ts       # requireAuth, requirePermission helpers
+│   ├── permissions.ts        # Permission checking logic
+│   ├── check-permission.ts   # Server action for client permission checks
+│   ├── db.ts                 # Database client wrapper
+│   ├── prisma.ts             # Prisma client
+│   └── utils.ts              # Utility functions
+├── hooks/
+│   └── use-permission.ts     # Client hook for permission checking
+├── prisma/
+│   ├── schema.prisma         # Database schema
+│   └── migrations/           # Database migrations
+├── scripts/
+│   ├── create-admin.ts       # Create admin with Super Admin role
+│   └── delete-user.ts        # Delete user by email
 │   ├── prisma.ts             # Prisma client
 │   └── utils.ts              # Utility functions
 ├── prisma/
@@ -208,13 +238,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 1. **Sign Up:** `/signup` - Create account with name, email, and password
 2. **Login:** `/login` - Authenticate with email and password
 3. **Protected Routes:** Automatic redirect to login if not authenticated
-4. **Session Management:** Server-side session validation
+4. *Components
 
-### Google OAuth
-
-1. Click "Login with Google" button
-2. Authenticate with Google
-3. Automatic account creation and login
+All UI components are located in `components/ui/` and can be customized using Tailwind classes. The boilerplate uses Shadcn UI components which are fully customizable
 4. Redirect to dashboard
 
 ## 🎨 Customization
@@ -230,59 +256,87 @@ NEXT_PUBLIC_PRIMARY_COLOR="#your-color"
 ```
 
 ### Theme
-
-The boilerplate includes `next-themes` for easy theme switching. Dark mode support is ready to implement.
-
-### Components
-
-All UI components are located in `components/ui/` and can be customized using Tailwind classes.
-
-## 🔒 Security Features
-
-- **Secure Password Hashing** - Better Auth handles password encryption
-- **Session Management** - Database-backed sessions with expiration
-- **CSRF Protection** - Built-in protection against CSRF attacks
-- **Environment Variables** - Sensitive data stored in env files
-- **Protected API Routes** - Server-side authentication checks
-- **Password Requirements** - Minimum 8 characters enforced
-
-## 📊 Database Schema
-
-The boilerplate includes pre-configured tables:
-
-- **User** - User profiles, authentication, and admin status
-- **Role** - User roles for role-based access control
-- **Permission** - Granular permissions (resource + action)
-- **RolePermission** - Many-to-many relationship between roles and permissions
+ with roleId, isAdmin flag, phone, avatar
+- **Role** - User roles with isSystem flag (system roles cannot be deleted)
+- **Permission** - Granular permissions (resource + action, e.g., `user:create`)
+- **RolePermission** - Many-to-many junction table between roles and permissions
+- **Setting** - Key-value settings storage
 - **Session** - Active user sessions
 - **Account** - Authentication providers and credentials
 - **Verification** - Email verification tokens
-- **Log** - Application logs (optional)
-
-### Admin Access
-
-Users with `isAdmin: true` have administrative privileges. Create admin users using:
-
-```bash
-npm run setup:admin
-```
+- **Log** - Application logs
 
 ## 🔐 Role-Based Access Control (RBAC)
 
-The boilerplate includes a complete RBAC system:
+### Two-Tier Permission System
 
-- **Roles**: Define user roles (e.g., Admin, Editor, Viewer)
-- **Permissions**: Granular permissions with resource and action
-- **Flexible Authorization**: Use `isAdmin` flag or role-based permissions
+The boilerplate implements a sophisticated two-tier permission system:
 
-Example permission structure:
-- Resource: `user`, `post`, `settings`
-- Action: `create`, `read`, `update`, `delete`
-- Result: `user:create`, `post:delete`, etc.
+**Tier 1: Admin Page Access**
+- `isAdmin` flag on User model
+- Controls access to all admin pages (dashboard, users, roles, permissions, settings)
+- Users without `isAdmin: true` cannot access protected routes
 
-To check admin status in your code:
+**Tier 2: Role-Based Permissions**
+- Granular CRUD permissions for specific actions
+- Format: `resource:action` (e.g., `user:create`, `role:update`, `permission:delete`)
+- 16 built-in permissions across 4 resources:
+  - **user**: create, read, update, delete
+  - **role**: create, read, update, delete
+  - **permission**: create, read, update, delete
+  - **setting**: create, read, update, delete
 
+### Super Admin Role
+
+The `create-admin.ts` script automatically creates:
+- A Super Admin role with `isSystem: true`
+- All 16 permissions assigned to the role
+- Admin user with `isAdmin: true` and assigned to Super Admin role
+
+### Permission Checking
+
+**Server-side (Recommended):**
 ```typescript
+import { requireAuth, requirePermission } from "@/lib/auth-helpers";
+
+// Check admin access
+const { user } = await requireAuth();
+
+// Check specific permission
+await requirePermission("user", "create");
+```
+
+**Client-side:**
+```typescript
+import { usePermission } from "@/hooks/use-permission";
+
+function MyComponent() {
+  const { hasPermission, isLoading } = usePermission("user", "delete");
+  
+  if (!hasPermission) return null;
+  return <DeleteButton />;
+}
+```
+
+### Creating Custom Roles
+
+1. Navigate to **Access Control > Roles**
+2. Click **Create New Role**
+3. Enter role name and description
+4. Select permissions from the 16 available options
+5. Assign users to the role in **Users** section*Permissions**: Granular permissions with resource and action
+- **Flexible Authorization**: Use `isAdmin` flag or role-based permissions
+x] Admin dashboard
+- [x] User roles & permissions
+- [x] Role-based access control (RBAC)
+- [x] Settings management
+- [ ] Email verification
+- [ ] Forgot password flow
+- [ ] Two-factor authentication (2FA)
+- [ ] Team/Organization support
+- [ ] Subscription & payment integration (Stripe)
+- [ ] API key management
+- [ ] Enhanced audit logs with user tracking
 // In server components or API routes
 const user = await prisma.user.findUnique({
   where: { id: userId },
