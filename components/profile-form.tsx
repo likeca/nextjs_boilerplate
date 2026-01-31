@@ -4,13 +4,33 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput } from "@/components/ui/phone-input";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { z } from "zod";
+import { isValidPhoneNumber } from "react-phone-number-input";
+
+const profileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().refine((val) => {
+    // Phone is optional - empty or valid
+    if (!val || val.length === 0) return true;
+    try {
+      return isValidPhoneNumber(val);
+    } catch {
+      return false;
+    }
+  }, {
+    message: 'Please enter a valid phone number',
+  }),
+});
 
 interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string | null;
   image?: string | null;
   emailVerified: boolean;
 }
@@ -21,9 +41,11 @@ interface ProfileFormProps {
 
 export function ProfileForm({ user }: ProfileFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: user.name || "",
     email: user.email || "",
+    phone: user.phone || "",
   });
 
   const getInitials = (name: string) => {
@@ -37,6 +59,32 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    // Validate with Zod first, before setting loading state
+    const dataToValidate = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone && formData.phone.trim() !== '' ? formData.phone : undefined,
+    };
+    
+    const validation = profileSchema.safeParse(dataToValidate);
+
+    if (!validation.success) {
+      const fieldErrors: Record<string, string> = {};
+      if (validation.error?.issues) {
+        validation.error.issues.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as string] = err.message;
+          }
+        });
+      }
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form");
+      return;
+    }
+
+    // Only set loading state after validation passes
     setIsLoading(true);
 
     try {
@@ -45,7 +93,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || null,
+        }),
       });
 
       if (!response.ok) {
@@ -90,7 +142,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="Enter your name"
             required
+            className={errors.name ? "border-red-500" : ""}
           />
+          {errors.name && (
+            <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -102,7 +158,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="Enter your email"
             required
+            className={errors.email ? "border-red-500" : ""}
           />
+          {errors.email && (
+            <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+          )}
           {user.emailVerified ? (
             <p className="text-xs text-green-600 dark:text-green-500 flex items-center gap-1">
               <svg
@@ -122,6 +182,20 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <p className="text-xs text-amber-600 dark:text-amber-500">
               Email not verified
             </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone">Phone Number (Optional)</Label>
+          <PhoneInput
+            id="phone"
+            value={formData.phone}
+            onChange={(value) => setFormData({ ...formData, phone: value || '' })}
+            placeholder="+1 (555) 000-0000"
+            error={!!errors.phone}
+          />
+          {errors.phone && (
+            <p className="text-sm text-red-500 mt-1">{errors.phone}</p>
           )}
         </div>
 

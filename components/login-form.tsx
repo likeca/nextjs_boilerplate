@@ -21,6 +21,12 @@ import { signIn } from "@/lib/auth-client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { z } from "zod"
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+})
 
 export function LoginForm({
   className,
@@ -28,14 +34,31 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setIsLoading(true)
+    setErrors({})
 
     const formData = new FormData(e.currentTarget)
     const email = formData.get("email") as string
     const password = formData.get("password") as string
+
+    // Validate with Zod
+    const validation = loginSchema.safeParse({ email, password })
+
+    if (!validation.success) {
+      const fieldErrors: Record<string, string> = {}
+      validation.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message
+        }
+      })
+      setErrors(fieldErrors)
+      setIsLoading(false)
+      return
+    }
 
     try {
       const { data, error } = await signIn.email({
@@ -112,7 +135,11 @@ export function LoginForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
+                  className={errors.email ? "border-red-500" : ""}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                )}
               </Field>
               <Field>
                 <div className="flex items-center">
@@ -130,7 +157,11 @@ export function LoginForm({
                   type="password"
                   required
                   disabled={isLoading}
+                  className={errors.password ? "border-red-500" : ""}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+                )}
               </Field>
               <Field>
                 <Button type="submit" disabled={isLoading}>
