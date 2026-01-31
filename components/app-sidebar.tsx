@@ -2,12 +2,12 @@
 
 import * as React from "react"
 import {
-  IconChartBar,
   IconDashboard,
-  IconFolder,
-  IconInnerShadowTop,
-  IconListDetails,
   IconUsers,
+  IconShield,
+  IconKey,
+  IconSettings,
+  IconInnerShadowTop,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -27,28 +27,43 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
-      url: "#",
+      title: "Users",
+      url: "/users",
       icon: IconUsers,
+      items: [
+        {
+          title: "All Users",
+          url: "/users",
+        },
+        {
+          title: "Create User",
+          url: "/users/new",
+        },
+      ],
+    },
+    {
+      title: "Access Control",
+      url: "/roles",
+      icon: IconShield,
+      items: [
+        {
+          title: "Roles",
+          url: "/roles",
+        },
+        {
+          title: "Permissions",
+          url: "/permissions",
+        },
+      ],
+    },
+    {
+      title: "Settings",
+      url: "/settings",
+      icon: IconSettings,
     },
   ],
 }

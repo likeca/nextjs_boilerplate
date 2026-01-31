@@ -18,6 +18,7 @@ model User {
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
+  phone         String?
   isAdmin       Boolean   @default(false)
   roleId        String?
   role          Role?     @relation(fields: [roleId], references: [id])
@@ -90,6 +91,7 @@ model Role {
   id          String   @id @default(cuid())
   name        String   @unique
   description String?
+  isSystem    Boolean  @default(false) // System roles cannot be deleted
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -122,4 +124,15 @@ model RolePermission {
   @@unique([roleId, permissionId])
   @@index([roleId])
   @@index([permissionId])
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("string") // string, number, boolean, json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([key])
 }

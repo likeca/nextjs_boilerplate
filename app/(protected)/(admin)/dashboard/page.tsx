@@ -8,11 +8,15 @@ import {
   SidebarProvider,
 } from "@/components/ui/sidebar"
 import { auth } from "@/lib/auth"
+import { requireAuth } from "@/lib/auth-helpers"
 import { headers } from "next/headers"
 
 import data from "./data.json"
 
 export default async function Page() {
+  // Require authentication and admin access
+  await requireAuth();
+  
   const session = await auth.api.getSession({
     headers: await headers(),
   });
