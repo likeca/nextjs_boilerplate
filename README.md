@@ -1,13 +1,58 @@
-# 🚀 Next.js Admin Boilerplate
+# 🚀 Next.js SaaS Boilerplate
 
-A modern, production-ready admin dashboard boilerplate built with Next.js 16, Better Auth, Prisma, and Shadcn UI. Features a complete role-based access control (RBAC) system with users, roles, permissions, and settings management.
+A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, Prisma, and Shadcn UI. Features a complete role-based access control (RBAC) system with users, roles, permissions, settings management, and fully customizable branding through environment variables.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=flat-square&logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlog.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.3-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
+[![Better Auth](https://img.shields.io/badge/Better_Auth-Latest-orange?style=flat-square)](https://www.better-auth.com/)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-## 📸 Screenshots
+## � Table of Contents
+
+- [Screenshots](#-screenshots)
+- [Recent Updates](#-recent-updates)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Quick Start](#-quick-start)
+- [Project Structure](#-project-structure)
+- [Authentication Flow](#-authentication-flow)
+- [Customization](#-customization)
+- [Security Features](#-security-features)
+- [Database Schema](#-database-schema)
+- [RBAC System](#-role-based-access-control-rbac)
+- [Deployment](#-deployment)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+## 🎯 Why This Boilerplate?
+
+**Production-Ready from Day One**
+- ✅ Complete authentication system with Better Auth
+- ✅ Full RBAC (Role-Based Access Control) implementation
+- ✅ Admin panel with user, role, and permission management
+- ✅ Responsive design with modern UI components
+- ✅ Type-safe with TypeScript end-to-end
+
+**Zero Configuration Branding**
+- 🎨 Customize your entire brand without touching code
+- 🎨 Change app name, logo, colors via environment variables
+- 🎨 Perfect for white-label SaaS applications
+- 🎨 All customization via environment variables
+
+**Developer Experience First**
+- 💻 Modern Next.js 16 with App Router
+- 💻 Server actions for type-safe mutations
+- 💻 Comprehensive documentation included
+- 💻 Utility scripts for common tasks
+- 💻 ESLint configured and ready
+
+**Battle-Tested Stack**
+- 🔧 Prisma ORM with PostgreSQL
+- 🔧 Better Auth for modern authentication
+- 🔧 Shadcn UI + Radix for accessibility
+- 🔧 Tailwind CSS for styling
+- 🔧 All dependencies up to date
+## �📸 Screenshots
 
 ### Frontend
 ![Frontend Screenshot](public/frontend_screenshot.png)
@@ -15,20 +60,66 @@ A modern, production-ready admin dashboard boilerplate built with Next.js 16, Be
 ### Admin Dashboard
 ![Admin Dashboard Screenshot](public/admin_screenshot.png)
 
+## 🆕 Recent Updates
+
+### Latest Features (February 2026)
+
+✨ **Profile Management System**
+- Complete profile page with tabbed interface (Profile Info + Security)
+- Update personal information: name, email, phone number
+- Avatar support with automatic initials fallback
+- Email verification status indicator
+- User ID display for reference
+
+🔐 **Enhanced Password Security**
+- Secure password change with current password verification
+- Password strength validation (minimum 8 characters)
+- Show/hide password toggle for better UX
+- Password confirmation field
+- Optional session revocation (log out all devices on password change)
+- Seamless Better Auth integration
+
+🎨 **Complete Branding Customization**
+- All branding now configurable via environment variables
+- No code changes needed for customization
+- Customizable elements:
+  - App name and description
+  - Company name
+  - Logo text and icon (supports all Lucide icons)
+  - Primary brand color
+
+🔧 **Better Auth Fixes**
+- Fixed PostgreSQL adapter integration with Prisma 7.3
+- Added `@prisma/adapter-pg` for proper database connectivity
+- Auto-disable Google OAuth when credentials not provided
+- Proper secret and baseURL configuration
+- Enhanced session management
+
 ## ✨ Features
 
 ### 🔐 Authentication & Security
-- **Better Auth Integration** - Modern, type-safe authentication
+- **Better Auth Integration** - Modern, type-safe authentication with PostgreSQL adapter
 - **Email/Password Authentication** - Secure credential-based login
-- **Google OAuth** - One-click social authentication
-- **Protected Routes** - Route group-based authentication
+- **Google OAuth** - One-click social authentication (auto-disabled without credentials)
+- **Protected Routes** - Route group-based authentication with server-side checks
 - **Session Management** - Secure session handling with database storage
 - **Password Management** - Change password with session revocation option
+- **Forgot Password Flow** - Password reset via email
+- **Session Revocation** - Log out from all devices option
 
 ### 👤 User Management
 - **User Dashboard** - Personalized user dashboard with sidebar navigation
-- **Profile Management** - Update name, email, phone, and avatar
+- **Profile Management** - Complete profile page with tabs for information and security
+  - Update name, email, phone, and avatar
+  - Email verification status indicator
+  - User ID display (read-only)
+  - Avatar with initials fallback
 - **Password Change** - Secure password update with current password verification
+  - Password strength requirements (min 8 characters)
+  - Show/hide password toggle
+  - Password confirmation validation
+  - Optional session revocation (log out all other devices)
+  - Fully integrated with Better Auth
 - **Session Control** - Log out from all devices option
 - **User CRUD** - Complete user management (create, read, update, delete)
 - **User Listing** - Searchable and filterable user table with pagination
@@ -50,26 +141,37 @@ A modern, production-ready admin dashboard boilerplate built with Next.js 16, Be
 - **Data Tables** - Sortable, searchable tables with pagination
 - **Responsive Design** - Mobile-first approach
 - **Toast Notifications** - User feedback with Sonner
-- **Custom Branding** - Environment-based configuration
+- **Custom Branding** - Fully customizable via environment variables:
+  - App name and description
+  - Company name
+  - Logo text (2-3 characters)
+  - Logo icon (any Lucide icon)
+  - Primary color (hex format)
+  - No code changes required for branding updates
 
 ### 🗄️ Database
-- **Prisma ORM** - Type-safe database client with PostgreSQL adapter
+- **Prisma ORM** - Type-safe database client with PostgreSQL adapter (`@prisma/adapter-pg`)
 - **PostgreSQL** - Production-ready database (Neon compatible)
 - **Migration System** - Version-controlled schema changes
 - **Better Auth Tables** - Pre-configured user, session, account, and verification tables
 - **RBAC Tables** - Role, Permission, RolePermission junction table
 - **Settings Table** - Key-value settings storage
 - **Audit Logging** - Log table for tracking important events
+- **Enhanced User Model** - Includes phone, avatar, roleId, and isAdmin flag
 
 ### 🛠️ Developer Experience
 - **TypeScript** - Full type safety
 - **App Router** - Next.js 16 App Router with React 19
 - **Server Actions** - Type-safe server actions for data mutations
 - **ESLint** - Code linting
-- **Environment Variables** - Easy configuration
+- **Environment Variables** - Easy configuration with comprehensive .env.example
 - **Component-based Architecture** - Reusable, modular components
-- **API Routes** - Built-in API endpoints
-- **Utility Scripts** - create-admin.ts, delete-user.ts for management tasks
+- **API Routes** - Built-in API endpoints (auth, user profile)
+- **Utility Scripts** - Management tools:
+  - `create-admin.ts` - Create admin with Super Admin role
+  - `delete-user.ts` - Delete user by email
+  - `check-users.ts` - View all users in database
+- **Comprehensive Documentation** - Step-by-step guides for setup, customization, and features
 
 ## 🏗️ Tech Stack
 
@@ -107,26 +209,34 @@ bun install
 
 ### 3. Set Up Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (or copy from `.env.example`):
 
 ```env
-# Database
+# Database (Required)
 DATABASE_URL="postgresql://user:password@localhost:5432/database"
 
-# App Configuration
+# App Configuration (Required)
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
-NEXT_PUBLIC_APP_NAME="Your App Name"
-NEXT_PUBLIC_APP_DESCRIPTION="Your Admin Application"
+NEXT_PUBLIC_APP_NAME="My SaaS App"
+NEXT_PUBLIC_APP_DESCRIPTION="Your SaaS Application"
 NEXT_PUBLIC_COMPANY_NAME="Your Company"
 
-# Branding
-NEXT_PUBLIC_LOGO_TEXT="YA"
+# Branding (Optional - defaults provided)
+NEXT_PUBLIC_LOGO_TEXT="SA"
 NEXT_PUBLIC_LOGO_ICON="GalleryVerticalEnd"
 
-# Theme
+# Theme (Optional)
 NEXT_PUBLIC_PRIMARY_COLOR="#0070f3"
 
-# Better Auth Secret
+# Better Auth Secret (Required)
+BETTER_AUTH_SECRET="your-secret-key-here"
+
+# Google OAuth (Optional - Google login will be disabled if not provided)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+**Note**: A complete `.env.example` file is included in the repository with all available options.
 BETTER_AUTH_SECRET="your-secret-key-here"
 
 # Google OAuth (optional)
@@ -257,21 +367,100 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🎨 Customization
 
+The boilerplate is fully customizable without touching code! Update environment variables in `.env`:
+
 ### Branding
 
-Update environment variables in `.env`:
-
 ```env
+# App Information
 NEXT_PUBLIC_APP_NAME="Your App Name"
-NEXT_PUBLIC_LOGO_TEXT="YA"
-NEXT_PUBLIC_PRIMARY_COLOR="#your-color"
+NEXT_PUBLIC_APP_DESCRIPTION="Your SaaS Application"
+NEXT_PUBLIC_COMPANY_NAME="Company Inc."
+
+# Logo (appears in sidebar, login, signup)
+NEXT_PUBLIC_LOGO_TEXT="YA"  # 2-3 characters recommended
+NEXT_PUBLIC_LOGO_ICON="GalleryVerticalEnd"  # Any Lucide icon name
+
+# Theme
+NEXT_PUBLIC_PRIMARY_COLOR="#0070f3"  # Your brand color
 ```
+
+**Available Lucide Icons**: Visit [lucide.dev/icons](https://lucide.dev/icons) for all available icon names.
+
+**Where branding appears**:
+- App name: Browser title, dashboard header, home page
+- Company name: Login/signup pages, footer
+- Logo: Sidebar, header, authentication pages
+- Primary color: Buttons, links, accents (automatically applied)
+
+No code changes required - just update `.env` and restart the dev server!
 
 ### Components
 
 All UI components are located in `components/ui/` and can be customized using Tailwind classes. The boilerplate uses Shadcn UI components which are fully customizable.
 
-## 🔒 Security Features
+## �️ Management Utilities
+
+The boilerplate includes helpful scripts in the `scripts/` directory for common administrative tasks:
+
+### Create Admin User
+
+Create a new admin user with Super Admin role and all permissions:
+
+```bash
+npm run setup:admin
+# or
+bun run setup:admin
+# or directly
+npx tsx scripts/create-admin.ts
+```
+
+**What it does:**
+- Creates or retrieves the Super Admin system role
+- Creates all 16 CRUD permissions (user, role, permission, setting)
+- Assigns all permissions to the Super Admin role
+- Creates a new admin user with `isAdmin: true`
+- Assigns the Super Admin role to the user
+- Hashes and stores password securely
+- Marks email as verified
+
+**Interactive prompts for:**
+- Admin name
+- Admin email
+- Admin password
+
+If the email already exists, you'll have the option to promote that user to admin.
+
+### Delete User
+
+Remove a user from the database by email:
+
+```bash
+npx tsx scripts/delete-user.ts user@example.com
+```
+
+**Safety features:**
+- Requires email confirmation before deletion
+- Shows user details before proceeding
+- Permanently removes user and associated data
+
+### Check Users
+
+View all users in the database (useful for debugging):
+
+```bash
+npx tsx scripts/check-users.ts
+```
+
+**Displays:**
+- User ID
+- Name
+- Email
+- Is Admin status
+- Role information
+- Email verification status
+
+## �🔒 Security Features
 
 - **Secure Password Hashing** - Better Auth handles password encryption
 - **Session Management** - Database-backed sessions with expiration
@@ -384,14 +573,20 @@ The boilerplate works with any platform supporting Next.js:
 - [x] User roles & permissions
 - [x] Role-based access control (RBAC)
 - [x] Settings management
-- [ ] Email verification
-- [ ] Forgot password flow
+- [x] Profile management with tabs
+- [x] Password change with session revocation
+- [x] Full branding customization via env variables
+- [x] Forgot password flow
+- [ ] Email verification flow
+- [ ] Password reset email sending
 - [ ] Two-factor authentication (2FA)
 - [ ] Team/Organization support
 - [ ] Subscription & payment integration (Stripe)
 - [ ] API key management
 - [ ] Enhanced audit logs with user tracking
-- [ ] Email notifications
+- [ ] Email notifications system
+- [ ] Multi-tenancy support
+- [ ] Dark mode toggle
 
 ## 🤝 Contributing
 
@@ -417,7 +612,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Support
 
-For support, email habibjutt868@gmail.com or open an issue on GitHub.
+Need help? Here's how to get support:
+
+1. **Check README** - Review this README for complete setup and feature documentation
+2. **GitHub Issues** - Open an issue on GitHub for bugs or feature requests
+3. **Email** - Contact habibjutt868@gmail.com for direct support
+
+### Helpful Resources
+
+- [Better Auth Documentation](https://www.better-auth.com/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [Shadcn UI Documentation](https://ui.shadcn.com)
 
 ---
 
