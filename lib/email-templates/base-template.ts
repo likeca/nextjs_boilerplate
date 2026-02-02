@@ -1,11 +1,16 @@
+import { appConfig } from '@/lib/config';
+
 export const getBaseEmailTemplate = (content: string): string => {
+  const companyName = appConfig.company.name;
+  const appDescription = appConfig.description;
+  
   return `
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Centourism</title>
+      <title>${companyName}</title>
       <style>
         body {
           margin: 0;
@@ -103,17 +108,17 @@ export const getBaseEmailTemplate = (content: string): string => {
     <body>
       <div class="email-container">
         <div class="email-header">
-          <h1>Centourism</h1>
+          <h1>${companyName}</h1>
         </div>
         <div class="email-body">
           ${content}
         </div>
         <div class="email-footer">
-          <p><strong>Centourism</strong></p>
-          <p>Your premier yacht charter service</p>
+          <p><strong>${companyName}</strong></p>
+          <p>${appDescription}</p>
           <div class="social-links">
-            <a href="https://centourism.com">Website</a> |
-            <a href="mailto:sales@centourism.com">Contact Us</a>
+            <a href="${appConfig.url}">Website</a> |
+            <a href="mailto:${process.env.SMTP_FROM_EMAIL || 'support@example.com'}">Contact Us</a>
           </div>
           <p style="font-size: 12px; color: #868e96; margin-top: 15px;">
             This is an automated email. Please do not reply to this message.

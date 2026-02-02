@@ -102,6 +102,10 @@ export default function PermissionsPage() {
     setFilteredPermissions(filtered);
   };
 
+  // Extract unique resources and actions from permissions
+  const availableResources = Array.from(new Set(permissions.map(p => p.resource))).sort();
+  const availableActions = Array.from(new Set(permissions.map(p => p.action))).sort();
+
   const handleFilterChange = (newFilters: PermissionFilterValues) => {
     setFilters(newFilters);
     applyFilters(permissions, newFilters);
@@ -184,7 +188,12 @@ export default function PermissionsPage() {
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <PermissionFilters onFilterChange={handleFilterChange} currentFilters={filters} />
+                    <PermissionFilters 
+                      onFilterChange={handleFilterChange} 
+                      currentFilters={filters}
+                      availableResources={availableResources}
+                      availableActions={availableActions}
+                    />
                     {canCreate && (
                       <Button size="sm" onClick={() => router.push('/permissions/create')}>
                         <IconPlus className="mr-2 h-4 w-4" />

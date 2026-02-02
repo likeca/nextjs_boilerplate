@@ -25,6 +25,8 @@ import { useState } from 'react';
 interface PermissionFiltersProps {
   onFilterChange: (filters: PermissionFilterValues) => void;
   currentFilters: PermissionFilterValues;
+  availableResources?: string[];
+  availableActions?: string[];
 }
 
 export interface PermissionFilterValues {
@@ -33,7 +35,12 @@ export interface PermissionFilterValues {
   action: string;
 }
 
-export function PermissionFilters({ onFilterChange, currentFilters }: PermissionFiltersProps) {
+export function PermissionFilters({ 
+  onFilterChange, 
+  currentFilters,
+  availableResources = [],
+  availableActions = []
+}: PermissionFiltersProps) {
   const [open, setOpen] = useState(false);
   const [filters, setFilters] = useState<PermissionFilterValues>(currentFilters);
 
@@ -105,20 +112,11 @@ export function PermissionFilters({ onFilterChange, currentFilters }: Permission
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Resources</SelectItem>
-                <SelectItem value="activity">Activity</SelectItem>
-                <SelectItem value="addon">Addon</SelectItem>
-                <SelectItem value="banner">Banner</SelectItem>
-                <SelectItem value="blog">Blog</SelectItem>
-                <SelectItem value="booking">Booking</SelectItem>
-                <SelectItem value="category">Category</SelectItem>
-                <SelectItem value="event">Event</SelectItem>
-                <SelectItem value="language">Language</SelectItem>
-                <SelectItem value="offer">Offer</SelectItem>
-                <SelectItem value="permission">Permission</SelectItem>
-                <SelectItem value="role">Role</SelectItem>
-                <SelectItem value="setting">Setting</SelectItem>
-                <SelectItem value="user">User</SelectItem>
-                <SelectItem value="yacht">Yacht</SelectItem>
+                {availableResources.map((resource) => (
+                  <SelectItem key={resource} value={resource}>
+                    {resource.charAt(0).toUpperCase() + resource.slice(1)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -136,10 +134,11 @@ export function PermissionFilters({ onFilterChange, currentFilters }: Permission
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Actions</SelectItem>
-                <SelectItem value="create">Create</SelectItem>
-                <SelectItem value="read">Read</SelectItem>
-                <SelectItem value="update">Update</SelectItem>
-                <SelectItem value="delete">Delete</SelectItem>
+                {availableActions.map((action) => (
+                  <SelectItem key={action} value={action}>
+                    {action.charAt(0).toUpperCase() + action.slice(1)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>

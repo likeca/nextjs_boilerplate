@@ -25,28 +25,10 @@ import {
 import { toast } from 'sonner';
 import { getPermission } from '@/actions/permissions/get-permission';
 import { updatePermission } from '@/actions/permissions/update-permission';
+import { listPermissions } from '@/actions/permissions/list-permissions';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-
-const RESOURCES = [
-  'activity',
-  'addon',
-  'banner',
-  'blog',
-  'booking',
-  'category',
-  'event',
-  'language',
-  'offer',
-  'permission',
-  'role',
-  'setting',
-  'user',
-  'yacht',
-];
-
-const ACTIONS = ['create', 'read', 'update', 'delete'];
 
 interface Permission {
   id: string;
@@ -65,6 +47,7 @@ export default function EditPermissionPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [permission, setPermission] = useState<Permission | null>(null);
+  const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -78,6 +61,12 @@ export default function EditPermissionPage() {
 
   const loadData = async () => {
     setLoading(true);
+
+    // Load all permissions to get available resources and actions
+    const allPermsResult = await listPermissions();
+    if (allPermsResult.success) {
+      setAllPermissions(allPermsResult.permissions);
+    }
 
     const result = await getPermission(permissionId);
 
@@ -131,6 +120,10 @@ export default function EditPermissionPage() {
     
     setFormData(newFormData);
   };
+
+  // Extract unique resources and actions from all permissions
+  const availableResources = Array.from(new Set(allPermissions.map(p => p.resource))).sort();
+  const availableActions = Array.from(new Set(allPermissions.map(p => p.action))).sort();
 
   return (
     <div className="flex flex-1 flex-col">
@@ -214,7 +207,7 @@ export default function EditPermissionPage() {
                                 <SelectValue placeholder="Select a resource" />
                               </SelectTrigger>
                               <SelectContent>
-                                {RESOURCES.map((resource) => (
+                                {availableResources.map((resource) => (
                                   <SelectItem key={resource} value={resource} className="capitalize">
                                     {resource}
                                   </SelectItem>
@@ -235,7 +228,7 @@ export default function EditPermissionPage() {
                                 <SelectValue placeholder="Select an action" />
                               </SelectTrigger>
                               <SelectContent>
-                                {ACTIONS.map((action) => (
+                                {availableActions.map((action) => (
                                   <SelectItem key={action} value={action} className="capitalize">
                                     {action}
                                   </SelectItem>

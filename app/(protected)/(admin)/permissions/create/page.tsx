@@ -24,38 +24,39 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { createPermission } from '@/actions/permissions/create-permission';
+import { listPermissions } from '@/actions/permissions/list-permissions';
 import { IconArrowLeft } from '@tabler/icons-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useEffect } from 'react';
 
-const RESOURCES = [
-  'activity',
-  'addon',
-  'banner',
-  'blog',
-  'booking',
-  'category',
-  'event',
-  'language',
-  'offer',
-  'permission',
-  'role',
-  'setting',
-  'user',
-  'yacht',
-];
-
-const ACTIONS = ['create', 'read', 'update', 'delete'];
+interface Permission {
+  id: string;
+  name: string;
+  resource: string;
+  action: string;
+}
 
 export default function CreatePermissionPage() {
   const router = useRouter();
   const { isLoading: checkingPermission, hasPermission } = usePermission('permission', 'create');
   const [submitting, setSubmitting] = useState(false);
+  const [allPermissions, setAllPermissions] = useState<Permission[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     resource: '',
     action: '',
   });
+
+  useEffect(() => {
+    const loadPermissions = async () => {
+      const result = await listPermissions();
+      if (result.success) {
+        setAllPermissions(result.permissions);
+      }
+    };
+    loadPermissions();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,6 +87,10 @@ export default function CreatePermissionPage() {
     
     setFormData(newFormData);
   };
+
+  // Extract unique resources and actions from all permissions
+  const availableResources = Array.from(new Set(allPermissions.map(p => p.resource))).sort();
+  const availableActions = Array.from(new Set(allPermissions.map(p => p.action))).sort();
 
   return (
     <div className="flex flex-1 flex-col">
@@ -141,7 +146,7 @@ export default function CreatePermissionPage() {
                               <SelectValue placeholder="Select a resource" />
                             </SelectTrigger>
                             <SelectContent>
-                              {RESOURCES.map((resource) => (
+                              {availableResources.map((resource) => (
                                 <SelectItem key={resource} value={resource} className="capitalize">
                                   {resource}
                                 </SelectItem>
@@ -162,7 +167,7 @@ export default function CreatePermissionPage() {
                               <SelectValue placeholder="Select an action" />
                             </SelectTrigger>
                             <SelectContent>
-                              {ACTIONS.map((action) => (
+                              {availableActions.map((action) => (
                                 <SelectItem key={action} value={action} className="capitalize">
                                   {action}
                                 </SelectItem>

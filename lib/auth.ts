@@ -3,7 +3,6 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { emailOTP } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { EmailService } from "./email-service";
-import { EmailType } from "./email-templates/types";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -22,7 +21,7 @@ export const auth = betterAuth({
         console.log('📧 [Auth] Sending password reset email to:', user.email);
         await emailService.sendEmail({
           recipients: [user.email],
-          type: EmailType.RESET_PASSWORD,
+          type: 'reset_password',
           data: {
             recipientEmail: user.email,
             recipientName: user.name || user.email.split('@')[0],
@@ -88,7 +87,7 @@ export const auth = betterAuth({
             console.log('📧 [Auth] Sending email verification OTP to:', email);
             await emailService.sendEmail({
               recipients: [email],
-              type: EmailType.OTP,
+              type: 'otp',
               data: {
                 recipientEmail: email,
                 recipientName: email.split('@')[0],
@@ -101,7 +100,7 @@ export const auth = betterAuth({
             console.log('📧 [Auth] Sending sign-in OTP to:', email);
             await emailService.sendEmail({
               recipients: [email],
-              type: EmailType.OTP,
+              type: 'otp',
               data: {
                 recipientEmail: email,
                 recipientName: email.split('@')[0],
@@ -115,7 +114,7 @@ export const auth = betterAuth({
             console.log('📧 [Auth] Sending password reset OTP to:', email);
             await emailService.sendEmail({
               recipients: [email],
-              type: EmailType.OTP,
+              type: 'otp',
               data: {
                 recipientEmail: email,
                 recipientName: email.split('@')[0],

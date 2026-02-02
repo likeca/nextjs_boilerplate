@@ -1,8 +1,10 @@
 import { getBaseEmailTemplate } from './base-template';
+import { appConfig } from '@/lib/config';
 import type { OTPEmailData } from './types';
 
 export const getOTPEmailTemplate = (data: OTPEmailData): string => {
   const { recipientName, otp, expiryMinutes = 10 } = data;
+  const companyName = appConfig.company.name;
 
   const content = `
     <h2>Verify Your Account</h2>
@@ -21,7 +23,7 @@ export const getOTPEmailTemplate = (data: OTPEmailData): string => {
     
     <p style="margin-top: 30px;">
       Best regards,<br>
-      <strong>Centourism Team</strong>
+      <strong>${companyName} Team</strong>
     </p>
   `;
 

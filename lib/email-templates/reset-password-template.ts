@@ -1,13 +1,15 @@
 import { getBaseEmailTemplate } from './base-template';
+import { appConfig } from '@/lib/config';
 import type { ResetPasswordEmailData } from './types';
 
 export const getResetPasswordTemplate = (data: ResetPasswordEmailData): string => {
   const { recipientName, resetUrl, expiryHours = 1 } = data;
+  const companyName = appConfig.company.name;
 
   const content = `
     <h2>🔒 Reset Your Password</h2>
     <p>Hello ${recipientName ? recipientName : 'there'},</p>
-    <p>We received a request to reset your password for your Centourism account.</p>
+    <p>We received a request to reset your password for your ${companyName} account.</p>
     
     <p>Click the button below to create a new password:</p>
     
@@ -32,7 +34,7 @@ export const getResetPasswordTemplate = (data: ResetPasswordEmailData): string =
     
     <p style="margin-top: 30px;">
       Best regards,<br>
-      <strong>Centourism Team</strong>
+      <strong>${companyName} Team</strong>
     </p>
   `;
 
