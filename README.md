@@ -89,7 +89,24 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 - **User Listing** - Searchable and filterable user table with pagination
 - **Role Assignment** - Assign roles to users
 
-### 🔐 Role-Based Access Control (RBAC)
+### � Payment & Subscriptions (Stripe)
+- **Stripe Integration** - Full payment processing with Stripe
+- **Subscription Plans** - Multiple pricing tiers (Starter, Professional, Enterprise)
+- **Monthly & Yearly Billing** - Toggle between billing intervals with discount badges
+- **Pricing Page** - Beautiful pricing cards on homepage with feature comparison
+- **Authentication Required** - Users must be logged in to purchase
+- **Checkout Sessions** - Secure Stripe checkout flow
+- **Webhook Integration** - Automated subscription management via Stripe webhooks
+- **Subscription Management** - View and manage active subscriptions
+- **Payment History** - Track all payments and transactions
+- **Auto-renewal** - Automatic subscription renewals
+- **Cancellation Support** - Cancel subscriptions at period end
+- **Success/Cancel Pages** - User-friendly payment flow pages
+- **Database Tracking** - All subscriptions and payments stored in database
+- **Customer Management** - Automatic Stripe customer creation and linking
+- **See [STRIPE_SETUP.md](STRIPE_SETUP.md) for setup instructions**
+
+### �🔐 Role-Based Access Control (RBAC)
 - **Two-Tier Permission System** - `isAdmin` flag for admin page access + role-based permissions for actions
 - **Role Management** - Create and manage roles with granular permissions
 - **Permission System** - Resource-action based permissions (e.g., `user:create`, `role:update`)
@@ -141,6 +158,7 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 
 - **Framework:** [Next.js 16](https://nextjs.org/) (React 19)
 - **Authentication:** [Better Auth](https://www.better-auth.com/)
+- **Payments:** [Stripe](https://stripe.com/)
 - **Database:** [Prisma](https://www.prisma.io/) + PostgreSQL
 - **UI Components:** [Shadcn UI](https://ui.shadcn.com/) + [Radix UI](https://www.radix-ui.com/)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)

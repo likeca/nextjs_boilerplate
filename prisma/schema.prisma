@@ -22,11 +22,13 @@ model User {
   isAdmin       Boolean   @default(false)
   roleId        String?
   role          Role?     @relation(fields: [roleId], references: [id])
+  stripeCustomerId String? @unique
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   sessions      Session[]
   accounts      Account[]
+  subscriptions Subscription[]
   
   @@index([roleId])
   @@index([isAdmin])
@@ -135,4 +137,60 @@ model Setting {
   updatedAt DateTime @updatedAt
 
   @@index([key])
+}
+
+model Plan {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  stripePriceId   String   @unique
+  stripeProductId String
+  amount          Int      // Amount in cents
+  currency        String   @default("usd")
+  interval        String   // "month" or "year"
+  features        String[] // Array of feature strings
+  isPopular       Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions Subscription[]
+
+  @@index([interval])
+  @@index([isActive])
+}
+
+model Subscription {
+  id                   String    @id @default(cuid())
+  userId               String
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId               String
+  plan                 Plan      @relation(fields: [planId], references: [id])
+  stripeSubscriptionId String    @unique
+  stripeCustomerId     String
+  status               String    // active, canceled, past_due, etc.
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean   @default(false)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([planId])
+  @@index([status])
+}
+
+model Payment {
+  id                String   @id @default(cuid())
+  userId            String
+  stripePaymentId   String   @unique
+  amount            Int      // Amount in cents
+  currency          String   @default("usd")
+  status            String   // succeeded, pending, failed
+  description       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }

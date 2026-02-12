@@ -1,0 +1,48 @@
+export const pricingPlans = [
+  {
+    name: "Starter",
+    description: "Perfect for individuals and small projects",
+    monthlyPrice: 9.99,
+    yearlyPrice: 99.99,
+    features: [
+      "Up to 10 projects",
+      "Basic analytics",
+      "Email support",
+      "1 GB storage",
+      "Community access",
+    ],
+    isPopular: false,
+  },
+  {
+    name: "Professional",
+    description: "Ideal for growing teams and businesses",
+    monthlyPrice: 29.99,
+    yearlyPrice: 299.99,
+    features: [
+      "Unlimited projects",
+      "Advanced analytics",
+      "Priority support",
+      "10 GB storage",
+      "Team collaboration",
+      "API access",
+      "Custom integrations",
+    ],
+    isPopular: true,
+  },
+  {
+    name: "Enterprise",
+    description: "For large organizations with advanced needs",
+    monthlyPrice: 99.99,
+    yearlyPrice: 999.99,
+    features: [
+      "Everything in Professional",
+      "Dedicated support",
+      "Unlimited storage",
+      "Advanced security",
+      "SLA guarantee",
+      "Custom contracts",
+      "On-premise deployment",
+    ],
+    isPopular: false,
+  },
+];
