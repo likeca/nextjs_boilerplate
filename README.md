@@ -8,10 +8,9 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 [![Better Auth](https://img.shields.io/badge/Better_Auth-Latest-orange?style=flat-square)](https://www.better-auth.com/)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-## � Table of Contents
+## Table of Contents
 
 - [Screenshots](#-screenshots)
-- [Recent Updates](#-recent-updates)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [Quick Start](#-quick-start)
@@ -59,41 +58,6 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 
 ### Admin Dashboard
 ![Admin Dashboard Screenshot](public/admin_screenshot.png)
-
-## 🆕 Recent Updates
-
-### Latest Features (February 2026)
-
-✨ **Profile Management System**
-- Complete profile page with tabbed interface (Profile Info + Security)
-- Update personal information: name, email, phone number
-- Avatar support with automatic initials fallback
-- Email verification status indicator
-- User ID display for reference
-
-🔐 **Enhanced Password Security**
-- Secure password change with current password verification
-- Password strength validation (minimum 8 characters)
-- Show/hide password toggle for better UX
-- Password confirmation field
-- Optional session revocation (log out all devices on password change)
-- Seamless Better Auth integration
-
-🎨 **Complete Branding Customization**
-- All branding now configurable via environment variables
-- No code changes needed for customization
-- Customizable elements:
-  - App name and description
-  - Company name
-  - Logo text and icon (supports all Lucide icons)
-  - Primary brand color
-
-🔧 **Better Auth Fixes**
-- Fixed PostgreSQL adapter integration with Prisma 7.3
-- Added `@prisma/adapter-pg` for proper database connectivity
-- Auto-disable Google OAuth when credentials not provided
-- Proper secret and baseURL configuration
-- Enhanced session management
 
 ## ✨ Features
 
@@ -535,14 +499,6 @@ function MyComponent() {
 }
 ```
 
-### Creating Custom Roles
-
-1. Navigate to **Access Control > Roles**
-2. Click **Create New Role**
-3. Enter role name and description
-4. Select permissions from the 16 available options
-5. Assign users to the role in **Users** section
-
 ## 🚀 Deployment
 
 ### Vercel (Recommended)
@@ -608,7 +564,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Better Auth](https://www.better-auth.com/) - Authentication for TypeScript
 - [Prisma](https://www.prisma.io/) - Next-generation ORM
 - [Shadcn UI](https://ui.shadcn.com/) - Re-usable components
-- [Vercel](https://vercel.com/) - Hosting platform
 
 ## 📧 Support
 
