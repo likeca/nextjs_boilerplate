@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { signIn, emailOtp } from "@/lib/auth-client"
+import { getRedirectUrl } from "@/actions/users/get-redirect-url"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -89,7 +90,8 @@ export function LoginForm({
       }
 
       toast.success("Logged in successfully!")
-      router.push("/dashboard")
+      const redirectUrl = await getRedirectUrl()
+      router.push(redirectUrl)
     } catch (error: any) {
       toast.error(error.message || "Failed to login")
       setIsLoading(false)
@@ -221,7 +223,7 @@ export function LoginForm({
     try {
       await signIn.social({
         provider: "google",
-        callbackURL: "/dashboard",
+        callbackURL: "/auth/callback",
       })
     } catch (error: any) {
       toast.error(error.message || "Failed to sign in with Google")

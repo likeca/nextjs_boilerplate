@@ -14,19 +14,35 @@ import { redirect } from "next/navigation";
 export default async function PaymentSuccessPage({
   searchParams,
 }: {
-  searchParams: { session_id?: string };
+  searchParams: Promise<{ session_id?: string }>;
 }) {
-  const sessionId = searchParams.session_id;
+  const params = await searchParams;
+  const sessionId = params.session_id;
+
+  console.log("[SUCCESS PAGE] Payment success page loaded");
+  console.log("[SUCCESS PAGE] Session ID from URL:", sessionId);
+  console.log("[SUCCESS PAGE] All search params:", params);
 
   // Verify and create subscription if the session_id is provided
   if (sessionId) {
+    console.log("[SUCCESS PAGE] Calling verifyCheckoutSession with sessionId:", sessionId);
     const result = await verifyCheckoutSession(sessionId);
+    console.log("[SUCCESS PAGE] verifyCheckoutSession result:", result);
     
     if (result.error) {
-      console.error("Failed to verify checkout session:", result.error);
+      console.error("[SUCCESS PAGE] Error from verifyCheckoutSession:", result.error);
       // Don't redirect on error, still show success message
       // The webhook might handle it, or the user can check billing page
+    } else if (result.success) {
+      console.log("[SUCCESS PAGE] Subscription verification successful!");
+      if (result.alreadyExists) {
+        console.log("[SUCCESS PAGE] Subscription already existed in database");
+      } else {
+        console.log("[SUCCESS PAGE] New subscription created successfully");
+      }
     }
+  } else {
+    console.warn("[SUCCESS PAGE] No session_id provided in URL - subscription verification skipped");
   }
 
   return (
