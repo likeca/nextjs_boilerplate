@@ -15,5 +15,5 @@ export const stripeConfig = {
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || "",
   currency: "usd",
   successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/success`,
-  cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel`,
+  cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel?from=checkout`,
 };

@@ -8,8 +8,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
-export default function PaymentCancelPage() {
+export default async function PaymentCancelPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ from?: string }>;
+}) {
+  const params = await searchParams;
+  
+  // Only allow access if coming from a payment flow
+  // Users shouldn't access this page directly
+  if (!params.from || params.from !== "checkout") {
+    console.warn("[CANCEL PAGE] Invalid access - redirecting to billing");
+    redirect("/billing");
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
@@ -28,10 +42,10 @@ export default function PaymentCancelPage() {
           </p>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Button asChild className="flex-1">
-              <Link href="/">Try Again</Link>
+              <Link href="/billing">View Plans</Link>
             </Button>
             <Button asChild variant="outline" className="flex-1">
-              <Link href="/support">Contact Support</Link>
+              <Link href="/profile">Back to Profile</Link>
             </Button>
           </div>
         </CardContent>

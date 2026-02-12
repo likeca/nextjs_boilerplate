@@ -40,7 +40,7 @@ export const createCheckoutSession = async (planId: string) => {
         },
       ],
       success_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/payment/cancel?from=checkout`,
       metadata: {
         userId: session.user.id,
         planId: plan.id,

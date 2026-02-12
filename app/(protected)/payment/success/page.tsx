@@ -23,6 +23,12 @@ export default async function PaymentSuccessPage({
   console.log("[SUCCESS PAGE] Session ID from URL:", sessionId);
   console.log("[SUCCESS PAGE] All search params:", params);
 
+  // Redirect if no session_id - user shouldn't be here without completing payment
+  if (!sessionId) {
+    console.warn("[SUCCESS PAGE] No session_id provided - redirecting to billing");
+    redirect("/billing");
+  }
+
   // Verify and create subscription if the session_id is provided
   if (sessionId) {
     console.log("[SUCCESS PAGE] Calling verifyCheckoutSession with sessionId:", sessionId);
@@ -41,8 +47,6 @@ export default async function PaymentSuccessPage({
         console.log("[SUCCESS PAGE] New subscription created successfully");
       }
     }
-  } else {
-    console.warn("[SUCCESS PAGE] No session_id provided in URL - subscription verification skipped");
   }
 
   return (
@@ -66,7 +70,7 @@ export default async function PaymentSuccessPage({
               <Link href="/billing">View Subscription</Link>
             </Button>
             <Button asChild variant="outline" className="flex-1">
-              <Link href="/dashboard">Go to Dashboard</Link>
+              <Link href="/profile">Go to Profile</Link>
             </Button>
           </div>
         </CardContent>
