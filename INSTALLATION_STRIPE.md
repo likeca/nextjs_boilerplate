@@ -43,9 +43,9 @@ Add these to your `.env` file:
 
 ```env
 # Stripe Configuration
-STRIPE_SECRET_KEY=sk_test_51YourActualStripeSecretKeyHere...
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51YourActualStripePublishableKeyHere...
-STRIPE_WEBHOOK_SECRET=whsec_YourWebhookSecretHere...
+STRIPE_SECRET_KEY=
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_WEBHOOK_SECRET=
 
 # App URL (update for production)
 NEXT_PUBLIC_APP_URL=http://localhost:3000
