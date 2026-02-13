@@ -6,6 +6,8 @@ import {
   IconUsers,
   IconShield,
   IconSettings,
+  IconArticle,
+  type Icon,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -21,50 +23,80 @@ import {
 } from "@/components/ui/sidebar"
 import { Logo } from "@/components/logo"
 
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: IconDashboard,
-    },
-    {
-      title: "Users",
-      url: "/users",
-      icon: IconUsers,
-      items: [
-        {
-          title: "All Users",
-          url: "/users",
-        },
-        {
-          title: "Create User",
-          url: "/users/new",
-        },
-      ],
-    },
-    {
-      title: "Access Control",
-      url: "/roles",
-      icon: IconShield,
-      items: [
-        {
-          title: "Roles",
-          url: "/roles",
-        },
-        {
-          title: "Permissions",
-          url: "/permissions",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: IconSettings,
-    },
-  ],
+// Icon mapping to avoid passing component classes through props
+const iconMap: Record<string, Icon> = {
+  dashboard: IconDashboard,
+  users: IconUsers,
+  blogs: IconArticle,
+  accessControl: IconShield,
+  settings: IconSettings,
 }
+
+const navMainData: Array<{
+  title: string
+  url: string
+  iconKey: keyof typeof iconMap
+  items?: Array<{
+    title: string
+    url: string
+  }>
+}> = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    iconKey: "dashboard",
+  },
+  {
+    title: "Users",
+    url: "/users",
+    iconKey: "users",
+    items: [
+      {
+        title: "All Users",
+        url: "/users",
+      },
+      {
+        title: "Create User",
+        url: "/users/new",
+      },
+    ],
+  },
+  {
+    title: "Blogs",
+    url: "/blogs",
+    iconKey: "blogs",
+    items: [
+      {
+        title: "All Blogs",
+        url: "/blogs",
+      },
+      {
+        title: "Create Blog",
+        url: "/blogs/new",
+      },
+    ],
+  },
+  {
+    title: "Access Control",
+    url: "/roles",
+    iconKey: "accessControl",
+    items: [
+      {
+        title: "Roles",
+        url: "/roles",
+      },
+      {
+        title: "Permissions",
+        url: "/permissions",
+      },
+    ],
+  },
+  {
+    title: "Settings",
+    url: "/settings",
+    iconKey: "settings",
+  },
+]
 
 export function AppSidebar({ 
   user,
@@ -101,7 +133,10 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMainData.map(item => ({
+          ...item,
+          icon: iconMap[item.iconKey]
+        }))} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={{
