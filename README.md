@@ -6,6 +6,7 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)](https://www.typescriptlog.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-7.3-2D3748?style=flat-square&logo=prisma)](https://www.prisma.io/)
 [![Better Auth](https://img.shields.io/badge/Better_Auth-Latest-orange?style=flat-square)](https://www.better-auth.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-Latest-635BFF?style=flat-square&logo=stripe&logoColor=white)](https://stripe.com/)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
 ## Table of Contents
@@ -32,25 +33,6 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 - ✅ Responsive design with modern UI components
 - ✅ Type-safe with TypeScript end-to-end
 
-**Zero Configuration Branding**
-- 🎨 Customize your entire brand without touching code
-- 🎨 Change app name, logo, colors via environment variables
-- 🎨 Perfect for white-label SaaS applications
-- 🎨 All customization via environment variables
-
-**Developer Experience First**
-- 💻 Modern Next.js 16 with App Router
-- 💻 Server actions for type-safe mutations
-- 💻 Comprehensive documentation included
-- 💻 Utility scripts for common tasks
-- 💻 ESLint configured and ready
-
-**Battle-Tested Stack**
-- 🔧 Prisma ORM with PostgreSQL
-- 🔧 Better Auth for modern authentication
-- 🔧 Shadcn UI + Radix for accessibility
-- 🔧 Tailwind CSS for styling
-- 🔧 All dependencies up to date
 ## �📸 Screenshots
 
 ### Frontend
@@ -222,8 +204,10 @@ GOOGLE_CLIENT_SECRET="your-google-client-secret"
 BETTER_AUTH_SECRET="your-secret-key-here"
 
 # Google OAuth (optional)
+```
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
 ```
 
 **Generate Better Auth Secret:**
