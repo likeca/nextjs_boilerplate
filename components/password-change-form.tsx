@@ -7,10 +7,21 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Checkbox } from "@/components/ui/checkbox";
+import { z } from "zod";
+
+const passwordChangeSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(8, "New password must be at least 8 characters"),
+  confirmPassword: z.string().min(8, "Password must be at least 8 characters"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
 
 export function PasswordChangeForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswords, setShowPasswords] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -20,16 +31,24 @@ export function PasswordChangeForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
 
-    // Validate passwords match
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("New passwords do not match");
-      return;
-    }
+    // Validate with Zod
+    const validation = passwordChangeSchema.safeParse({
+      currentPassword: formData.currentPassword,
+      newPassword: formData.newPassword,
+      confirmPassword: formData.confirmPassword,
+    });
 
-    // Validate password length
-    if (formData.newPassword.length < 8) {
-      toast.error("New password must be at least 8 characters long");
+    if (!validation.success) {
+      const fieldErrors: Record<string, string> = {};
+      validation.error.issues.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      toast.error("Please fix the errors in the form");
       return;
     }
 
@@ -60,6 +79,7 @@ export function PasswordChangeForm() {
         confirmPassword: "",
         revokeOtherSessions: false,
       });
+      setErrors({});
     } catch (error) {
       toast.error("An error occurred. Please try again.");
       console.error(error);
@@ -72,7 +92,9 @@ export function PasswordChangeForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="currentPassword">Current Password</Label>
+          <Label htmlFor="currentPassword" className={errors.currentPassword ? "text-red-600" : ""}>
+            Current Password
+          </Label>
           <Input
             id="currentPassword"
             type={showPasswords ? "text" : "password"}
@@ -83,11 +105,21 @@ export function PasswordChangeForm() {
             placeholder="Enter your current password"
             required
             autoComplete="current-password"
+            className={errors.currentPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
+            aria-invalid={errors.currentPassword ? "true" : "false"}
+            aria-describedby={errors.currentPassword ? "currentPassword-error" : undefined}
           />
+          {errors.currentPassword && (
+            <p id="currentPassword-error" className="text-sm font-medium text-red-600">
+              {errors.currentPassword}
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="newPassword">New Password</Label>
+          <Label htmlFor="newPassword" className={errors.newPassword ? "text-red-600" : ""}>
+            New Password
+          </Label>
           <Input
             id="newPassword"
             type={showPasswords ? "text" : "password"}
@@ -99,14 +131,26 @@ export function PasswordChangeForm() {
             required
             minLength={8}
             autoComplete="new-password"
+            className={errors.newPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
+            aria-invalid={errors.newPassword ? "true" : "false"}
+            aria-describedby={errors.newPassword ? "newPassword-error" : undefined}
           />
-          <p className="text-xs text-muted-foreground">
-            Must be at least 8 characters long
-          </p>
+          {errors.newPassword && (
+            <p id="newPassword-error" className="text-sm font-medium text-red-600">
+              {errors.newPassword}
+            </p>
+          )}
+          {!errors.newPassword && (
+            <p className="text-xs text-muted-foreground">
+              Must be at least 8 characters long
+            </p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword">Confirm New Password</Label>
+          <Label htmlFor="confirmPassword" className={errors.confirmPassword ? "text-red-600" : ""}>
+            Confirm New Password
+          </Label>
           <Input
             id="confirmPassword"
             type={showPasswords ? "text" : "password"}
@@ -118,7 +162,15 @@ export function PasswordChangeForm() {
             required
             minLength={8}
             autoComplete="new-password"
+            className={errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
+            aria-invalid={errors.confirmPassword ? "true" : "false"}
+            aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
           />
+          {errors.confirmPassword && (
+            <p id="confirmPassword-error" className="text-sm font-medium text-red-600">
+              {errors.confirmPassword}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center space-x-2">

@@ -266,7 +266,9 @@ export function LoginForm({
                 Or continue with
               </FieldSeparator>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email" className={errors.email ? "text-red-600" : ""}>
+                  Email
+                </FieldLabel>
                 <Input
                   id="email"
                   name="email"
@@ -274,15 +276,21 @@ export function LoginForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
-                  className={errors.email ? "border-red-500" : ""}
+                  className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  aria-invalid={errors.email ? "true" : "false"}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                  <p id="email-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.email}
+                  </p>
                 )}
               </Field>
               <Field>
                 <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <FieldLabel htmlFor="password" className={errors.password ? "text-red-600" : ""}>
+                    Password
+                  </FieldLabel>
                   <a
                     href="/forgot-password"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
@@ -296,10 +304,14 @@ export function LoginForm({
                   type="password"
                   required
                   disabled={isLoading}
-                  className={errors.password ? "border-red-500" : ""}
+                  className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  aria-invalid={errors.password ? "true" : "false"}
+                  aria-describedby={errors.password ? "password-error" : undefined}
                 />
                 {errors.password && (
-                  <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+                  <p id="password-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.password}
+                  </p>
                 )}
               </Field>
               <Field>

@@ -244,7 +244,9 @@ export function SignupForm({
           <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                <FieldLabel htmlFor="name" className={errors.name ? "text-red-600" : ""}>
+                  Full Name
+                </FieldLabel>
                 <Input
                   id="name"
                   name="name"
@@ -252,14 +254,20 @@ export function SignupForm({
                   placeholder="John Doe"
                   required
                   disabled={isLoading}
-                  className={errors.name ? "border-red-500" : ""}
+                  className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  aria-invalid={errors.name ? "true" : "false"}
+                  aria-describedby={errors.name ? "name-error" : undefined}
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+                  <p id="name-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.name}
+                  </p>
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email" className={errors.email ? "text-red-600" : ""}>
+                  Email
+                </FieldLabel>
                 <Input
                   id="email"
                   name="email"
@@ -267,14 +275,20 @@ export function SignupForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
-                  className={errors.email ? "border-red-500" : ""}
+                  className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  aria-invalid={errors.email ? "true" : "false"}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                  <p id="email-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.email}
+                  </p>
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="phone">Phone Number (Optional)</FieldLabel>
+                <FieldLabel htmlFor="phone" className={errors.phone ? "text-red-600" : ""}>
+                  Phone Number (Optional)
+                </FieldLabel>
                 <PhoneInput
                   id="phone"
                   value={phone}
@@ -282,29 +296,39 @@ export function SignupForm({
                   placeholder="+1 (555) 000-0000"
                   disabled={isLoading}
                   error={!!errors.phone}
+                  aria-invalid={errors.phone ? "true" : "false"}
+                  aria-describedby={errors.phone ? "phone-error" : undefined}
                 />
                 {errors.phone && (
-                  <p className="text-sm text-red-500 mt-1">{errors.phone}</p>
+                  <p id="phone-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.phone}
+                  </p>
                 )}
               </Field>
               <Field>
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <FieldLabel htmlFor="password" className={errors.password ? "text-red-600" : ""}>
+                      Password
+                    </FieldLabel>
                     <Input
                       id="password"
                       name="password"
                       type="password"
                       required
                       disabled={isLoading}
-                      className={errors.password ? "border-red-500" : ""}
+                      className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
+                      aria-invalid={errors.password ? "true" : "false"}
+                      aria-describedby={errors.password ? "password-error" : undefined}
                     />
                     {errors.password && (
-                      <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+                      <p id="password-error" className="text-sm font-medium text-red-600 mt-1">
+                        {errors.password}
+                      </p>
                     )}
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="confirm-password">
+                    <FieldLabel htmlFor="confirm-password" className={errors.confirmPassword ? "text-red-600" : ""}>
                       Confirm Password
                     </FieldLabel>
                     <Input
@@ -313,10 +337,14 @@ export function SignupForm({
                       type="password"
                       required
                       disabled={isLoading}
-                      className={errors.confirmPassword ? "border-red-500" : ""}
+                      className={errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
+                      aria-invalid={errors.confirmPassword ? "true" : "false"}
+                      aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
                     />
                     {errors.confirmPassword && (
-                      <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
+                      <p id="confirmPassword-error" className="text-sm font-medium text-red-600 mt-1">
+                        {errors.confirmPassword}
+                      </p>
                     )}
                   </Field>
                 </Field>

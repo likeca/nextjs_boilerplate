@@ -142,34 +142,46 @@ export function ResetPasswordForm({
           <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="password">New Password</FieldLabel>
+                <FieldLabel htmlFor="password" className={errors.password ? "text-red-600" : ""}>
+                  New Password
+                </FieldLabel>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   required
                   disabled={isLoading}
-                  className={errors.password ? "border-red-500" : ""}
+                  className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  aria-invalid={errors.password ? "true" : "false"}
+                  aria-describedby={errors.password ? "password-error" : undefined}
                 />
                 {errors.password && (
-                  <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+                  <p id="password-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.password}
+                  </p>
                 )}
                 <FieldDescription>
                   Must be at least 8 characters long.
                 </FieldDescription>
               </Field>
               <Field>
-                <FieldLabel htmlFor="confirm-password">Confirm New Password</FieldLabel>
+                <FieldLabel htmlFor="confirm-password" className={errors.confirmPassword ? "text-red-600" : ""}>
+                  Confirm New Password
+                </FieldLabel>
                 <Input
                   id="confirm-password"
                   name="confirm-password"
                   type="password"
                   required
                   disabled={isLoading}
-                  className={errors.confirmPassword ? "border-red-500" : ""}
+                  className={errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  aria-invalid={errors.confirmPassword ? "true" : "false"}
+                  aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
                 />
                 {errors.confirmPassword && (
-                  <p className="text-sm text-red-500 mt-1">{errors.confirmPassword}</p>
+                  <p id="confirmPassword-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.confirmPassword}
+                  </p>
                 )}
               </Field>
               <Field>

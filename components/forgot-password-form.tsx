@@ -136,7 +136,9 @@ export function ForgotPasswordForm({
           <form onSubmit={handleSubmit}>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
+                <FieldLabel htmlFor="email" className={errors.email ? "text-red-600" : ""}>
+                  Email
+                </FieldLabel>
                 <Input
                   id="email"
                   name="email"
@@ -144,10 +146,14 @@ export function ForgotPasswordForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
-                  className={errors.email ? "border-red-500" : ""}
+                  className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                  aria-invalid={errors.email ? "true" : "false"}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+                  <p id="email-error" className="text-sm font-medium text-red-600 mt-1">
+                    {errors.email}
+                  </p>
                 )}
               </Field>
               <Field>
