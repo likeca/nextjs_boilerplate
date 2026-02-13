@@ -4,7 +4,7 @@ import type { WelcomeEmailData } from './types';
 
 export const getWelcomeEmailTemplate = (data: WelcomeEmailData): string => {
   const { userName } = data;
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
 
   const content = `
     <h2>🎊 Welcome to ${companyName}!</h2>

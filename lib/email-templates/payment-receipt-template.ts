@@ -4,7 +4,7 @@ import type { PaymentReceiptEmailData } from './types';
 
 export const getPaymentReceiptTemplate = (data: PaymentReceiptEmailData): string => {
   const { recipientName, transactionId, amount, currency = 'EUR', paymentDate, description } = data;
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
 
   const content = `
     <h2>💳 Payment Receipt</h2>

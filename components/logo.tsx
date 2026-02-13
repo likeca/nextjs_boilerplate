@@ -19,7 +19,7 @@ export function Logo({ className = "", showText = true, href = "/" }: LogoProps)
       <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
         <IconComponent className="size-4" />
       </div>
-      {showText && <span>{appConfig.company.name}</span>}
+      {showText && <span>{appConfig.name}</span>}
     </>
   );
 

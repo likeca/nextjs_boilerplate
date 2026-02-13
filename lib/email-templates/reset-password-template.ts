@@ -4,7 +4,7 @@ import type { ResetPasswordEmailData } from './types';
 
 export const getResetPasswordTemplate = (data: ResetPasswordEmailData): string => {
   const { recipientName, resetUrl, expiryHours = 1 } = data;
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
 
   const content = `
     <h2>🔒 Reset Your Password</h2>

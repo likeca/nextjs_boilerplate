@@ -14,7 +14,7 @@ export const getBookingConfirmationTemplate = (data: BookingConfirmationEmailDat
     customerEmail,
     customerPhone,
   } = data;
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
 
   const content = `
     <h2>🎉 Booking Confirmation</h2>

@@ -106,10 +106,8 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 - **Toast Notifications** - User feedback with Sonner
 - **Custom Branding** - Fully customizable via environment variables:
   - App name and description
-  - Company name
   - Logo text (2-3 characters)
   - Logo icon (any Lucide icon)
-  - Primary color (hex format)
   - No code changes required for branding updates
 
 ### 🗄️ Database
@@ -183,14 +181,10 @@ DATABASE_URL="postgresql://user:password@localhost:5432/database"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_APP_NAME="My SaaS App"
 NEXT_PUBLIC_APP_DESCRIPTION="Your SaaS Application"
-NEXT_PUBLIC_COMPANY_NAME="Your Company"
 
 # Branding (Optional - defaults provided)
 NEXT_PUBLIC_LOGO_TEXT="SA"
 NEXT_PUBLIC_LOGO_ICON="GalleryVerticalEnd"
-
-# Theme (Optional)
-NEXT_PUBLIC_PRIMARY_COLOR="#0070f3"
 
 # Better Auth Secret (Required)
 BETTER_AUTH_SECRET="your-secret-key-here"
@@ -341,23 +335,17 @@ The boilerplate is fully customizable without touching code! Update environment 
 # App Information
 NEXT_PUBLIC_APP_NAME="Your App Name"
 NEXT_PUBLIC_APP_DESCRIPTION="Your SaaS Application"
-NEXT_PUBLIC_COMPANY_NAME="Company Inc."
 
 # Logo (appears in sidebar, login, signup)
 NEXT_PUBLIC_LOGO_TEXT="YA"  # 2-3 characters recommended
 NEXT_PUBLIC_LOGO_ICON="GalleryVerticalEnd"  # Any Lucide icon name
-
-# Theme
-NEXT_PUBLIC_PRIMARY_COLOR="#0070f3"  # Your brand color
 ```
 
 **Available Lucide Icons**: Visit [lucide.dev/icons](https://lucide.dev/icons) for all available icon names.
 
 **Where branding appears**:
 - App name: Browser title, dashboard header, home page
-- Company name: Login/signup pages, footer
 - Logo: Sidebar, header, authentication pages
-- Primary color: Buttons, links, accents (automatically applied)
 
 No code changes required - just update `.env` and restart the dev server!
 

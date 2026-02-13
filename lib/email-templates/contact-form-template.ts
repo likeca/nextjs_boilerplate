@@ -4,7 +4,7 @@ import type { ContactFormEmailData } from './types';
 
 export const getContactFormTemplate = (data: ContactFormEmailData): string => {
   const { fullName, email, phoneNumber, message } = data;
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
 
   const content = `
     <h2>📧 New Contact Form Inquiry</h2>

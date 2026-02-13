@@ -6,11 +6,5 @@ export const appConfig = {
   logo: {
     text: process.env.NEXT_PUBLIC_LOGO_TEXT || "SA",
     icon: process.env.NEXT_PUBLIC_LOGO_ICON || "GalleryVerticalEnd",
-  },
-  company: {
-    name: process.env.NEXT_PUBLIC_COMPANY_NAME || "Company Inc.",
-  },
-  theme: {
-    primaryColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR || "#0070f3",
-  },
+  }
 } as const;

@@ -1,14 +1,11 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 import {
   IconDashboard,
   IconUsers,
   IconShield,
-  IconKey,
   IconSettings,
-  IconInnerShadowTop,
 } from "@tabler/icons-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -22,7 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { appConfig } from "@/lib/config"
+import { Logo } from "@/components/logo"
 
 const data = {
   navMain: [
@@ -98,10 +95,7 @@ export function AppSidebar({
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <Link href="/dashboard">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">{appConfig.company.name}</span>
-              </Link>
+              <Logo href="/dashboard" className="text-base font-semibold" />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

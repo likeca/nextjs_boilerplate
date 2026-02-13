@@ -1,7 +1,7 @@
 import { appConfig } from '@/lib/config';
 
 export const getBaseEmailTemplate = (content: string): string => {
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
   const appDescription = appConfig.description;
   
   return `

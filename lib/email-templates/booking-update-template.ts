@@ -4,7 +4,7 @@ import type { BookingUpdateEmailData } from './types';
 
 export const getBookingUpdateTemplate = (data: BookingUpdateEmailData): string => {
   const { recipientName, bookingId, activityName, status, updateMessage } = data;
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
 
   const getStatusColor = (status: string): string => {
     const statusLower = status.toLowerCase();

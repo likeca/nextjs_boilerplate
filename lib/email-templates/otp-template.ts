@@ -4,7 +4,7 @@ import type { OTPEmailData } from './types';
 
 export const getOTPEmailTemplate = (data: OTPEmailData): string => {
   const { recipientName, otp, expiryMinutes = 10 } = data;
-  const companyName = appConfig.company.name;
+  const companyName = appConfig.name;
 
   const content = `
     <h2>Verify Your Account</h2>
