@@ -4,15 +4,27 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { stripe } from "@/lib/payments/stripe/config";
 import { prisma } from "@/lib/prisma";
+import { auditLogger, AuditEventType } from "@/lib/security/audit-logger";
+import { getClientIdentifier } from "@/lib/security/rate-limiter";
 
 export const createBillingPortalSession = async () => {
+  const requestHeaders = await headers();
+  const clientIp = getClientIdentifier(requestHeaders);
+  
   try {
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: requestHeaders,
     });
 
     if (!session?.user) {
-      return { error: "Unauthorized" };
+      auditLogger.logSecurity(
+        AuditEventType.UNAUTHORIZED_ACCESS_ATTEMPT,
+        "Unauthorized billing portal access attempt",
+        {
+          ipAddress: clientIp,
+        }
+      );
+      return { error: "Authentication required" };
     }
 
     const user = await prisma.user.findUnique({
@@ -21,7 +33,17 @@ export const createBillingPortalSession = async () => {
     });
 
     if (!user?.stripeCustomerId) {
-      return { error: "No billing information found" };
+      auditLogger.logPayment(
+        AuditEventType.BILLING_PORTAL_ACCESSED,
+        "failure",
+        "No billing information found",
+        {
+          userId: session.user.id,
+          email: session.user.email,
+          ipAddress: clientIp,
+        }
+      );
+      return { error: "No billing information available" };
     }
 
     const portalSession = await stripe.billingPortal.sessions.create({
@@ -29,9 +51,33 @@ export const createBillingPortalSession = async () => {
       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing`,
     });
 
+    auditLogger.logPayment(
+      AuditEventType.BILLING_PORTAL_ACCESSED,
+      "success",
+      "Billing portal session created",
+      {
+        userId: session.user.id,
+        email: session.user.email,
+        ipAddress: clientIp,
+        resourceId: portalSession.id,
+        metadata: {
+          customerId: user.stripeCustomerId,
+        },
+      }
+    );
+
     return { url: portalSession.url };
   } catch (error) {
-    console.error("Error creating billing portal session:", error);
-    return { error: "Failed to create billing portal session" };
+    auditLogger.logPayment(
+      AuditEventType.BILLING_PORTAL_ACCESSED,
+      "failure",
+      "Failed to create billing portal session",
+      {
+        ipAddress: clientIp,
+        error: error instanceof Error ? error : new Error(String(error)),
+      }
+    );
+    
+    return { error: "Unable to access billing portal" };
   }
 };
