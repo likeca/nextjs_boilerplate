@@ -64,13 +64,6 @@ export const auth = betterAuth({
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
   },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      enabled: !!process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_ID !== "your-google-client-id",
-    },
-  },
   secret: process.env.BETTER_AUTH_SECRET,
   trustedOrigins: [
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",

@@ -46,7 +46,6 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 ### 🔐 Authentication & Security
 - **Better Auth Integration** - Modern, type-safe authentication with PostgreSQL adapter
 - **Email/Password Authentication** - Secure credential-based login
-- **Google OAuth** - One-click social authentication (auto-disabled without credentials)
 - **Protected Routes** - Route group-based authentication with server-side checks
 - **Session Management** - Secure session handling with database storage
 - **Password Management** - Change password with session revocation option
@@ -152,7 +151,6 @@ A modern, production-ready SaaS boilerplate built with Next.js 16, Better Auth, 
 
 - Node.js 18+ or Bun
 - PostgreSQL database (or use [Neon](https://neon.tech/))
-- Google OAuth credentials (optional)
 
 ### 1. Clone the Repository
 
@@ -188,21 +186,9 @@ NEXT_PUBLIC_LOGO_ICON="GalleryVerticalEnd"
 
 # Better Auth Secret (Required)
 BETTER_AUTH_SECRET="your-secret-key-here"
-
-# Google OAuth (Optional - Google login will be disabled if not provided)
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
 ```
 
 **Note**: A complete `.env.example` file is included in the repository with all available options.
-BETTER_AUTH_SECRET="your-secret-key-here"
-
-# Google OAuth (optional)
-```
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
-```
-```
 
 **Generate Better Auth Secret:**
 
@@ -317,13 +303,6 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 2. **Login:** `/login` - Authenticate with email and password
 3. **Protected Routes:** Automatic redirect to login if not authenticated
 4. **Session Management:** Server-side session validation
-
-### Google OAuth
-
-1. Click "Login with Google" button
-2. Authenticate with Google
-3. Automatic account creation and login
-4. Redirect to dashboard
 
 ## 🎨 Customization
 
