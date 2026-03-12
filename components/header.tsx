@@ -110,6 +110,9 @@ export function Header({ user, isAdmin }: HeaderProps) {
         ) : (
           <nav className="flex items-center gap-4">
             <Button variant="ghost" asChild>
+              <Link href="/contact">Contact</Link>
+            </Button>
+            <Button variant="ghost" asChild>
               <Link href="/login">Login</Link>
             </Button>
             <Button asChild>
