@@ -1,7 +1,8 @@
 'use server';
 
 import { z } from 'zod';
-import { db } from '@/lib/db';
+import { prisma } from '@/lib/prisma';
+import { headers } from 'next/headers';
 import nodemailer from 'nodemailer';
 import { getContactFormTemplate } from '@/lib/email-templates/contact-form-template';
 import { appConfig } from '@/lib/config';
@@ -26,33 +27,62 @@ export async function submitContact(
 
   const { fullName, email, phoneNumber, message } = parsed.data;
 
+  // Capture the submitter's IP for spam / audit purposes
+  const headersList = await headers();
+  const ipAddress =
+    headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    headersList.get('x-real-ip') ||
+    null;
+
   try {
-    const adminEmailSetting = await db.setting.findUnique({ where: { key: 'email' } });
-    const toEmail = adminEmailSetting?.value || process.env.SMTP_FROM_EMAIL;
-
-    if (!toEmail) {
-      return { error: 'Contact email is not configured. Please try again later.' };
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '587'),
-      secure: process.env.SMTP_SECURE === 'true',
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
+    // Persist the submission before attempting to send email
+    await prisma.contactSubmission.create({
+      data: {
+        fullName,
+        email,
+        phoneNumber: phoneNumber ?? null,
+        message,
+        ipAddress,
       },
     });
 
-    const htmlContent = getContactFormTemplate({ fullName, email, phoneNumber, message });
+    // Send email notification to admin (non-blocking — failure returns success
+    // so the user isn't penalised for a transient SMTP error)
+    try {
+      const adminEmailSetting = await prisma.setting.findUnique({
+        where: { key: 'email' },
+      });
+      const toEmail = adminEmailSetting?.value || process.env.SMTP_FROM_EMAIL;
 
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM_EMAIL,
-      to: toEmail,
-      replyTo: email,
-      subject: `New Contact Form Inquiry from ${fullName} — ${appConfig.name}`,
-      html: htmlContent,
-    });
+      if (toEmail) {
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST,
+          port: parseInt(process.env.SMTP_PORT || '587'),
+          secure: process.env.SMTP_SECURE === 'true',
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASSWORD,
+          },
+        });
+
+        const htmlContent = getContactFormTemplate({
+          fullName,
+          email,
+          phoneNumber,
+          message,
+        });
+
+        await transporter.sendMail({
+          from: process.env.SMTP_FROM_EMAIL,
+          to: toEmail,
+          replyTo: email,
+          subject: `New Contact Form Inquiry from ${fullName} — ${appConfig.name}`,
+          html: htmlContent,
+        });
+      }
+    } catch (emailError) {
+      console.error('Failed to send contact notification email:', emailError);
+    }
 
     return { success: true };
   } catch (error) {
