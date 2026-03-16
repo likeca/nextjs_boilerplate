@@ -1,44 +1,30 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ShieldAlert } from "lucide-react";
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 export default function UnauthorizedPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mb-4 flex justify-center">
-            <ShieldAlert className="h-16 w-16 text-destructive" />
-          </div>
-          <CardTitle className="text-2xl">Access Denied</CardTitle>
-          <CardDescription>
-            You don't have permission to access this page.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="text-center text-sm text-muted-foreground">
-          <p>
-            Your account doesn't have the necessary permissions to view this
-            content. If you believe this is an error, please contact your
-            administrator.
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl font-bold tracking-tight">403</h1>
+          <h2 className="text-xl font-semibold">Access Denied</h2>
+          <p className="text-muted-foreground max-w-md">
+            You don&apos;t have permission to access this page. Please contact your administrator if you believe this is an error.
           </p>
-        </CardContent>
-        <CardFooter className="flex justify-center gap-4">
-          <Button asChild variant="outline">
-            <Link href="/">Go Home</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/dashboard">Go to Dashboard</Link>
-          </Button>
-        </CardFooter>
-      </Card>
+          <div className="flex gap-3 justify-center">
+            <Button asChild variant="outline">
+              <Link href="/">Go Home</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/login">Login</Link>
+            </Button>
+          </div>
+        </div>
+      </main>
+      <Footer />
     </div>
-  );
+  )
 }
