@@ -146,3 +146,84 @@ export function getClientIdentifier(
 
   return fallback;
 }
+
+// ---------------------------------------------------------------------------
+// Functional API — exported for use directly in route handlers
+// ---------------------------------------------------------------------------
+
+export interface RateLimitConfig {
+  /** Max requests allowed in the window */
+  limit: number;
+  /** Window size in seconds */
+  windowSeconds: number;
+}
+
+export interface RateLimitResult {
+  success: boolean;
+  limit: number;
+  remaining: number;
+  resetAt: number;
+}
+
+const store = new Map<string, RateLimitEntry>();
+
+// Clean up expired entries every 5 minutes (guard for edge runtimes)
+if (typeof setInterval !== "undefined") {
+  setInterval(() => {
+    const now = Date.now();
+    for (const [key, entry] of store.entries()) {
+      if (entry.resetAt < now) {
+        store.delete(key);
+      }
+    }
+  }, 5 * 60 * 1000);
+}
+
+export function rateLimit(
+  identifier: string,
+  config: RateLimitConfig = { limit: 10, windowSeconds: 60 }
+): RateLimitResult {
+  const now = Date.now();
+  const windowMs = config.windowSeconds * 1000;
+  const key = `rl:${identifier}`;
+
+  const existing = store.get(key);
+
+  if (!existing || existing.resetAt < now) {
+    const entry: RateLimitEntry = { count: 1, resetAt: now + windowMs };
+    store.set(key, entry);
+    return {
+      success: true,
+      limit: config.limit,
+      remaining: config.limit - 1,
+      resetAt: entry.resetAt,
+    };
+  }
+
+  if (existing.count >= config.limit) {
+    return {
+      success: false,
+      limit: config.limit,
+      remaining: 0,
+      resetAt: existing.resetAt,
+    };
+  }
+
+  existing.count++;
+  return {
+    success: true,
+    limit: config.limit,
+    remaining: config.limit - existing.count,
+    resetAt: existing.resetAt,
+  };
+}
+
+/** Presets for common auth endpoints */
+export const authRateLimit = (ip: string) =>
+  rateLimit(`auth:${ip}`, { limit: 10, windowSeconds: 60 });
+
+export const passwordResetRateLimit = (ip: string) =>
+  rateLimit(`pwd-reset:${ip}`, { limit: 3, windowSeconds: 300 });
+
+export const signupRateLimit = (ip: string) =>
+  rateLimit(`signup:${ip}`, { limit: 5, windowSeconds: 60 });
