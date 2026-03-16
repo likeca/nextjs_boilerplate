@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { ProfileForm } from "@/components/profile-form";
 import { PasswordChangeForm } from "@/components/password-change-form";
+import { TwoFactorSettings } from "@/components/two-factor-settings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -53,6 +54,7 @@ export default async function AccountPage() {
                   <PasswordChangeForm />
                 </CardContent>
               </Card>
+              <TwoFactorSettings />
             </TabsContent>
           </Tabs>
         </div>

@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { emailOTP } from "better-auth/plugins";
+import { emailOTP, twoFactor } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { EmailService } from "./email-service";
 
@@ -126,6 +126,9 @@ export const auth = betterAuth({
       expiresIn: 300, // 5 minutes
       sendVerificationOnSignUp: true,
       disableSignUp: false,
+    }),
+    twoFactor({
+      issuer: process.env.NEXT_PUBLIC_APP_NAME || "SaaS App",
     }),
   ],
 });
