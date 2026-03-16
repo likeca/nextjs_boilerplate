@@ -241,6 +241,7 @@ export function LoginForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
+                  autoComplete="email"
                   className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.email ? "true" : "false"}
                   aria-describedby={errors.email ? "email-error" : undefined}
@@ -269,6 +270,7 @@ export function LoginForm({
                   type="password"
                   required
                   disabled={isLoading}
+                  autoComplete="current-password"
                   className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.password ? "true" : "false"}
                   aria-describedby={errors.password ? "password-error" : undefined}
@@ -292,7 +294,7 @@ export function LoginForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
+        By clicking continue, you agree to our <a href="#">Terms of Service</a>{", "}
         and <a href="#">Privacy Policy</a>.
       </FieldDescription>
     </div>
