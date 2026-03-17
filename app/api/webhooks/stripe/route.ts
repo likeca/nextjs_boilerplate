@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import { getClientIdentifier, createRateLimitMiddleware } from "@/lib/security/rate-limiter";
 import { auditLogger, AuditEventType } from "@/lib/security/audit-logger";
 import { createEventGuard } from "@/lib/security/webhook-event-store";
+import { EmailService } from "@/lib/email-service";
 
 // Rate limiter: 100 requests per 15 minutes per IP
 const rateLimiter = createRateLimitMiddleware(100, 15 * 60 * 1000);
@@ -108,7 +109,6 @@ export async function POST(request: NextRequest) {
       }
     );
     
-    // Return 200 to acknowledge receipt even if we don't process
     return NextResponse.json({ received: true, processed: false, reason: eventGuard.reason });
   }
 
@@ -146,7 +146,6 @@ export async function POST(request: NextRequest) {
         );
     }
 
-    // Mark event as processed after successful handling
     eventGuard.markProcessed();
 
     return NextResponse.json(
@@ -223,7 +222,6 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
-    // Use upsert to handle duplicate webhook calls
     const dbSubscription = await prisma.subscription.upsert({
       where: { stripeSubscriptionId: subscriptionId },
       update: {
@@ -259,7 +257,29 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       }
     );
 
-    // Only create payment record if payment_intent exists
+    // Send subscription confirmation email
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { email: true, name: true },
+      });
+      if (user) {
+        const emailService = new EmailService();
+        await emailService.sendEmail({
+          recipients: [user.email],
+          type: 'subscription_created',
+          data: {
+            recipientEmail: user.email,
+            recipientName: user.name || user.email.split('@')[0],
+            planName: planId,
+            currentPeriodEnd: new Date(subscription.current_period_end * 1000).toLocaleDateString(),
+          },
+        });
+      }
+    } catch (emailError) {
+      console.error('Failed to send subscription confirmation email:', emailError);
+    }
+
     if (session.payment_intent) {
       await prisma.payment.create({
         data: {
@@ -341,6 +361,11 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   try {
+    // Fetch before update so we can notify the user
+    const dbSubscription = await prisma.subscription.findFirst({
+      where: { stripeSubscriptionId: subscription.id },
+    });
+
     await prisma.subscription.updateMany({
       where: { stripeSubscriptionId: subscription.id },
       data: {
@@ -356,6 +381,29 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
         resourceId: subscription.id,
       }
     );
+
+    // Send cancellation email
+    if (dbSubscription) {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: dbSubscription.userId },
+          select: { email: true, name: true },
+        });
+        if (user) {
+          const emailService = new EmailService();
+          await emailService.sendEmail({
+            recipients: [user.email],
+            type: 'subscription_cancelled',
+            data: {
+              recipientEmail: user.email,
+              recipientName: user.name || user.email.split('@')[0],
+            },
+          });
+        }
+      } catch (emailError) {
+        console.error('Failed to send subscription cancellation email:', emailError);
+      }
+    }
   } catch (error) {
     auditLogger.logPayment(
       AuditEventType.SUBSCRIPTION_DELETED,
@@ -414,6 +462,32 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
         },
       }
     );
+
+    // Send payment receipt email
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: subscription.userId },
+        select: { email: true, name: true },
+      });
+      if (user) {
+        const emailService = new EmailService();
+        await emailService.sendEmail({
+          recipients: [user.email],
+          type: 'payment_receipt',
+          data: {
+            recipientEmail: user.email,
+            recipientName: user.name || user.email.split('@')[0],
+            invoiceId: invoice.payment_intent as string,
+            amount: invoice.amount_paid / 100,
+            currency: invoice.currency.toUpperCase(),
+            paymentDate: new Date().toLocaleDateString(),
+            description: `Invoice payment for subscription ${subscription.id}`,
+          },
+        });
+      }
+    } catch (emailError) {
+      console.error('Failed to send payment receipt email:', emailError);
+    }
   } catch (error) {
     auditLogger.logPayment(
       AuditEventType.PAYMENT_FAILED,
