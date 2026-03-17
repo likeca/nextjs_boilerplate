@@ -13,7 +13,7 @@ export const PricingSection = async ({ isLoggedIn }: PricingSectionProps) => {
   }
 
   return (
-    <section className="w-full bg-muted/50 py-16">
+    <section id="pricing" className="w-full bg-muted/50 py-16">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">

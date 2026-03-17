@@ -58,7 +58,19 @@ export function Header({ user, isAdmin }: HeaderProps) {
 
         {/* Desktop navigation */}
         {user ? (
-          <div className="hidden md:flex items-center gap-4">
+          <>
+            <nav className="hidden md:flex items-center gap-1">
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/blog">Blog</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/#pricing">Pricing</Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/contact">Contact</Link>
+              </Button>
+            </nav>
+            <div className="hidden md:flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -109,15 +121,23 @@ export function Header({ user, isAdmin }: HeaderProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
+          </>
         ) : (
-          <nav className="hidden md:flex items-center gap-4">
-            <Button variant="ghost" asChild>
+          <nav className="hidden md:flex items-center gap-1">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/blog">Blog</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/#pricing">Pricing</Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
               <Link href="/contact">Contact</Link>
             </Button>
-            <Button variant="ghost" asChild>
+            <div className="w-px h-5 bg-border mx-2" aria-hidden="true" />
+            <Button variant="ghost" size="sm" asChild>
               <Link href="/login">Login</Link>
             </Button>
-            <Button asChild>
+            <Button size="sm" asChild>
               <Link href="/signup">Sign Up</Link>
             </Button>
           </nav>
@@ -142,6 +162,22 @@ export function Header({ user, isAdmin }: HeaderProps) {
       {isMobileMenuOpen && (
         <div className="md:hidden border-t bg-background">
           <nav className="container mx-auto px-4 py-4 flex flex-col gap-3">
+            <Link
+              href="/blog"
+              className={`text-sm font-medium py-2 transition-colors hover:text-primary ${
+                pathname === "/blog" ? "text-primary" : "text-muted-foreground"
+              }`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Blog
+            </Link>
+            <Link
+              href="/#pricing"
+              className="text-sm font-medium py-2 text-muted-foreground transition-colors hover:text-primary"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Pricing
+            </Link>
             <Link
               href="/contact"
               className={`text-sm font-medium py-2 transition-colors hover:text-primary ${
