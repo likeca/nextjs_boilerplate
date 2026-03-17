@@ -41,3 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# audit output (playwright qa script)
+audit-*.png
+audit-*.json
+PLAYWRIGHT_QA_AUDIT_REPORT.md
