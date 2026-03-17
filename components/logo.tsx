@@ -11,8 +11,7 @@ interface LogoProps {
 }
 
 export function Logo({ className = "", showText = true, href = "/" }: LogoProps) {
-  // Get the icon component dynamically
-  const IconComponent = (LucideIcons as any)[appConfig.logo.icon] || LucideIcons.GalleryVerticalEnd;
+  const IconComponent = LucideIcons.GalleryVerticalEnd;
 
   const logoContent = (
     <>
