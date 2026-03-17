@@ -3,6 +3,8 @@
  * Provides structured logging for compliance and security monitoring
  */
 
+import { prisma } from "@/lib/prisma"
+
 export enum AuditEventType {
   // Payment Events
   CHECKOUT_SESSION_CREATED = "checkout_session_created",
@@ -48,31 +50,61 @@ export interface AuditLogEntry {
   };
 }
 
+const STATUS_TO_LOG_LEVEL: Record<AuditLogEntry["status"], string> = {
+  success: "info",
+  failure: "error",
+  warning: "warn",
+}
+
 class AuditLogger {
   private logLevel: string = process.env.LOG_LEVEL || "info";
   private isProd: boolean = process.env.NODE_ENV === "production";
 
   /**
-   * Log an audit event
+   * Log an audit event and persist it to the database.
+   * DB writes are fire-and-forget so failures never break the calling flow.
    */
   log(entry: Omit<AuditLogEntry, "timestamp">): void {
     const logEntry: AuditLogEntry = {
       timestamp: new Date().toISOString(),
       ...entry,
-    };
-
-    // In production, you might want to send this to a logging service
-    // (e.g., Datadog, Sentry, CloudWatch, etc.)
-    if (this.isProd) {
-      // Structured logging for production
-      console.log(JSON.stringify(logEntry));
-    } else {
-      // Human-readable logging for development
-      this.devLog(logEntry);
     }
 
-    // TODO: Add integration with logging service
-    // Example: sendToLoggingService(logEntry);
+    if (this.isProd) {
+      console.log(JSON.stringify(logEntry))
+    } else {
+      this.devLog(logEntry)
+    }
+
+    // Persist to DB without blocking the caller
+    this.persistToDatabase(logEntry).catch((err) => {
+      console.error("[AuditLogger] Failed to persist log to database:", err)
+    })
+  }
+
+  /**
+   * Persist an audit entry to the Prisma Log model.
+   * All structured fields are serialised into the `metadata` column.
+   */
+  private async persistToDatabase(entry: AuditLogEntry): Promise<void> {
+    await prisma.log.create({
+      data: {
+        message: `[${entry.eventType}] ${entry.message}`,
+        level: STATUS_TO_LOG_LEVEL[entry.status] ?? "info",
+        metadata: JSON.stringify({
+          eventType: entry.eventType,
+          status: entry.status,
+          userId: entry.userId,
+          email: entry.email,
+          ipAddress: entry.ipAddress,
+          userAgent: entry.userAgent,
+          resourceId: entry.resourceId,
+          resourceType: entry.resourceType,
+          metadata: entry.metadata,
+          error: entry.error,
+        }),
+      },
+    })
   }
 
   /**
@@ -108,7 +140,7 @@ class AuditLogger {
             code: (options.error as any).code,
           }
         : undefined,
-    });
+    })
   }
 
   /**
@@ -135,7 +167,7 @@ class AuditLogger {
       userAgent: options?.userAgent,
       resourceType: "security",
       metadata: options?.metadata,
-    });
+    })
   }
 
   /**
@@ -170,32 +202,32 @@ class AuditLogger {
             stack: this.isProd ? undefined : options.error.stack,
           }
         : undefined,
-    });
+    })
   }
 
   /**
    * Development-friendly logging
    */
   private devLog(entry: AuditLogEntry): void {
-    const emoji = this.getEmoji(entry.status);
-    const color = this.getColor(entry.status);
+    const emoji = this.getEmoji(entry.status)
+    const color = this.getColor(entry.status)
 
     console.log(
       `\n${color}${emoji} [${entry.eventType}] ${entry.status.toUpperCase()}\x1b[0m`
-    );
-    console.log(`   Time: ${entry.timestamp}`);
-    if (entry.userId) console.log(`   User: ${entry.userId}`);
-    if (entry.email) console.log(`   Email: ${entry.email}`);
-    if (entry.ipAddress) console.log(`   IP: ${entry.ipAddress}`);
-    if (entry.resourceId) console.log(`   Resource: ${entry.resourceId}`);
-    console.log(`   Message: ${entry.message}`);
+    )
+    console.log(`   Time: ${entry.timestamp}`)
+    if (entry.userId) console.log(`   User: ${entry.userId}`)
+    if (entry.email) console.log(`   Email: ${entry.email}`)
+    if (entry.ipAddress) console.log(`   IP: ${entry.ipAddress}`)
+    if (entry.resourceId) console.log(`   Resource: ${entry.resourceId}`)
+    console.log(`   Message: ${entry.message}`)
     if (entry.metadata) {
-      console.log(`   Metadata:`, entry.metadata);
+      console.log(`   Metadata:`, entry.metadata)
     }
     if (entry.error) {
-      console.log(`   Error: ${entry.error.message}`);
+      console.log(`   Error: ${entry.error.message}`)
       if (entry.error.stack) {
-        console.log(`   Stack: ${entry.error.stack}`);
+        console.log(`   Stack: ${entry.error.stack}`)
       }
     }
   }
@@ -203,29 +235,29 @@ class AuditLogger {
   private getEmoji(status: string): string {
     switch (status) {
       case "success":
-        return "✅";
+        return "\u2705"
       case "failure":
-        return "❌";
+        return "\u274c"
       case "warning":
-        return "⚠️";
+        return "\u26a0\ufe0f"
       default:
-        return "ℹ️";
+        return "\u2139\ufe0f"
     }
   }
 
   private getColor(status: string): string {
     switch (status) {
       case "success":
-        return "\x1b[32m"; // Green
+        return "\x1b[32m" // Green
       case "failure":
-        return "\x1b[31m"; // Red
+        return "\x1b[31m" // Red
       case "warning":
-        return "\x1b[33m"; // Yellow
+        return "\x1b[33m" // Yellow
       default:
-        return "\x1b[36m"; // Cyan
+        return "\x1b[36m" // Cyan
     }
   }
 }
 
 // Singleton instance
-export const auditLogger = new AuditLogger();
+export const auditLogger = new AuditLogger()
