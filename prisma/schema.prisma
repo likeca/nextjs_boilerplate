@@ -218,6 +218,7 @@ model Blog {
   @@index([slug])
 }
 
+
 model Organization {
   id          String               @id @default(cuid())
   name        String
@@ -257,4 +258,18 @@ model OrganizationInvitation {
 
   @@index([token])
   @@index([email])
+}
+// Stores contact form submissions for admin review and audit trail
+model ContactSubmission {
+  id          String   @id @default(cuid())
+  fullName    String
+  email       String
+  phoneNumber String?
+  message     String
+  ipAddress   String?
+  status      String   @default("new") // new, read, replied
+  createdAt   DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
 }

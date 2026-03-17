@@ -1,7 +1,10 @@
 import nodemailer from 'nodemailer';
-import type { SendEmailRequest, EmailType, OTPEmailData, ResetPasswordEmailData } from './email-templates/types';
+import type { SendEmailRequest, OTPEmailData, ResetPasswordEmailData, PaymentReceiptEmailData, WelcomeEmailData, SubscriptionEmailData } from './email-templates/types';
 import { getOTPEmailTemplate } from './email-templates/otp-template';
 import { getResetPasswordTemplate } from './email-templates/reset-password-template';
+import { getPaymentReceiptTemplate } from './email-templates/payment-receipt-template';
+import { getWelcomeEmailTemplate } from './email-templates/welcome-template';
+import { getSubscriptionEmailTemplate } from './email-templates/subscription-template';
 
 export class EmailService {
   private transporter: nodemailer.Transporter;
@@ -33,13 +36,35 @@ export class EmailService {
         htmlContent = getResetPasswordTemplate(data as ResetPasswordEmailData);
         emailSubject = subject || 'Reset Your Password';
         break;
+      case 'payment_receipt': {
+        const receiptData = data as PaymentReceiptEmailData;
+        const normalizedReceipt = {
+          ...receiptData,
+          transactionId: receiptData.transactionId || receiptData.invoiceId || '',
+        };
+        htmlContent = getPaymentReceiptTemplate(normalizedReceipt);
+        emailSubject = subject || 'Payment Receipt';
+        break;
+      }
+      case 'welcome':
+        htmlContent = getWelcomeEmailTemplate(data as WelcomeEmailData);
+        emailSubject = subject || 'Welcome!';
+        break;
+      case 'subscription_created':
+        htmlContent = getSubscriptionEmailTemplate(data as SubscriptionEmailData, 'created');
+        emailSubject = subject || 'Subscription Confirmed';
+        break;
+      case 'subscription_cancelled':
+        htmlContent = getSubscriptionEmailTemplate(data as SubscriptionEmailData, 'cancelled');
+        emailSubject = subject || 'Subscription Cancelled';
+        break;
       default:
         throw new Error(`Unsupported email type: ${type}`);
     }
 
     const mailOptions = {
       from: process.env.SMTP_FROM_EMAIL,
-      to: recipients?.[0] || data.recipientEmail,
+      to: recipients?.[0] || (data as any).recipientEmail,
       subject: emailSubject,
       html: htmlContent,
     };

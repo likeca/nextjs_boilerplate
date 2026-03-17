@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { z } from "zod"
 import { isValidPhoneNumber, type Value } from "react-phone-number-input"
+import { Eye, EyeOff } from "lucide-react"
 
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -45,6 +46,21 @@ const signupSchema = z.object({
   path: ["confirmPassword"],
 })
 
+const getPasswordStrength = (password: string): { label: string; color: string; width: string } => {
+  if (!password) return { label: "", color: "", width: "0%" }
+  let score = 0
+  if (password.length >= 8) score++
+  if (password.length >= 12) score++
+  if (/[A-Z]/.test(password)) score++
+  if (/[0-9]/.test(password)) score++
+  if (/[^A-Za-z0-9]/.test(password)) score++
+
+  if (score <= 1) return { label: "Weak", color: "bg-destructive", width: "25%" }
+  if (score === 2) return { label: "Fair", color: "bg-yellow-500", width: "50%" }
+  if (score === 3) return { label: "Strong", color: "bg-blue-500", width: "75%" }
+  return { label: "Very Strong", color: "bg-green-500", width: "100%" }
+}
+
 export function SignupForm({
   className,
   ...props
@@ -57,6 +73,9 @@ export function SignupForm({
   const [email, setEmail] = useState("")
   const [otp, setOtp] = useState("")
   const [lastResendTime, setLastResendTime] = useState<number>(0)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [passwordValue, setPasswordValue] = useState("")
   const RESEND_COOLDOWN = 60000 // 60 seconds
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -254,6 +273,7 @@ export function SignupForm({
                   placeholder="John Doe"
                   required
                   disabled={isLoading}
+                  autoComplete="name"
                   className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.name ? "true" : "false"}
                   aria-describedby={errors.name ? "name-error" : undefined}
@@ -275,6 +295,7 @@ export function SignupForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
+                  autoComplete="email"
                   className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.email ? "true" : "false"}
                   aria-describedby={errors.email ? "email-error" : undefined}
@@ -311,16 +332,43 @@ export function SignupForm({
                     <FieldLabel htmlFor="password" className={errors.password ? "text-red-600" : ""}>
                       Password
                     </FieldLabel>
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                      disabled={isLoading}
-                      className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
-                      aria-invalid={errors.password ? "true" : "false"}
-                      aria-describedby={errors.password ? "password-error" : undefined}
-                    />
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        disabled={isLoading}
+                        autoComplete="new-password"
+                        value={passwordValue}
+                        onChange={(e) => setPasswordValue(e.target.value)}
+                        className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
+                        aria-invalid={errors.password ? "true" : "false"}
+                        aria-describedby={errors.password ? "password-error" : undefined}
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        onClick={() => setShowPassword(!showPassword)}
+                        tabIndex={-1}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                    {passwordValue && (
+                      <div className="mt-1">
+                        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div
+                            className={`h-full transition-all ${getPasswordStrength(passwordValue).color}`}
+                            style={{ width: getPasswordStrength(passwordValue).width }}
+                          />
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Password strength: {getPasswordStrength(passwordValue).label}
+                        </p>
+                      </div>
+                    )}
                     {errors.password && (
                       <p id="password-error" className="text-sm font-medium text-red-600 mt-1">
                         {errors.password}
@@ -331,16 +379,28 @@ export function SignupForm({
                     <FieldLabel htmlFor="confirm-password" className={errors.confirmPassword ? "text-red-600" : ""}>
                       Confirm Password
                     </FieldLabel>
-                    <Input
-                      id="confirm-password"
-                      name="confirm-password"
-                      type="password"
-                      required
-                      disabled={isLoading}
-                      className={errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
-                      aria-invalid={errors.confirmPassword ? "true" : "false"}
-                      aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
-                    />
+                    <div className="relative">
+                      <Input
+                        id="confirm-password"
+                        name="confirm-password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        required
+                        disabled={isLoading}
+                        autoComplete="new-password"
+                        className={errors.confirmPassword ? "border-red-500 focus-visible:ring-red-500" : ""}
+                        aria-invalid={errors.confirmPassword ? "true" : "false"}
+                        aria-describedby={errors.confirmPassword ? "confirmPassword-error" : undefined}
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        tabIndex={-1}
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                      >
+                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
                     {errors.confirmPassword && (
                       <p id="confirmPassword-error" className="text-sm font-medium text-red-600 mt-1">
                         {errors.confirmPassword}
@@ -365,8 +425,8 @@ export function SignupForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="/terms">Terms of Service</a>{", "}
+        and <a href="/privacy">Privacy Policy</a>.
       </FieldDescription>
     </div>
   )
