@@ -30,6 +30,7 @@ model User {
   accounts      Account[]
   subscriptions Subscription[]
   blogs         Blog[]
+  apiKeys       ApiKey[]
   ownedOrganizations      Organization[]         @relation("OwnedOrganizations")
   organizationMemberships OrganizationMember[]   @relation("OrganizationMemberships")
   
@@ -218,7 +219,21 @@ model Blog {
   @@index([slug])
 }
 
+model ApiKey {
+  id          String    @id @default(cuid())
+  name        String
+  keyHash     String    @unique
+  keyPrefix   String    // First 12 chars for display (e.g., "sk_live_xxxx")
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  revokedAt   DateTime?
 
+  @@index([userId])
+  @@index([keyHash])
+}
 model Organization {
   id          String               @id @default(cuid())
   name        String

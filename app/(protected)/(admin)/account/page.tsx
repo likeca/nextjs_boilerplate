@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { ProfileForm } from "@/components/profile-form";
 import { PasswordChangeForm } from "@/components/password-change-form";
+import { ApiKeyManager } from "@/components/api-keys-manager";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -22,9 +23,10 @@ export default async function AccountPage() {
           </div>
 
           <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 max-w-md">
+            <TabsList className="grid w-full grid-cols-3 max-w-lg">
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="security">Security</TabsTrigger>
+              <TabsTrigger value="api-keys">API Keys</TabsTrigger>
             </TabsList>
 
             <TabsContent value="profile" className="space-y-6">
@@ -53,6 +55,10 @@ export default async function AccountPage() {
                   <PasswordChangeForm />
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="api-keys" className="space-y-6">
+              <ApiKeyManager />
             </TabsContent>
           </Tabs>
         </div>
