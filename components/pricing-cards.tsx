@@ -137,7 +137,7 @@ export const PricingCards = ({ plans, isLoggedIn }: PricingCardsProps) => {
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-start gap-2">
                     <Check className="h-5 w-5 shrink-0 text-primary" />
-                    <span className="text-sm">{feature}</span>
+                    <span className="text-sm text-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>

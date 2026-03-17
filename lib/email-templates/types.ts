@@ -1,4 +1,4 @@
-export type EmailType = 'otp' | 'reset_password';
+export type EmailType = 'otp' | 'reset_password' | 'payment_receipt' | 'welcome' | 'subscription_created' | 'subscription_cancelled';
 
 export interface BaseEmailData {
   recipientEmail: string;
@@ -16,17 +16,22 @@ export interface ResetPasswordEmailData extends BaseEmailData {
   expiryHours?: number;
 }
 
-export interface WelcomeEmailData {
+export interface WelcomeEmailData extends BaseEmailData {
   userName: string;
 }
 
-export interface PaymentReceiptEmailData {
-  recipientName?: string;
-  transactionId: string;
+export interface PaymentReceiptEmailData extends BaseEmailData {
+  transactionId?: string;
+  invoiceId?: string;
   amount: number;
   currency?: string;
   paymentDate: string;
   description?: string;
+}
+
+export interface SubscriptionEmailData extends BaseEmailData {
+  planName?: string;
+  currentPeriodEnd?: string;
 }
 
 export interface BookingUpdateEmailData {
@@ -56,7 +61,7 @@ export interface BookingConfirmationEmailData {
   customerPhone?: string;
 }
 
-export type EmailData = OTPEmailData | ResetPasswordEmailData;
+export type EmailData = OTPEmailData | ResetPasswordEmailData | PaymentReceiptEmailData | WelcomeEmailData | SubscriptionEmailData;
 
 export interface SendEmailRequest {
   type: EmailType;

@@ -146,6 +146,7 @@ export function ForgotPasswordForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
+                  autoComplete="email"
                   className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.email ? "true" : "false"}
                   aria-describedby={errors.email ? "email-error" : undefined}
