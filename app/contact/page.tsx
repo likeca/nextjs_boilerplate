@@ -23,7 +23,7 @@ import { isUserAdmin } from '@/lib/auth-utils';
 import { appConfig } from '@/lib/config';
 
 export const metadata: Metadata = {
-  title: `Contact Us — ${appConfig.name}`,
+  title: `Contact Us \u2014 ${appConfig.name}`,
   description: `Get in touch with ${appConfig.name}. We'd love to hear from you.`,
 };
 
@@ -43,6 +43,9 @@ const SOCIAL_LABELS: Record<string, string> = {
   youtube: 'YouTube',
   tiktok: 'TikTok',
 };
+
+const FALLBACK_EMAIL = process.env.EMAIL_FROM || 'support@example.com';
+const FALLBACK_ADDRESS = 'Remote-first company, worldwide';
 
 export default async function ContactPage() {
   const [sessionResult, settingsResult] = await Promise.all([
@@ -73,6 +76,9 @@ export default async function ContactPage() {
       ] as [string, string][]).filter(([, url]) => Boolean(url))
     : [];
 
+  const contactEmail = settings?.email || FALLBACK_EMAIL;
+  const contactAddress = fullAddress || FALLBACK_ADDRESS;
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header user={session?.user} isAdmin={isAdmin} />
@@ -91,28 +97,27 @@ export default async function ContactPage() {
         {/* Contact Info + Form */}
         <section className="container mx-auto px-4 py-16">
           <div className="grid gap-10 lg:grid-cols-5">
-            {/* Left column — contact details */}
+            {/* Left column \u2014 contact details */}
             <div className="space-y-8 lg:col-span-2">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Get in Touch</h2>
+                <h2 className="text-xl font-semibold mb-2">Get in Touch</h2>
+                <p className="text-sm text-muted-foreground mb-4">{appConfig.description}</p>
                 <ul className="space-y-4 text-sm">
-                  {settings?.email && (
-                    <li className="flex items-start gap-3">
-                      <Mail className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-0.5">
-                          Email
-                        </p>
-                        <a
-                          href={`mailto:${settings.email}`}
-                          className="hover:underline"
-                          aria-label={`Email us at ${settings.email}`}
-                        >
-                          {settings.email}
-                        </a>
-                      </div>
-                    </li>
-                  )}
+                  <li className="flex items-start gap-3">
+                    <Mail className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-0.5">
+                        Email
+                      </p>
+                      <a
+                        href={`mailto:${contactEmail}`}
+                        className="hover:underline"
+                        aria-label={`Email us at ${contactEmail}`}
+                      >
+                        {contactEmail}
+                      </a>
+                    </div>
+                  </li>
 
                   {settings?.phone && (
                     <li className="flex items-start gap-3">
@@ -152,17 +157,15 @@ export default async function ContactPage() {
                     </li>
                   )}
 
-                  {fullAddress && (
-                    <li className="flex items-start gap-3">
-                      <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-0.5">
-                          Address
-                        </p>
-                        <address className="not-italic">{fullAddress}</address>
-                      </div>
-                    </li>
-                  )}
+                  <li className="flex items-start gap-3">
+                    <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-0.5">
+                        Address
+                      </p>
+                      <address className="not-italic">{contactAddress}</address>
+                    </div>
+                  </li>
 
                   {settings?.businessHours && (
                     <li className="flex items-start gap-3">
@@ -206,7 +209,7 @@ export default async function ContactPage() {
               )}
             </div>
 
-            {/* Right column — contact form */}
+            {/* Right column \u2014 contact form */}
             <div className="lg:col-span-3">
               <ContactForm />
             </div>

@@ -30,6 +30,9 @@ model User {
   accounts      Account[]
   subscriptions Subscription[]
   blogs         Blog[]
+  apiKeys       ApiKey[]
+  ownedOrganizations      Organization[]         @relation("OwnedOrganizations")
+  organizationMemberships OrganizationMember[]   @relation("OrganizationMemberships")
   
   @@index([roleId])
   @@index([isAdmin])
@@ -214,4 +217,74 @@ model Blog {
   @@index([authorId])
   @@index([published])
   @@index([slug])
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  name        String
+  keyHash     String    @unique
+  keyPrefix   String    // First 12 chars for display (e.g., "sk_live_xxxx")
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  revokedAt   DateTime?
+
+  @@index([userId])
+  @@index([keyHash])
+}
+model Organization {
+  id          String               @id @default(cuid())
+  name        String
+  slug        String               @unique
+  description String?
+  logo        String?
+  ownerId     String
+  owner       User                 @relation("OwnedOrganizations", fields: [ownerId], references: [id], onDelete: Cascade)
+  members     OrganizationMember[]
+  invitations OrganizationInvitation[]
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation("OrganizationMemberships", fields: [userId], references: [id], onDelete: Cascade)
+  role           String       @default("member") // owner | admin | member
+  joinedAt       DateTime     @default(now())
+
+  @@unique([organizationId, userId])
+}
+
+model OrganizationInvitation {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String       @default("member")
+  token          String       @unique @default(cuid())
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([token])
+  @@index([email])
+}
+// Stores contact form submissions for admin review and audit trail
+model ContactSubmission {
+  id          String   @id @default(cuid())
+  fullName    String
+  email       String
+  phoneNumber String?
+  message     String
+  ipAddress   String?
+  status      String   @default("new") // new, read, replied
+  createdAt   DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
 }
