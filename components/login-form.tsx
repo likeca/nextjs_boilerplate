@@ -243,6 +243,7 @@ export function LoginForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
+                  autoComplete="email"
                   className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.email ? "true" : "false"}
                   aria-describedby={errors.email ? "email-error" : undefined}
@@ -272,6 +273,7 @@ export function LoginForm({
                     type={showPassword ? "text" : "password"}
                     required
                     disabled={isLoading}
+                    autoComplete="current-password"
                     className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
                     aria-invalid={errors.password ? "true" : "false"}
                     aria-describedby={errors.password ? "password-error" : undefined}

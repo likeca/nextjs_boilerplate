@@ -273,6 +273,7 @@ export function SignupForm({
                   placeholder="John Doe"
                   required
                   disabled={isLoading}
+                  autoComplete="name"
                   className={errors.name ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.name ? "true" : "false"}
                   aria-describedby={errors.name ? "name-error" : undefined}
@@ -294,6 +295,7 @@ export function SignupForm({
                   placeholder="m@example.com"
                   required
                   disabled={isLoading}
+                  autoComplete="email"
                   className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
                   aria-invalid={errors.email ? "true" : "false"}
                   aria-describedby={errors.email ? "email-error" : undefined}
