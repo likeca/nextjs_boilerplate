@@ -36,3 +36,5 @@ export const appConfig = {
     ),
   },
 } as const
+
+export const COOKIE_CONSENT_KEY = "cookie-consent"

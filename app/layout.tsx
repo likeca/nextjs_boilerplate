@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieConsent } from "@/components/cookie-consent";
+import { PostHogConsent } from "@/components/posthog-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -60,6 +61,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <PostHogConsent />
         {children}
         <Toaster />
         <CookieConsent />

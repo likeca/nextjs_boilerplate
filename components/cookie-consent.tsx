@@ -4,28 +4,23 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Cookie } from "lucide-react"
-
-const CONSENT_KEY = "cookie-consent"
+import { COOKIE_CONSENT_KEY } from "@/lib/config"
 
 export function CookieConsent() {
   const [showBanner, setShowBanner] = useState(false)
 
   useEffect(() => {
-    const consent = localStorage.getItem(CONSENT_KEY)
-    if (!consent) {
-      setShowBanner(true)
-    }
+    if (!localStorage.getItem(COOKIE_CONSENT_KEY)) setShowBanner(true)
   }, [])
 
-  const handleAccept = () => {
-    localStorage.setItem(CONSENT_KEY, "accepted")
+  const dispatchConsent = (value: "accepted" | "declined") => {
+    localStorage.setItem(COOKIE_CONSENT_KEY, value)
+    window.dispatchEvent(new StorageEvent("storage", { key: COOKIE_CONSENT_KEY, newValue: value }))
     setShowBanner(false)
   }
 
-  const handleDecline = () => {
-    localStorage.setItem(CONSENT_KEY, "declined")
-    setShowBanner(false)
-  }
+  const handleAccept = () => dispatchConsent("accepted")
+  const handleDecline = () => dispatchConsent("declined")
 
   if (!showBanner) return null
 
