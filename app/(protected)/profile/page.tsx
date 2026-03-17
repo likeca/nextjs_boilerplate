@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { isUserAdmin } from "@/lib/auth-utils";
 import { ProfileForm } from "@/components/profile-form";
 import { PasswordChangeForm } from "@/components/password-change-form";
+import { TwoFactorSettings } from "@/components/two-factor-settings";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Header } from "@/components/header";
@@ -16,7 +17,6 @@ export default async function ProfilePage() {
 
   const isAdmin = await isUserAdmin(session?.user?.id);
 
-  // Fetch complete user data including phone
   const userData = await prisma.user.findUnique({
     where: { id: session?.user?.id },
     select: {
@@ -76,6 +76,7 @@ export default async function ProfilePage() {
                 <PasswordChangeForm />
               </CardContent>
             </Card>
+            <TwoFactorSettings />
           </TabsContent>
         </Tabs>
       </div>
