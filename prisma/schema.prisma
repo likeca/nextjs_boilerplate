@@ -33,6 +33,8 @@ model User {
   apiKeys       ApiKey[]
   ownedOrganizations      Organization[]         @relation("OwnedOrganizations")
   organizationMemberships OrganizationMember[]   @relation("OrganizationMemberships")
+  twoFactor     TwoFactor?
+  twoFactorEnabled Boolean @default(false)
   
   @@index([roleId])
   @@index([isAdmin])
@@ -287,4 +289,12 @@ model ContactSubmission {
 
   @@index([status])
   @@index([createdAt])
+}
+
+model TwoFactor {
+  id          String @id @default(cuid())
+  secret      String
+  backupCodes String
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

@@ -16,7 +16,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { signIn, emailOtp } from "@/lib/auth-client"
+import { signIn, emailOtp, authClient } from "@/lib/auth-client"
 import { getRedirectUrl } from "@/actions/users/get-redirect-url"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
@@ -37,6 +37,8 @@ export function LoginForm({
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showOtpVerification, setShowOtpVerification] = useState(false)
+  const [showTwoFactor, setShowTwoFactor] = useState(false)
+  const [totpCode, setTotpCode] = useState("")
   const [email, setEmail] = useState("")
   const [otp, setOtp] = useState("")
   const [lastResendTime, setLastResendTime] = useState<number>(0)
@@ -86,6 +88,14 @@ export function LoginForm({
         }
         
         toast.error(error.message || "Invalid email or password")
+        setIsLoading(false)
+        return
+      }
+
+      // Better Auth sets twoFactorRedirect when 2FA is required after credential check
+      if ((data as any)?.twoFactorRedirect) {
+        setEmail(emailValue)
+        setShowTwoFactor(true)
         setIsLoading(false)
         return
       }
@@ -156,6 +166,79 @@ export function LoginForm({
     setIsLoading(true)
     await handleSendOtp(email)
     setIsLoading(false)
+  }
+
+  async function handleTwoFactorVerification(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      const { error } = await (authClient as any).twoFactor.verifyTotp({ code: totpCode })
+      if (error) {
+        toast.error(error.message || "Invalid authentication code")
+        setIsLoading(false)
+        return
+      }
+      toast.success("Logged in successfully!")
+      const redirectUrl = await getRedirectUrl()
+      router.push(redirectUrl)
+    } catch (error: any) {
+      toast.error(error.message || "Failed to verify code")
+      setIsLoading(false)
+    }
+  }
+
+  if (showTwoFactor) {
+    return (
+      <div className={cn("flex flex-col gap-6", className)} {...props}>
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">Two-Factor Authentication</CardTitle>
+            <CardDescription>
+              Enter the 6-digit code from your authenticator app
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleTwoFactorVerification}>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="totp-login">Authentication Code</FieldLabel>
+                  <Input
+                    id="totp-login"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="000000"
+                    maxLength={6}
+                    value={totpCode}
+                    onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ""))}
+                    required
+                    disabled={isLoading}
+                    autoComplete="one-time-code"
+                    className="text-center text-2xl tracking-widest"
+                    autoFocus
+                  />
+                  <FieldDescription>
+                    Open your authenticator app and enter the current 6-digit code
+                  </FieldDescription>
+                </Field>
+                <Field>
+                  <Button type="submit" disabled={isLoading || totpCode.length !== 6}>
+                    {isLoading ? "Verifying…" : "Verify"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => { setShowTwoFactor(false); setTotpCode("") }}
+                    disabled={isLoading}
+                  >
+                    Back to Login
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   if (showOtpVerification) {
