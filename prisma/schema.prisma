@@ -215,3 +215,18 @@ model Blog {
   @@index([published])
   @@index([slug])
 }
+
+// Stores contact form submissions for admin review and audit trail
+model ContactSubmission {
+  id          String   @id @default(cuid())
+  fullName    String
+  email       String
+  phoneNumber String?
+  message     String
+  ipAddress   String?
+  status      String   @default("new") // new, read, replied
+  createdAt   DateTime @default(now())
+
+  @@index([status])
+  @@index([createdAt])
+}
