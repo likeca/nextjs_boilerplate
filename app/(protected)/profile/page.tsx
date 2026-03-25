@@ -76,7 +76,9 @@ export default async function ProfilePage() {
                 <PasswordChangeForm />
               </CardContent>
             </Card>
-            <TwoFactorSettings />
+            {process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== "false" && (
+              <TwoFactorSettings />
+            )}
           </TabsContent>
         </Tabs>
       </div>

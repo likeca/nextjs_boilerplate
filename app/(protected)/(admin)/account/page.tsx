@@ -56,7 +56,9 @@ export default async function AccountPage() {
                   <PasswordChangeForm />
                 </CardContent>
               </Card>
-              <TwoFactorSettings />
+              {process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== "false" && (
+                <TwoFactorSettings />
+              )}
             </TabsContent>
 
             <TabsContent value="api-keys" className="space-y-6">

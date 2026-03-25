@@ -1,0 +1,244 @@
+{
+  "testUser": "admin@admin.com",
+  "timestamp": "2026-03-17T11:00:01.279Z",
+  "passed": 17,
+  "failed": 0,
+  "apiCalls": [
+    {
+      "url": "http://localhost:3000/api/auth/sign-in/email",
+      "status": 200,
+      "body": "{\"redirect\":false,\"token\":\"eH3LukfIr6q1DKG7TIhM6v30GNFR6WU5\",\"user\":{\"name\":\"admin\",\"email\":\"admin@admin.com\",\"emailVerified\":true,\"image\":null,\"createdAt\":\"2026-01-31T12:41:04.362Z\",\"updatedAt\":\"2026-03-17T10:59:33.094Z\",\"twoFactorEnabled\":false,\"phone\":null,\"isAdmin\":true,\"roleId\":\"cml2avvhv0000ris57xf59him\",\"id\":\"JO0i3JALw1lkhd4BvmVBumRBY4ihDLeV\"}}"
+    },
+    {
+      "url": "http://localhost:3000/api/auth/get-session",
+      "status": 200,
+      "body": "{\"session\":{\"expiresAt\":\"2026-03-24T10:59:44.504Z\",\"token\":\"eH3LukfIr6q1DKG7TIhM6v30GNFR6WU5\",\"createdAt\":\"2026-03-17T10:59:44.504Z\",\"updatedAt\":\"2026-03-17T10:59:44.504Z\",\"ipAddress\":\"0000:0000:0000:0000:0000:0000:0000:0000\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36\",\"userId\":\"JO0i3JALw1lkhd4BvmVBumRBY4ihDLeV\",\"id\":\"emYpU8l6vfTVrmZU0ctCRJwG1VmqKRMp\"},\"user\":{\"name\":\"admin\",\"email\":\"admin@admin.com\",\"em"
+    },
+    {
+      "url": "http://localhost:3000/api/auth/two-factor/enable",
+      "status": 200,
+      "body": "{\"totpURI\":\"otpauth://totp/SaaS%20App:admin%40admin.com?secret=KV4U2ULDNNIFKR2OKRHFI3KVOEYWGNRUIZLEGMCZGJBHI2TKNJYA&issuer=SaaS+App&digits=6&period=30\",\"backupCodes\":[\"l2h7H-gAzfh\",\"vFf5Q-xo2jo\",\"jt5sd-pUD1z\",\"8Nfpv-u48JR\",\"Ay6k1-DxO6I\",\"lg2ey-vhaZ9\",\"iKTt2-LNpMP\",\"cU80r-S7tMs\",\"u1Wgp-kcPwF\",\"nhU1p-RZIPO\"]}"
+    },
+    {
+      "url": "http://localhost:3000/api/auth/get-session",
+      "status": 200,
+      "body": "{\"session\":{\"expiresAt\":\"2026-03-24T10:59:44.504Z\",\"token\":\"eH3LukfIr6q1DKG7TIhM6v30GNFR6WU5\",\"createdAt\":\"2026-03-17T10:59:44.504Z\",\"updatedAt\":\"2026-03-17T10:59:44.504Z\",\"ipAddress\":\"0000:0000:0000:0000:0000:0000:0000:0000\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36\",\"userId\":\"JO0i3JALw1lkhd4BvmVBumRBY4ihDLeV\",\"id\":\"emYpU8l6vfTVrmZU0ctCRJwG1VmqKRMp\"},\"user\":{\"name\":\"admin\",\"email\":\"admin@admin.com\",\"em"
+    },
+    {
+      "url": "http://localhost:3000/api/auth/two-factor/verify-totp",
+      "status": 200,
+      "body": "{\"token\":\"eH3LukfIr6q1DKG7TIhM6v30GNFR6WU5\",\"user\":{\"name\":\"admin\",\"email\":\"admin@admin.com\",\"emailVerified\":true,\"image\":null,\"createdAt\":\"2026-01-31T12:41:04.362Z\",\"updatedAt\":\"2026-03-17T10:59:33.094Z\",\"twoFactorEnabled\":false,\"phone\":null,\"isAdmin\":true,\"roleId\":\"cml2avvhv0000ris57xf59him\",\"id\":\"JO0i3JALw1lkhd4BvmVBumRBY4ihDLeV\"}}"
+    },
+    {
+      "url": "http://localhost:3000/api/auth/get-session",
+      "status": 200,
+      "body": "{\"session\":{\"expiresAt\":\"2026-03-24T10:59:54.769Z\",\"token\":\"ueOy9bz8PVplt55yE9nn4BzkHKmVTfa0\",\"createdAt\":\"2026-03-17T10:59:54.769Z\",\"updatedAt\":\"2026-03-17T10:59:54.769Z\",\"ipAddress\":\"0000:0000:0000:0000:0000:0000:0000:0000\",\"userAgent\":\"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/145.0.7632.6 Safari/537.36\",\"userId\":\"JO0i3JALw1lkhd4BvmVBumRBY4ihDLeV\",\"id\":\"eHc5Ey81QXumVDwneRIwEHlh5gExdtIt\"},\"user\":{\"name\":\"admin\",\"email\":\"admin@admin.com\",\"em"
+    },
+    {
+      "url": "http://localhost:3000/api/auth/sign-in/email",
+      "status": 200,
+      "body": "{\"twoFactorRedirect\":true}"
+    }
+  ],
+  "results": [
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-04-login-filled.png"
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-05-login-result.png"
+    },
+    {
+      "icon": "✅",
+      "label": "Login result",
+      "detail": "URL: http://localhost:3000/dashboard"
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-06-profile-page.png"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "Profile page title",
+      "detail": "SaaS Boilerplate"
+    },
+    {
+      "icon": "✅",
+      "label": "Profile page loaded",
+      "detail": "http://localhost:3000/profile"
+    },
+    {
+      "icon": "✅",
+      "label": "Security tab found",
+      "detail": ""
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-07-security-tab.png"
+    },
+    {
+      "icon": "✅",
+      "label": "2FA section visible on Security tab",
+      "detail": ""
+    },
+    {
+      "icon": "✅",
+      "label": "Enable 2FA button present",
+      "detail": ""
+    },
+    {
+      "icon": "✅",
+      "label": "Password confirmation step appeared after Enable click",
+      "detail": ""
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-08a-password-entered.png"
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-08-after-enable-click.png"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "Enable 2FA API call",
+      "detail": "http://localhost:3000/api/auth/two-factor/enable → HTTP 200"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "Enable API response body",
+      "detail": "{\"totpURI\":\"otpauth://totp/SaaS%20App:admin%40admin.com?secret=KV4U2ULDNNIFKR2OKRHFI3KVOEYWGNRUIZLEGMCZGJBHI2TKNJYA&issuer=SaaS+App&digits=6&period=30\",\"backupCodes\":[\"l2h7H-gAzfh\",\"vFf5Q-xo2jo\",\"jt5sd-pUD1z\",\"8Nfpv-u48JR\",\"Ay6k1-DxO6I\",\"lg2ey-vhaZ9\",\"iKTt2-LNpMP\",\"cU80r-S7tMs\",\"u1Wgp-kcPwF\",\"nhU1p-RZIPO\"]}"
+    },
+    {
+      "icon": "✅",
+      "label": "Enable 2FA API response",
+      "detail": "HTTP 200"
+    },
+    {
+      "icon": "✅",
+      "label": "QR code rendered as image element (canvas/svg/img)",
+      "detail": ""
+    },
+    {
+      "icon": "✅",
+      "label": "QR code not rendered as raw text (correct)",
+      "detail": ""
+    },
+    {
+      "icon": "✅",
+      "label": "TOTP verification input (6-digit) appeared",
+      "detail": ""
+    },
+    {
+      "icon": "✅",
+      "label": "Backup codes section shown",
+      "detail": ""
+    },
+    {
+      "icon": "✅",
+      "label": "Extracted TOTP secret from URI",
+      "detail": "KV4U2ULD..."
+    },
+    {
+      "icon": "ℹ️",
+      "label": "Generated TOTP code (window 0)",
+      "detail": "065815"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "Generated TOTP code (window -1)",
+      "detail": "845448"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "Generated TOTP code (window 1)",
+      "detail": "625047"
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-09-totp-filled.png"
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-10-after-verify.png"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "verifyTotp API call",
+      "detail": "HTTP 200"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "verifyTotp response",
+      "detail": "{\"token\":\"eH3LukfIr6q1DKG7TIhM6v30GNFR6WU5\",\"user\":{\"name\":\"admin\",\"email\":\"admin@admin.com\",\"emailVerified\":true,\"image\":null,\"createdAt\":\"2026-01-31T12:41:04.362Z\",\"updatedAt\":\"2026-03-17T10:59:33.094Z\",\"twoFactorEnabled\":false,\"phone\":null,\"isAdmin\":true,\"roleId\":\"cml2avvhv0000ris57xf59him\",\"id\":\"JO0i3JALw1lkhd4BvmVBumRBY4ihDLeV\"}}"
+    },
+    {
+      "icon": "✅",
+      "label": "TOTP verification API result",
+      "detail": "HTTP 200"
+    },
+    {
+      "icon": "✅",
+      "label": "2FA badge shows 'Enabled' after verification",
+      "detail": ""
+    },
+    {
+      "icon": "✅",
+      "label": "Disable 2FA button appeared (confirms enable worked)",
+      "detail": ""
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-11-final-2fa-state.png"
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-12-login-after-2fa-enable.png"
+    },
+    {
+      "icon": "ℹ️",
+      "label": "Post-login URL after 2FA enabled",
+      "detail": "http://localhost:3000/login"
+    },
+    {
+      "icon": "✅",
+      "label": "2FA challenge prompt shown after login",
+      "detail": "Found 2FA prompt"
+    },
+    {
+      "icon": "✅",
+      "label": "TOTP input field present on login challenge page",
+      "detail": "Found"
+    },
+    {
+      "icon": "📸",
+      "label": "Screenshot saved",
+      "detail": "audit-2fa-13-2fa-login-challenge.png"
+    }
+  ],
+  "screenshots": [
+    "audit-2fa-04-login-filled.png",
+    "audit-2fa-05-login-result.png",
+    "audit-2fa-06-profile-page.png",
+    "audit-2fa-07-security-tab.png",
+    "audit-2fa-08a-password-entered.png",
+    "audit-2fa-08-after-enable-click.png",
+    "audit-2fa-09-totp-filled.png",
+    "audit-2fa-10-after-verify.png",
+    "audit-2fa-11-final-2fa-state.png",
+    "audit-2fa-12-login-after-2fa-enable.png",
+    "audit-2fa-13-2fa-login-challenge.png"
+  ],
+  "interceptedTotpURI": "[PRESENT]"
+}

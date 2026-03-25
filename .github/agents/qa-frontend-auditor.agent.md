@@ -10,7 +10,7 @@ tools:
   - playwright/*
   - github/*
   - context7/*
-model: "Claude Sonnet 4.6 (copilot)"
+model: "claude-sonnet-4.6"
 argument-hint: "What to audit? e.g. 'full QA audit', 'test protected routes', 'check mobile', 'security audit', 'find missing features'"
 ---
 

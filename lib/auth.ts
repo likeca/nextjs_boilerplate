@@ -4,6 +4,8 @@ import { emailOTP, twoFactor } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { EmailService } from "./email-service";
 
+const isTwoFactorEnabled = process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== "false";
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -127,8 +129,8 @@ export const auth = betterAuth({
       sendVerificationOnSignUp: true,
       disableSignUp: false,
     }),
-    twoFactor({
-      issuer: process.env.NEXT_PUBLIC_APP_NAME || "SaaS App",
-    }),
+    ...(isTwoFactorEnabled
+      ? [twoFactor({ issuer: process.env.NEXT_PUBLIC_APP_NAME || "SaaS App" })]
+      : []),
   ],
 });
