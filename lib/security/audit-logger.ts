@@ -16,6 +16,7 @@ export enum AuditEventType {
   SUBSCRIPTION_DELETED = "subscription_deleted",
   PAYMENT_SUCCEEDED = "payment_succeeded",
   PAYMENT_FAILED = "payment_failed",
+  PAYMENT_VALIDATION_FAILED = "payment_validation_failed",
   BILLING_PORTAL_ACCESSED = "billing_portal_accessed",
 
   // Security Events

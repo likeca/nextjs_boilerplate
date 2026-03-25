@@ -220,7 +220,119 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   }
 
   try {
+    // --- Server-side payment validation (defense-in-depth) ---
+
+    // 1. Look up the plan to get expected amounts
+    const plan = await prisma.plan.findUnique({
+      where: { id: planId },
+    });
+
+    if (!plan) {
+      auditLogger.logPayment(
+        AuditEventType.PAYMENT_VALIDATION_FAILED,
+        "failure",
+        "Plan not found for checkout session",
+        {
+          userId,
+          resourceId: session.id,
+          metadata: { planId },
+        }
+      );
+      throw new Error(`Plan not found: ${planId}`);
+    }
+
+    // 2. Validate payment amount matches expected plan price
+    if (session.amount_total !== plan.amount) {
+      auditLogger.logPayment(
+        AuditEventType.PAYMENT_VALIDATION_FAILED,
+        "failure",
+        "Amount mismatch in checkout session",
+        {
+          userId,
+          resourceId: session.id,
+          metadata: {
+            expected: plan.amount,
+            received: session.amount_total,
+            sessionId: session.id,
+          },
+        }
+      );
+      throw new Error(
+        `Amount mismatch: expected ${plan.amount}, got ${session.amount_total}`
+      );
+    }
+
+    // 3. Validate currency matches expected plan currency
+    if (session.currency !== plan.currency) {
+      auditLogger.logPayment(
+        AuditEventType.PAYMENT_VALIDATION_FAILED,
+        "failure",
+        "Currency mismatch in checkout session",
+        {
+          userId,
+          resourceId: session.id,
+          metadata: {
+            expected: plan.currency,
+            received: session.currency,
+          },
+        }
+      );
+      throw new Error(
+        `Currency mismatch: expected ${plan.currency}, got ${session.currency}`
+      );
+    }
+
+    // 4. Fetch user early — needed for customer validation and email notification
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { stripeCustomerId: true, email: true, name: true },
+    });
+
+    // 5. Validate the Stripe customer ID belongs to this user
+    if (user?.stripeCustomerId && session.customer !== user.stripeCustomerId) {
+      auditLogger.logPayment(
+        AuditEventType.PAYMENT_VALIDATION_FAILED,
+        "failure",
+        "Customer ID mismatch in checkout session",
+        {
+          userId,
+          resourceId: session.id,
+          metadata: {
+            expected: user.stripeCustomerId,
+            received: session.customer,
+          },
+        }
+      );
+      throw new Error(
+        `Customer mismatch: expected ${user.stripeCustomerId}, got ${session.customer}`
+      );
+    }
+
+    // 6. Retrieve subscription and validate interval
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+    const subscriptionInterval =
+      subscription.items.data[0]?.price?.recurring?.interval;
+    if (!subscriptionInterval || subscriptionInterval !== plan.interval) {
+      auditLogger.logPayment(
+        AuditEventType.PAYMENT_VALIDATION_FAILED,
+        "failure",
+        "Subscription interval mismatch in checkout session",
+        {
+          userId,
+          resourceId: session.id,
+          metadata: {
+            expected: plan.interval,
+            received: subscriptionInterval ?? null,
+          },
+        }
+      );
+      throw new Error(
+        `Interval mismatch: expected ${plan.interval}, got ${subscriptionInterval}`
+      );
+    }
+
+    // --- All validations passed — proceed with database writes ---
 
     const dbSubscription = await prisma.subscription.upsert({
       where: { stripeSubscriptionId: subscriptionId },
@@ -257,12 +369,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       }
     );
 
-    // Send subscription confirmation email
+    // Send subscription confirmation email (reuse user fetched above)
     try {
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-        select: { email: true, name: true },
-      });
       if (user) {
         const emailService = new EmailService();
         await emailService.sendEmail({
@@ -285,8 +393,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
         data: {
           userId,
           stripePaymentId: session.payment_intent as string,
-          amount: session.amount_total || 0,
-          currency: session.currency || "usd",
+          // Non-null: amount_total and currency were validated equal to plan values above
+          amount: session.amount_total!,
+          currency: session.currency!,
           status: "succeeded",
           description: `Subscription payment for plan ${planId}`,
         },
