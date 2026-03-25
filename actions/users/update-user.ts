@@ -3,6 +3,8 @@
 import { db } from '@/lib/db';
 import { requirePermission } from '@/lib/auth-helpers';
 import { hashPassword } from 'better-auth/crypto';
+import { canAccessUser } from '@/lib/permissions';
+import { auditLogger, AuditEventType } from '@/lib/security/audit-logger';
 
 interface UpdateAdminInput {
   id: string;
@@ -17,13 +19,24 @@ interface UpdateAdminInput {
 
 export async function updateAdmin(data: UpdateAdminInput) {
   // Check permission to update admins
-  await requirePermission("user", "update");
+  const session = await requirePermission("user", "update");
 
   const { id, name, email, phone, emailVerified, password, role, isAdmin } = data;
 
   // Validate required fields
   if (!id || !name || !email) {
     return { error: 'ID, name, and email are required' };
+  }
+
+  // IDOR guard: verify the current user is allowed to update this specific user
+  const permitted = await canAccessUser(session.user.id, id);
+  if (!permitted) {
+    auditLogger.logSecurity(
+      AuditEventType.USER_DATA_ACCESS_ATTEMPT,
+      `User ${session.user.id} attempted to update user ${id} without permission`,
+      { userId: session.user.id, metadata: { targetUserId: id } }
+    );
+    return { error: 'Forbidden: Cannot edit this user' };
   }
 
   try {
