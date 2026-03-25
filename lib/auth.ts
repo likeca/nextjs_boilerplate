@@ -3,14 +3,54 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { emailOTP, twoFactor } from "better-auth/plugins";
 import { prisma } from "./prisma";
 import { EmailService } from "./email-service";
+import { appConfig } from "./config";
 
 const isTwoFactorEnabled = process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== "false";
+
+// Track newly created users who need a welcome email after verification
+const pendingWelcomeEmails = new Set<string>();
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
   baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          if (!user.emailVerified) {
+            pendingWelcomeEmails.add(user.id);
+          }
+        },
+      },
+      update: {
+        after: async (user) => {
+          if (!user.emailVerified || !pendingWelcomeEmails.has(user.id)) return;
+
+          pendingWelcomeEmails.delete(user.id);
+          const emailService = new EmailService();
+
+          try {
+            console.log('📧 [Auth] Sending welcome email to:', user.email);
+            await emailService.sendEmail({
+              type: 'welcome',
+              recipients: [user.email],
+              data: {
+                recipientEmail: user.email,
+                recipientName: user.name || user.email.split('@')[0],
+                userName: user.name || user.email.split('@')[0],
+              },
+              subject: `Welcome to ${appConfig.name}! 🎉`,
+            });
+            console.log('✅ [Auth] Welcome email sent successfully to:', user.email);
+          } catch (error) {
+            console.error('❌ [Auth] Failed to send welcome email:', error);
+          }
+        },
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
