@@ -5,6 +5,14 @@ import { Logo } from "@/components/logo"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { SignupForm } from "@/components/signup-form"
+import { buildMetadata } from "@/lib/seo"
+
+export const metadata = buildMetadata({
+  title: "Create an Account",
+  description: "Sign up for a free account. Get started with authentication, payments, and a full-featured SaaS dashboard in minutes.",
+  path: "/signup",
+  keywords: ["sign up", "register", "create account", "free trial"],
+});
 
 export default async function SignupPage() {
   const session = await auth.api.getSession({

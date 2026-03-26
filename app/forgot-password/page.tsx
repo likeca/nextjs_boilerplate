@@ -1,6 +1,15 @@
 import { ForgotPasswordForm } from "@/components/forgot-password-form"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { buildMetadata } from "@/lib/seo"
+
+export const metadata = buildMetadata({
+  title: "Forgot Password",
+  description: "Reset your password. Enter your email address and we will send you a link to reset your password.",
+  path: "/forgot-password",
+  keywords: ["forgot password", "reset password", "account recovery"],
+  noIndex: true,
+});
 
 export default function ForgotPasswordPage() {
   return (

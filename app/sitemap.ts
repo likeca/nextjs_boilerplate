@@ -1,8 +1,27 @@
 import type { MetadataRoute } from "next";
+import { prisma } from "@/lib/prisma";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const now = new Date();
+
+  // Fetch published blog posts for dynamic sitemap entries
+  let blogEntries: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await prisma.blog.findMany({
+      where: { published: true },
+      select: { slug: true, updatedAt: true, createdAt: true },
+      orderBy: { createdAt: "desc" },
+    });
+    blogEntries = posts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.updatedAt ?? post.createdAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
+  } catch {
+    // Database unavailable at build time — skip blog entries
+  }
 
   return [
     {
@@ -12,10 +31,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: `${baseUrl}/login`,
+      url: `${baseUrl}/blog`,
       lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/signup`,
@@ -41,5 +60,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    ...blogEntries,
   ];
 }

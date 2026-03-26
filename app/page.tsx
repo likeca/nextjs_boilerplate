@@ -10,6 +10,68 @@ import { PricingSection } from "@/components/pricing-section";
 import { FeaturesSection } from "@/components/features-section";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { FaqSection } from "@/components/faq-section";
+import { JsonLd } from "@/components/json-ld";
+import {
+  buildMetadata,
+  organizationSchema,
+  webSiteSchema,
+  softwareAppSchema,
+  faqSchema,
+} from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: `${appConfig.name} — Launch Your SaaS Faster`,
+  description:
+    "Ship your SaaS in days, not months. Production-ready Next.js starter with authentication, Stripe payments, admin dashboard, blog CMS, RBAC, and 50+ components.",
+  path: "/",
+  keywords: [
+    "SaaS boilerplate",
+    "Next.js starter kit",
+    "Stripe payments",
+    "admin dashboard",
+    "RBAC",
+    "blog CMS",
+    "authentication",
+    "shadcn/ui",
+    "Tailwind CSS",
+    "Prisma ORM",
+    "production ready",
+    "open source",
+  ],
+});
+
+const homeFaqs = [
+  {
+    question: "What's included in this boilerplate?",
+    answer:
+      "Authentication (email/password, OTP, social login), Stripe payments, role-based access control, admin dashboard, blog CMS, email templates, and much more.",
+  },
+  {
+    question: "Can I use this for commercial projects?",
+    answer:
+      "Yes! This boilerplate is designed for commercial SaaS products. You own the code and can use it however you like.",
+  },
+  {
+    question: "How do I customize the branding?",
+    answer:
+      "Update the .env file with your app name and URL. All branding references use the central config, so changing it in one place updates the entire app.",
+  },
+  {
+    question: "Does it support multiple pricing plans?",
+    answer:
+      "Yes. The Stripe integration supports multiple plans with different features. You can configure your plans in the Stripe dashboard.",
+  },
+  {
+    question: "Is there admin support?",
+    answer:
+      "Yes, there's a full admin panel with user management, role/permission editor, blog management, and application settings.",
+  },
+  {
+    question: "What database is supported?",
+    answer:
+      "PostgreSQL via Prisma ORM. The Prisma adapter makes it easy to switch to other databases if needed.",
+  },
+];
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -20,6 +82,7 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <JsonLd data={[organizationSchema(), webSiteSchema(), softwareAppSchema(), faqSchema(homeFaqs)]} />
       <Header user={session?.user} isAdmin={isAdmin} />
 
       <main className="flex flex-col">

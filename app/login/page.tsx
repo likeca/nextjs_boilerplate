@@ -5,6 +5,15 @@ import { Logo } from "@/components/logo"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LoginForm } from "@/components/login-form"
+import { buildMetadata } from "@/lib/seo"
+
+export const metadata = buildMetadata({
+  title: "Sign In",
+  description: "Sign in to your account to access your dashboard, manage your subscription, and more.",
+  path: "/login",
+  keywords: ["sign in", "login", "account access"],
+  noIndex: true,
+});
 
 export default async function LoginPage() {
   const session = await auth.api.getSession({

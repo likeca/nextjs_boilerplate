@@ -22,10 +22,14 @@ import { auth } from '@/lib/auth';
 import { isUserAdmin } from '@/lib/auth-utils';
 import { appConfig } from '@/lib/config';
 
-export const metadata: Metadata = {
+import { buildMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = buildMetadata({
   title: `Contact Us \u2014 ${appConfig.name}`,
-  description: `Get in touch with ${appConfig.name}. We'd love to hear from you.`,
-};
+  description: `Get in touch with ${appConfig.name}. We'd love to hear from you \u2014 send us a message, ask a question, or request support.`,
+  path: '/contact',
+  keywords: ['contact', 'support', 'help', 'get in touch', 'customer service'],
+});
 
 const SOCIAL_ICONS = {
   facebook: Facebook,

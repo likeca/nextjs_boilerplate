@@ -6,10 +6,14 @@ import { appConfig } from "@/lib/config";
 import { auth } from "@/lib/auth";
 import { isUserAdmin } from "@/lib/auth-utils";
 
-export const metadata: Metadata = {
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
   title: `Privacy Policy \u2014 ${appConfig.name}`,
-  description: `Privacy Policy for ${appConfig.name}`,
-};
+  description: `Read the Privacy Policy for ${appConfig.name}. Learn how we collect, use, and protect your personal data.`,
+  path: "/privacy",
+  keywords: ["privacy policy", "data protection", "GDPR", "personal data"],
+});
 
 export default async function PrivacyPage() {
   const session = await auth.api.getSession({

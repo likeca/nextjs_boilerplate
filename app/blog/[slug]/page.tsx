@@ -4,6 +4,9 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import type { Metadata } from "next"
 import DOMPurify from "isomorphic-dompurify"
+import { JsonLd } from "@/components/json-ld"
+import { articleSchema, breadcrumbSchema } from "@/lib/seo"
+import { appConfig } from "@/lib/config"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -18,9 +21,25 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
   if (!post) return { title: "Post not found" }
 
+  const url = `${appConfig.url}/blog/${slug}`
+
   return {
     title: post.title,
     description: post.excerpt ?? undefined,
+    keywords: ["blog", "article", "SaaS", slug.replace(/-/g, " ")],
+    alternates: { canonical: url },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt ?? undefined,
+      url,
+      type: "article",
+      siteName: appConfig.name,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt ?? undefined,
+    },
   }
 }
 
@@ -37,6 +56,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <JsonLd
+        data={[
+          articleSchema({
+            title: post.title,
+            description: post.excerpt ?? "",
+            slug: post.slug,
+            authorName: post.author?.name ?? undefined,
+            publishedAt: post.createdAt.toISOString(),
+            modifiedAt: post.updatedAt?.toISOString(),
+          }),
+          breadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/blog" },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ]),
+        ]}
+      />
       <Header />
       <main className="flex-1 container mx-auto px-4 py-12 max-w-3xl">
         <div className="mb-8">

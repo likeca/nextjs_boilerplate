@@ -6,10 +6,14 @@ import { appConfig } from "@/lib/config";
 import { auth } from "@/lib/auth";
 import { isUserAdmin } from "@/lib/auth-utils";
 
-export const metadata: Metadata = {
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildMetadata({
   title: `Terms of Service \u2014 ${appConfig.name}`,
-  description: `Terms of Service for ${appConfig.name}`,
-};
+  description: `Read the Terms of Service for ${appConfig.name}. Learn about our policies, user responsibilities, and service agreements.`,
+  path: "/terms",
+  keywords: ["terms of service", "legal", "user agreement", "policies"],
+});
 
 export default async function TermsPage() {
   const session = await auth.api.getSession({
