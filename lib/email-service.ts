@@ -1,10 +1,12 @@
 import nodemailer from 'nodemailer';
-import type { SendEmailRequest, OTPEmailData, ResetPasswordEmailData, PaymentReceiptEmailData, WelcomeEmailData, SubscriptionEmailData } from './email-templates/types';
+import type { SendEmailRequest, OTPEmailData, ResetPasswordEmailData, PaymentReceiptEmailData, WelcomeEmailData, SubscriptionEmailData, EmailChangeVerificationData, EmailChangeNotificationData } from './email-templates/types';
 import { getOTPEmailTemplate } from './email-templates/otp-template';
 import { getResetPasswordTemplate } from './email-templates/reset-password-template';
 import { getPaymentReceiptTemplate } from './email-templates/payment-receipt-template';
 import { getWelcomeEmailTemplate } from './email-templates/welcome-template';
 import { getSubscriptionEmailTemplate } from './email-templates/subscription-template';
+import { getEmailChangeVerificationTemplate } from './email-templates/email-change-verification-template';
+import { getEmailChangeNotificationTemplate } from './email-templates/email-change-notification-template';
 
 export class EmailService {
   private transporter: nodemailer.Transporter;
@@ -57,6 +59,14 @@ export class EmailService {
       case 'subscription_cancelled':
         htmlContent = getSubscriptionEmailTemplate(data as SubscriptionEmailData, 'cancelled');
         emailSubject = subject || 'Subscription Cancelled';
+        break;
+      case 'email_change_verification':
+        htmlContent = getEmailChangeVerificationTemplate(data as EmailChangeVerificationData);
+        emailSubject = subject || 'Verify Your New Email Address';
+        break;
+      case 'email_change_notification':
+        htmlContent = getEmailChangeNotificationTemplate(data as EmailChangeNotificationData);
+        emailSubject = subject || 'Email Change Requested';
         break;
       default:
         throw new Error(`Unsupported email type: ${type}`);

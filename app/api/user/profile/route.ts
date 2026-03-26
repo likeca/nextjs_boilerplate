@@ -52,39 +52,22 @@ export async function PATCH(request: Request) {
     }
 
     const body = await request.json();
-    const { name, email, phone } = body;
+    const { name, phone } = body;
 
     // Validate input
-    if (!name || !email) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Name and email are required" },
+        { error: "Name is required" },
         { status: 400 }
       );
     }
 
-    // Check if email is already taken by another user
-    if (email !== session.user.email) {
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
-      });
-
-      if (existingUser && existingUser.id !== session.user.id) {
-        return NextResponse.json(
-          { error: "Email is already in use" },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Update user
+    // Update user (email changes are handled via /api/user/email-change)
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
       data: {
         name,
-        email,
         phone: phone || null,
-        // If email changed, set emailVerified to false
-        ...(email !== session.user.email && { emailVerified: false }),
       },
     });
 
