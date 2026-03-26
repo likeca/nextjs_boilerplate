@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { CheckCircle2, XCircle, Clock } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 interface VerifyEmailChangePageProps {
   searchParams: Promise<{ token?: string }>;
 }

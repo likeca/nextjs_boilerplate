@@ -5,6 +5,8 @@ import { Footer } from "@/components/footer"
 import { formatDistanceToNow } from "date-fns"
 import { buildMetadata } from "@/lib/seo"
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = buildMetadata({
   title: "Blog — Latest Articles & Updates",
   description: "Read our latest articles on SaaS development, web technologies, product updates, and best practices for building modern applications.",
