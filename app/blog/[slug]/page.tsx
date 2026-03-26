@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import type { Metadata } from "next"
+import DOMPurify from "isomorphic-dompurify"
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -57,7 +58,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
         <div
           className="prose prose-neutral dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(post.content, {
+              ALLOWED_TAGS: ['p', 'b', 'i', 'em', 'strong', 'a', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'img', 'blockquote', 'code', 'pre'],
+              ALLOWED_ATTR: ['href', 'src', 'alt', 'class'],
+              ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+            }),
+          }}
         />
         <div className="mt-12 pt-6 border-t">
           <a href="/blog" className="text-sm text-primary hover:underline">

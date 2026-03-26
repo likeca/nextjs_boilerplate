@@ -24,6 +24,7 @@ export enum AuditEventType {
   UNAUTHORIZED_ACCESS_ATTEMPT = "unauthorized_access_attempt",
   RATE_LIMIT_EXCEEDED = "rate_limit_exceeded",
   AUTHORIZATION_FAILED = "authorization_failed",
+  USER_DATA_ACCESS_ATTEMPT = "user_data_access_attempt",
 
   // Error Events
   WEBHOOK_PROCESSING_ERROR = "webhook_processing_error",
