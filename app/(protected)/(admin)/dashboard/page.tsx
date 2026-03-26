@@ -3,6 +3,8 @@ import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
 import { getDashboardStats } from "./actions"
 
+export const dynamic = 'force-dynamic'
+
 import data from "./data.json"
 
 export default async function Page() {

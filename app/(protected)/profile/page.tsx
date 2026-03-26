@@ -10,6 +10,8 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProfilePage() {
   const session = await auth.api.getSession({
     headers: await headers(),

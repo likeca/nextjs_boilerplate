@@ -8,6 +8,8 @@ import { JsonLd } from "@/components/json-ld"
 import { articleSchema, breadcrumbSchema } from "@/lib/seo"
 import { appConfig } from "@/lib/config"
 
+export const dynamic = 'force-dynamic'
+
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
 }
