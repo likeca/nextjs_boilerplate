@@ -5,7 +5,6 @@ node_modules
 *.md
 docs/
 tests/
-scripts/
 .env*
 !.env.example
 .vscode
