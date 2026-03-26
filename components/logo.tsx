@@ -1,7 +1,7 @@
 "use client";
 
 import { appConfig } from "@/lib/config";
-import * as LucideIcons from "lucide-react";
+import { Layers } from "lucide-react";
 import Link from "next/link";
 
 interface LogoProps {
@@ -11,27 +11,27 @@ interface LogoProps {
 }
 
 export function Logo({ className = "", showText = true, href = "/" }: LogoProps) {
-  const IconComponent = LucideIcons.GalleryVerticalEnd;
-
   const logoContent = (
     <>
-      <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-        <IconComponent className="size-4" />
+      <div className="flex size-8 items-center justify-center rounded-md bg-foreground">
+        <Layers className="size-4 text-background" strokeWidth={2} />
       </div>
-      {showText && <span>{appConfig.name}</span>}
+      {showText && (
+        <span className="text-base font-semibold tracking-tight">{appConfig.name}</span>
+      )}
     </>
   );
 
   if (href) {
     return (
-      <Link href={href} className={`flex items-center gap-2 font-medium ${className}`}>
+      <Link href={href} className={`flex items-center gap-2 ${className}`}>
         {logoContent}
       </Link>
     );
   }
 
   return (
-    <div className={`flex items-center gap-2 font-medium ${className}`}>
+    <div className={`flex items-center gap-2 ${className}`}>
       {logoContent}
     </div>
   );

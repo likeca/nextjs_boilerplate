@@ -35,24 +35,27 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-20 bg-muted/40" id="features">
+    <section className="py-20 border-t" id="features">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-14 animate-fade-in-up">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Everything you need to launch
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
             Stop reinventing the wheel. Our boilerplate includes all the essential features for a production-ready SaaS.
           </p>
         </div>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => (
+          {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="rounded-lg border bg-card p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="rounded-lg border bg-card p-6 hover:shadow-sm transition-shadow animate-fade-in-up"
+              style={{ animationDelay: `${index * 80}ms` }}
             >
-              <feature.icon className="h-10 w-10 text-primary mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+              <div className="flex h-10 w-10 items-center justify-center rounded-md bg-foreground mb-4">
+                <feature.icon className="h-5 w-5 text-background" />
+              </div>
+              <h3 className="font-semibold mb-1.5">{feature.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
             </div>
           ))}

@@ -24,21 +24,18 @@ export default async function Home() {
 
       <main className="flex flex-col">
         {/* Hero Section */}
-        <section className="flex flex-1 flex-col items-center justify-center px-4 py-32 text-center">
-          <div className="mx-auto max-w-3xl space-y-8">
-            <div className="inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium text-muted-foreground">
-              \uD83D\uDE80 Production-ready SaaS boilerplate
-            </div>
-            <div className="space-y-4">
-              <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-                Launch your SaaS{" "}
-                <span className="text-primary">faster than ever</span>
-              </h1>
-              <p className="text-lg text-muted-foreground sm:text-xl">
-                {appConfig.description}
-              </p>
-            </div>
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+        <section className="flex flex-1 flex-col items-center justify-center px-4 py-24 sm:py-32 text-center">
+          <div className="mx-auto max-w-2xl space-y-6 animate-fade-in-up">
+            <p className="text-sm font-medium text-muted-foreground tracking-wide">
+              {"\uD83D\uDE80"} Production-ready SaaS boilerplate
+            </p>
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+              Launch your SaaS faster than ever
+            </h1>
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+              {appConfig.description}
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-center pt-2 animate-fade-in-up delay-100">
               <Button size="lg" asChild>
                 <Link href="/signup">Get Started Free</Link>
               </Button>

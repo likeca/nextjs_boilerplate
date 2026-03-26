@@ -79,26 +79,36 @@ export const PricingCards = ({ plans, isLoggedIn }: PricingCardsProps) => {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Interval Toggle */}
-      <div className="flex items-center justify-center gap-4">
-        <Button
-          variant={interval === "monthly" ? "default" : "outline"}
-          onClick={() => setInterval("monthly")}
-          className="min-w-30"
-        >
-          Monthly
-        </Button>
-        <Button
-          variant={interval === "yearly" ? "default" : "outline"}
-          onClick={() => setInterval("yearly")}
-          className="min-w-30"
-        >
-          Yearly
-          <Badge variant="secondary" className="ml-2">
-            Save 17%
-          </Badge>
-        </Button>
+    <div className="space-y-10">
+      {/* Interval Toggle — Pill style */}
+      <div className="flex items-center justify-center">
+        <div className="inline-flex items-center rounded-full border bg-muted/50 p-1">
+          <button
+            type="button"
+            onClick={() => setInterval("monthly")}
+            className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
+              interval === "monthly"
+                ? "bg-card shadow-sm text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Monthly
+          </button>
+          <button
+            type="button"
+            onClick={() => setInterval("yearly")}
+            className={`rounded-full px-5 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
+              interval === "yearly"
+                ? "bg-card shadow-sm text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Yearly
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-foreground text-background border-0">
+              Save 17%
+            </Badge>
+          </button>
+        </div>
       </div>
 
       {/* Pricing Cards */}
@@ -106,13 +116,15 @@ export const PricingCards = ({ plans, isLoggedIn }: PricingCardsProps) => {
         {filteredPlans.map((plan) => (
           <Card
             key={plan.id}
-            className={`relative flex flex-col ${
-              plan.isPopular ? "border-primary shadow-lg" : ""
+            className={`relative flex flex-col transition-all duration-300 ${
+              plan.isPopular
+                ? "border-foreground border-2 shadow-md scale-[1.02]"
+                : "hover:shadow-sm"
             }`}
           >
             {plan.isPopular && (
               <div className="absolute -top-4 left-0 right-0 flex justify-center">
-                <Badge className="px-4 py-1">Most Popular</Badge>
+                <Badge className="px-4 py-1 bg-foreground text-background border-0 shadow-sm">Most Popular</Badge>
               </div>
             )}
 

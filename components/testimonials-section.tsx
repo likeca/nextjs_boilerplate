@@ -21,31 +21,32 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section className="py-20" id="testimonials">
+    <section className="py-20 bg-muted/40" id="testimonials">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-14 animate-fade-in-up">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Trusted by developers
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-3 text-muted-foreground">
             See what builders are saying about our boilerplate.
           </p>
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {testimonials.map((testimonial) => (
+          {testimonials.map((testimonial, index) => (
             <div
               key={testimonial.author}
-              className="rounded-lg border bg-card p-6 shadow-sm"
+              className="rounded-lg border bg-card p-6 animate-fade-in-up"
+              style={{ animationDelay: `${index * 80}ms` }}
             >
-              <blockquote className="text-sm text-muted-foreground leading-relaxed mb-4">
+              <blockquote className="text-sm text-muted-foreground leading-relaxed mb-5">
                 &ldquo;{testimonial.quote}&rdquo;
               </blockquote>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-background text-xs font-semibold">
                   {testimonial.initials}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold">{testimonial.author}</p>
+                  <p className="text-sm font-medium">{testimonial.author}</p>
                   <p className="text-xs text-muted-foreground">{testimonial.role}</p>
                 </div>
               </div>

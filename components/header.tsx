@@ -17,6 +17,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { signOut } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { User, CreditCard, LogOut, LayoutDashboard, Menu, X } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface HeaderProps {
   user?: {
@@ -51,32 +52,32 @@ export function Header({ user, isAdmin }: HeaderProps) {
       .slice(0, 2);
   };
 
+  const navLinkClass = (path: string) =>
+    `text-sm font-medium transition-colors hover:text-primary ${
+      pathname === path ? "text-primary" : "text-muted-foreground"
+    }`;
+
   return (
-    <header className="border-b">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 bg-background border-b border-border">
+      <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <Logo />
 
         {/* Desktop navigation */}
         {user ? (
           <>
-            <nav className="hidden md:flex items-center gap-1">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/blog">Blog</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/#pricing">Pricing</Link>
-              </Button>
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/contact">Contact</Link>
-              </Button>
+            <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
+              <Link href="/blog" className={navLinkClass("/blog")}>Blog</Link>
+              <Link href="/#pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Pricing</Link>
+              <Link href="/contact" className={navLinkClass("/contact")}>Contact</Link>
             </nav>
-            <div className="hidden md:flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-3">
+            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9">
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full ring-1 ring-border transition-all">
+                  <Avatar className="h-8 w-8">
                     <AvatarImage src={user.image || undefined} alt={user.name} />
-                    <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                    <AvatarFallback className="bg-secondary text-sm">{getInitials(user.name)}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -114,7 +115,7 @@ export function Header({ user, isAdmin }: HeaderProps) {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-400 focus:text-red-400">
                   <LogOut className="mr-2 h-4 w-4" />
                   Logout
                 </DropdownMenuItem>
@@ -123,29 +124,24 @@ export function Header({ user, isAdmin }: HeaderProps) {
           </div>
           </>
         ) : (
-          <nav className="hidden md:flex items-center gap-1">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/blog">Blog</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/#pricing">Pricing</Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/contact">Contact</Link>
-            </Button>
-            <div className="w-px h-5 bg-border mx-2" aria-hidden="true" />
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
+          <nav className="hidden md:flex items-center gap-6" aria-label="Main navigation">
+            <Link href="/blog" className={navLinkClass("/blog")}>Blog</Link>
+            <Link href="/#pricing" className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary">Pricing</Link>
+            <Link href="/contact" className={navLinkClass("/contact")}>Contact</Link>
+            <div className="w-px h-5 bg-border mx-1" aria-hidden="true" />
+            <ThemeToggle />
+            <Link href="/login" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              Login
+            </Link>
             <Button size="sm" asChild>
-              <Link href="/signup">Sign Up</Link>
+              <Link href="/signup">Get Started</Link>
             </Button>
           </nav>
         )}
 
         {/* Mobile hamburger button */}
         <button
-          className="md:hidden p-2 rounded-md hover:bg-accent"
+          className="md:hidden p-2 rounded-md hover:bg-muted transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMobileMenuOpen}
@@ -160,13 +156,11 @@ export function Header({ user, isAdmin }: HeaderProps) {
 
       {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t bg-background">
-          <nav className="container mx-auto px-4 py-4 flex flex-col gap-3">
+        <div className="md:hidden border-t border-border bg-background">
+          <nav className="container mx-auto px-4 py-4 flex flex-col gap-3" aria-label="Mobile navigation">
             <Link
               href="/blog"
-              className={`text-sm font-medium py-2 transition-colors hover:text-primary ${
-                pathname === "/blog" ? "text-primary" : "text-muted-foreground"
-              }`}
+              className={navLinkClass("/blog") + " py-2"}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Blog
@@ -180,14 +174,16 @@ export function Header({ user, isAdmin }: HeaderProps) {
             </Link>
             <Link
               href="/contact"
-              className={`text-sm font-medium py-2 transition-colors hover:text-primary ${
-                pathname === "/contact" ? "text-primary" : "text-muted-foreground"
-              }`}
+              className={navLinkClass("/contact") + " py-2"}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact
             </Link>
-            <div className="border-t pt-3 flex flex-col gap-2">
+            <div className="border-t border-border pt-3 pb-1 flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Theme</span>
+              <ThemeToggle />
+            </div>
+            <div className="border-t border-border pt-3 flex flex-col gap-2">
               {user ? (
                 <>
                   <p className="text-sm font-medium">{user.name}</p>
@@ -234,7 +230,7 @@ export function Header({ user, isAdmin }: HeaderProps) {
                       handleSignOut();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="text-destructive justify-start"
+                    className="text-red-400 justify-start"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     Logout
@@ -255,7 +251,7 @@ export function Header({ user, isAdmin }: HeaderProps) {
                     asChild
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Link href="/signup">Sign Up</Link>
+                    <Link href="/signup">Get Started</Link>
                   </Button>
                 </>
               )}

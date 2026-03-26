@@ -36,18 +36,18 @@ export function FaqSection() {
   return (
     <section className="py-20 bg-muted/40" id="faq">
       <div className="container mx-auto px-4 max-w-3xl">
-        <div className="text-center mb-12">
+        <div className="text-center mb-14 animate-fade-in-up">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Frequently asked questions
           </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <p className="mt-3 text-muted-foreground">
             Can&apos;t find the answer you&apos;re looking for? Reach out to our support team.
           </p>
         </div>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full space-y-3">
           {faqs.map((faq, index) => (
-            <AccordionItem key={index} value={`item-${index}`}>
-              <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
+            <AccordionItem key={index} value={`item-${index}`} className="border rounded-lg px-4 transition-colors">
+              <AccordionTrigger className="text-left hover:no-underline">{faq.question}</AccordionTrigger>
               <AccordionContent className="text-muted-foreground">
                 {faq.answer}
               </AccordionContent>

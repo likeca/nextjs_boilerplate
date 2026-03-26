@@ -20,23 +20,23 @@ export function Footer() {
   };
 
   return (
-    <footer className="border-t bg-background">
+    <footer className="border-t">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link href="/" className="font-semibold text-lg">
+            <Link href="/" className="font-bold text-lg tracking-tight">
               {appConfig.name}
             </Link>
-            <p className="mt-2 text-sm text-muted-foreground max-w-xs">
+            <p className="mt-3 text-sm text-muted-foreground max-w-xs leading-relaxed">
               {appConfig.description}
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <h3 className="text-sm font-semibold mb-3">Product</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Product</h3>
+            <ul className="space-y-2.5">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -52,8 +52,8 @@ export function Footer() {
 
           {/* Account */}
           <div>
-            <h3 className="text-sm font-semibold mb-3">Account</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Account</h3>
+            <ul className="space-y-2.5">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -69,8 +69,8 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="text-sm font-semibold mb-3">Legal</h3>
-            <ul className="space-y-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">Legal</h3>
+            <ul className="space-y-2.5">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -85,7 +85,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-10 border-t pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
             &copy; {currentYear} {appConfig.name}. All rights reserved.
           </p>
