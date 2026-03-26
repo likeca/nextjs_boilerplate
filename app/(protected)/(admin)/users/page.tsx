@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { listAdmins } from '@/actions/users/list-user';
 import { deleteUser } from '@/actions/users/delete-user';
 import { AdminFilters, AdminFilterValues } from './filters';
+import { TableSkeletonRows } from '@/components/skeletons/table-skeleton';
 import { formatDate } from '@/lib/utils';
 
 interface User {
@@ -181,11 +182,7 @@ export default function AdminsPage() {
                     </TableHeader>
                     <TableBody>
                       {loading ? (
-                        <TableRow>
-                          <TableCell colSpan={7} className="text-center py-8">
-                            Loading...
-                          </TableCell>
-                        </TableRow>
+                        <TableSkeletonRows columns={7} rows={8} />
                       ) : admins.length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">

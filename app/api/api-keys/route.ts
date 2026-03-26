@@ -3,11 +3,41 @@ import { headers } from "next/headers"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import crypto from "crypto"
+import { createRateLimitMiddleware } from "@/lib/security/rate-limiter"
+import { auditLogger, AuditEventType } from "@/lib/security/audit-logger"
+
+// Rate limiters per the issue recommendations
+const listRateLimiter = createRateLimitMiddleware(100, 60 * 60 * 1000)   // 100 requests/hour
+const createRateLimiter = createRateLimitMiddleware(10, 60 * 60 * 1000)  // 10 requests/hour
+const deleteRateLimiter = createRateLimitMiddleware(20, 60 * 60 * 1000)  // 20 requests/hour
 
 export async function GET() {
   const headersList = await headers()
   const session = await auth.api.getSession({ headers: headersList })
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const rateLimit = listRateLimiter(`api-key-list:${session.user.id}`)
+  if (!rateLimit.allowed) {
+    auditLogger.logSecurity(
+      AuditEventType.RATE_LIMIT_EXCEEDED,
+      "API key list rate limit exceeded",
+      {
+        userId: session.user.id,
+        metadata: { remaining: rateLimit.remaining, resetAt: rateLimit.resetAt },
+      }
+    )
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again later." },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+          "X-RateLimit-Reset": rateLimit.resetAt.toString(),
+          "Retry-After": Math.ceil(rateLimit.resetAt / 1000).toString(),
+        },
+      }
+    )
+  }
 
   const keys = await prisma.apiKey.findMany({
     where: { userId: session.user.id, revokedAt: null },
@@ -15,13 +45,44 @@ export async function GET() {
     orderBy: { createdAt: "desc" },
   })
 
-  return NextResponse.json({ keys })
+  return NextResponse.json(
+    { keys },
+    {
+      headers: {
+        "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+        "X-RateLimit-Reset": rateLimit.resetAt.toString(),
+      },
+    }
+  )
 }
 
 export async function POST(request: NextRequest) {
   const headersList = await headers()
   const session = await auth.api.getSession({ headers: headersList })
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const rateLimit = createRateLimiter(`api-key-create:${session.user.id}`)
+  if (!rateLimit.allowed) {
+    auditLogger.logSecurity(
+      AuditEventType.RATE_LIMIT_EXCEEDED,
+      "API key creation rate limit exceeded",
+      {
+        userId: session.user.id,
+        metadata: { remaining: rateLimit.remaining, resetAt: rateLimit.resetAt },
+      }
+    )
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again later." },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+          "X-RateLimit-Reset": rateLimit.resetAt.toString(),
+          "Retry-After": Math.ceil(rateLimit.resetAt / 1000).toString(),
+        },
+      }
+    )
+  }
 
   const body = await request.json()
   const { name } = body
@@ -43,19 +104,50 @@ export async function POST(request: NextRequest) {
     },
   })
 
-  return NextResponse.json({
-    id: apiKey.id,
-    name: apiKey.name,
-    key: rawKey,
-    keyPrefix,
-    createdAt: apiKey.createdAt,
-  })
+  return NextResponse.json(
+    {
+      id: apiKey.id,
+      name: apiKey.name,
+      key: rawKey,
+      keyPrefix,
+      createdAt: apiKey.createdAt,
+    },
+    {
+      headers: {
+        "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+        "X-RateLimit-Reset": rateLimit.resetAt.toString(),
+      },
+    }
+  )
 }
 
 export async function DELETE(request: NextRequest) {
   const headersList = await headers()
   const session = await auth.api.getSession({ headers: headersList })
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const rateLimit = deleteRateLimiter(`api-key-delete:${session.user.id}`)
+  if (!rateLimit.allowed) {
+    auditLogger.logSecurity(
+      AuditEventType.RATE_LIMIT_EXCEEDED,
+      "API key deletion rate limit exceeded",
+      {
+        userId: session.user.id,
+        metadata: { remaining: rateLimit.remaining, resetAt: rateLimit.resetAt },
+      }
+    )
+    return NextResponse.json(
+      { error: "Rate limit exceeded. Try again later." },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+          "X-RateLimit-Reset": rateLimit.resetAt.toString(),
+          "Retry-After": Math.ceil(rateLimit.resetAt / 1000).toString(),
+        },
+      }
+    )
+  }
 
   const { searchParams } = new URL(request.url)
   const keyId = searchParams.get("id")
@@ -67,5 +159,13 @@ export async function DELETE(request: NextRequest) {
     data: { revokedAt: new Date() },
   })
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json(
+    { success: true },
+    {
+      headers: {
+        "X-RateLimit-Remaining": rateLimit.remaining.toString(),
+        "X-RateLimit-Reset": rateLimit.resetAt.toString(),
+      },
+    }
+  )
 }

@@ -35,6 +35,7 @@ model User {
   organizationMemberships OrganizationMember[]   @relation("OrganizationMemberships")
   twoFactor     TwoFactor?
   twoFactorEnabled Boolean @default(false)
+  emailChangeRequests EmailChangeRequest[]
   
   @@index([roleId])
   @@index([isAdmin])
@@ -297,4 +298,17 @@ model TwoFactor {
   backupCodes String
   userId      String @unique
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmailChangeRequest {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  newEmail  String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
 }
