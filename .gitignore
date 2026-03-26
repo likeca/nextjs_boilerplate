@@ -42,7 +42,9 @@ next-env.d.ts
 
 /lib/generated/prisma
 
-# audit output (playwright qa script)
+# test & audit artifacts
+/test-results/
 audit-*.png
 audit-*.json
+*-test-results.json
 PLAYWRIGHT_QA_AUDIT_REPORT.md
