@@ -6,6 +6,7 @@ import { EmailService } from "./email-service";
 import { appConfig } from "./config";
 
 const isTwoFactorEnabled = process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== "false";
+const isEmailVerificationEnabled = process.env.NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION !== "false";
 
 // Track newly created users who need a welcome email after verification
 const pendingWelcomeEmails = new Set<string>();
@@ -54,7 +55,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
-    requireEmailVerification: true,
+    requireEmailVerification: isEmailVerificationEnabled,
     sendResetPassword: async ({ user, url }) => {
       console.log('🔐 [Auth] sendResetPassword called', { email: user.email, url });
       const emailService = new EmailService();
@@ -80,8 +81,8 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
-    sendOnSignUp: true,
-    autoSignInAfterVerification: false,
+    sendOnSignUp: isEmailVerificationEnabled,
+    autoSignInAfterVerification: !isEmailVerificationEnabled,
   },
   user: {
     additionalFields: {
