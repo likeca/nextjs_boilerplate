@@ -18,6 +18,7 @@ import {
   softwareAppSchema,
   faqSchema,
 } from "@/lib/seo";
+import { ExecuteButton } from "./execute";
 
 export const metadata = buildMetadata({
   title: `${appConfig.name} — Launch Your SaaS Faster`,
@@ -73,6 +74,9 @@ const homeFaqs = [
   },
 ];
 
+
+
+
 export default async function Home() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -105,6 +109,7 @@ export default async function Home() {
               <Button size="lg" variant="outline" asChild>
                 <Link href="#features">Learn More</Link>
               </Button>
+              <ExecuteButton />
             </div>
           </div>
         </section>
