@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { runMyScript } from './actions';
 import { Link } from 'lucide-react';
+import { useState as reactUseState } from 'react';
 
 export function ExecuteButton() {
   const handleAction = async () => {
@@ -16,3 +17,25 @@ export function ExecuteButton() {
     </Button>
   );
 }
+
+// Test
+// export function ToggleSwitch() {
+//   const [isOn, setIsOn] = useState(true);   // or false for default off
+
+//   const handleToggle = () => {
+//     setIsOn(!isOn);
+//   };
+
+//   return (
+//     <div className="toggle-container">
+//       <div
+//         className={`toggle-track ${isOn ? 'bg-blue-600' : 'bg-gray-600'}`}
+//         onClick={handleToggle}
+//       >
+//         <div className={`toggle-knob ${isOn ? 'translate-x-6' : 'translate-x-0'}`} />
+//       </div>
+//     </div>
+//   );
+// }
+
+// const useState: typeof reactUseState = reactUseState;

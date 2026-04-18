@@ -18,6 +18,7 @@ import {
   softwareAppSchema,
   faqSchema,
 } from "@/lib/seo";
+
 import { ExecuteButton } from "./execute";
 
 export const metadata = buildMetadata({
@@ -110,6 +111,7 @@ export default async function Home() {
                 <Link href="#features">Learn More</Link>
               </Button>
               <ExecuteButton />
+              {/* <ToggleSwitch /> */}
             </div>
           </div>
         </section>
