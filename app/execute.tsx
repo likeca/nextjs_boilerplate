@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { runMyScript } from './actions';
+import { runMyScript } from '@/actions/backend/actions';
 import { Link } from 'lucide-react';
 import { useState as reactUseState } from 'react';
 
