@@ -1,20 +1,27 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { runMyScript } from '@/actions/backend/actions';
-import { Link } from 'lucide-react';
 import { useState as reactUseState } from 'react';
 
 export function ExecuteButton() {
+  const [result, setResult] = reactUseState<string | null>(null);
+
   const handleAction = async () => {
-    const result = await runMyScript();
-    console.log(result.output);
+    const res = await runMyScript();
+    setResult(res.output ?? null);
   };
 
-  // return <button onClick={handleAction}>Run Shell Script</button>;
   return (
-    <Button size="lg" onClick={handleAction}>
-      <Link href="#"></Link>Execute Command
-    </Button>
+    <div className="flex flex-col gap-4">
+      <Button size="lg" onClick={handleAction}>
+        Execute Command
+      </Button>
+      {result && (
+        <pre className="p-4 bg-gray text-white rounded text-sm overflow-auto">
+          {result}
+        </pre>
+      )}
+    </div>
   );
 }
 

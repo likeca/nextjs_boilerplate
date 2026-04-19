@@ -484,3 +484,35 @@ Project Link: [https://github.com/habibjutt/nextjs_boilerplate](https://github.c
 <div align="center">
   <sub>Built with ❤️ by <a href="https://github.com/habibjutt">Habib Jutt</a> — If this saved you time, consider starring the repo ⭐</sub>
 </div>
+
+
+# Color
+pageBg:    "#080c14",
+modalBg:   "#0c1120",
+sectionBg: "#0f1628",
+inputBg:   "#0a0f1d",
+bannerBg:  "#0d1a35",
+
+borderSub: "#1c2540",
+borderMid: "#1e2d52",
+borderAct: "#2a4080",
+
+textPrimary:   "#e8ecf4",
+textSecondary: "#7a8aab",
+textMuted:     "#3d4f72",
+
+blue:     "#3b82f6",
+blueTag:  "#1d3461",
+blueBrd:  "#2a4a8c",
+
+green:    "#22c55e",
+greenBg:  "#0a1e0d",
+greenBrd: "#14532d",
+
+amber:    "#f59e0b",
+amberBg:  "#1c1200",
+amberBrd: "#78350f",
+
+red:    "#f87171",
+redBg:  "#1f0808",
+redBrd: "#7f1d1d",

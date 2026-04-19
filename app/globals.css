@@ -83,43 +83,78 @@
 }
 
 .dark {
-  --background: #0c0a09;
-  --foreground: #fafaf8;
-  --card: #1c1917;
-  --card-foreground: #fafaf8;
-  --popover: #1c1917;
-  --popover-foreground: #fafaf8;
-  --primary: #fafaf9;
-  --primary-foreground: #0c0a09;
-  --secondary: #292524;
-  --secondary-foreground: #fafaf8;
-  --muted: #292524;
-  --muted-foreground: #a8a29e;
-  --accent: #292524;
-  --accent-foreground: #fafaf8;
-  --destructive: #ef4444;
-  --border: #292524;
-  --input: #292524;
-  --ring: #d6d3d1;
-  --chart-1: #fafaf8;
-  --chart-2: #ef4444;
-  --chart-3: #10b981;
-  --chart-4: #f59e0b;
-  --chart-5: #818cf8;
-  --sidebar: #0c0a09;
-  --sidebar-foreground: #fafaf8;
-  --sidebar-primary: #fafaf9;
-  --sidebar-primary-foreground: #0c0a09;
-  --sidebar-accent: #292524;
-  --sidebar-accent-foreground: #fafaf8;
-  --sidebar-border: #292524;
-  --sidebar-ring: #d6d3d1;
+  --background: #080c14;
+  --foreground: #e8ecf4;
+  --card: #0f1628;
+  --card-foreground: #e8ecf4;
+  --popover: #0c1120;
+  --popover-foreground: #e8ecf4;
+  --primary: #3b82f6;
+  --primary-foreground: #e8ecf4;
+  --secondary: #0d1a35;
+  --secondary-foreground: #e8ecf4;
+  --muted: #1c2540;
+  --muted-foreground: #7a8aab;
+  --accent: #1e2d52;
+  --accent-foreground: #e8ecf4;
+  --destructive: #f87171;
+  --border: #1e2d52;
+  --input: #0a0f1d;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #22c55e;
+  --chart-3: #f59e0b;
+  --chart-4: #f87171;
+  --chart-5: #22c55e;
+  --sidebar: #0c1120;
+  --sidebar-foreground: #e8ecf4;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #e8ecf4;
+  --sidebar-accent: #1e2d52;
+  --sidebar-accent-foreground: #e8ecf4;
+  --sidebar-border: #1c2540;
+  --sidebar-ring: #3b82f6;
 }
+
+/* .dark {
+  --background: #080c14;
+  --foreground: #e8ecf4;
+  --card: #0f1628;
+  --card-foreground: #e8ecf4;
+  --popover: #0c1120;
+  --popover-foreground: #e8ecf4;
+  --primary: #3b82f6;
+  --primary-foreground: #e8ecf4;
+  --secondary: #0d1a35;
+  --secondary-foreground: #e8ecf4;
+  --muted: #1c2540;
+  --muted-foreground: #7a8aab;
+  --accent: #1e2d52;
+  --accent-foreground: #e8ecf4;
+  --destructive: #f87171;
+  --border: #1e2d52;
+  --input: #0a0f1d;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #22c55e;
+  --chart-3: #f59e0b;
+  --chart-4: #f87171;
+  --chart-5: #22c55e;
+  --sidebar: #0c1120;
+  --sidebar-foreground: #e8ecf4;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #e8ecf4;
+  --sidebar-accent: #1e2d52;
+  --sidebar-accent-foreground: #e8ecf4;
+  --sidebar-border: #1c2540;
+  --sidebar-ring: #3b82f6;
+} */
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -127,17 +162,32 @@
 
 /* Subtle entrance animation */
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in-up {
   animation: fade-in-up 0.5s ease both;
 }
 
-.delay-100 { animation-delay: 100ms; }
-.delay-200 { animation-delay: 200ms; }
-.delay-300 { animation-delay: 300ms; }
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
 
 /* TipTap Editor Styles */
 .ProseMirror {

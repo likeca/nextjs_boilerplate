@@ -53,7 +53,7 @@ export default function Error({
                 Development Error Details
               </span>
             </div>
-            <pre className="overflow-auto whitespace-pre-wrap break-words text-xs text-destructive/80 font-mono">
+            <pre className="overflow-auto whitespace-pre-wrap wrap-break-word text-xs text-destructive/80 font-mono">
               {error.message}
               {error.stack && `\n\n${error.stack}`}
             </pre>
