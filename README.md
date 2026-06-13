@@ -66,92 +66,92 @@
 
 ### 🔐 Authentication & Security
 
-| Feature | Description |
-|---------|-------------|
-| **Email & Password** | Secure signup/login with email verification |
-| **OAuth** | One-click Google & GitHub social login |
-| **Two-Factor Auth (2FA)** | TOTP-based 2FA with QR code setup |
-| **OTP Verification** | Email-based one-time password verification |
-| **Session Management** | Secure sessions with automatic token refresh |
-| **Password Recovery** | Forgot password & reset password flow |
-| **Rate Limiting** | IP-based rate limiting on auth endpoints |
-| **Security Headers** | CSP, HSTS, X-Frame-Options, and more |
-| **Audit Logging** | Track auth events, payments, and security incidents |
-| **RBAC** | Granular role-based access control with custom permissions |
+| Feature                   | Description                                                |
+| ------------------------- | ---------------------------------------------------------- |
+| **Email & Password**      | Secure signup/login with email verification                |
+| **OAuth**                 | One-click Google & GitHub social login                     |
+| **Two-Factor Auth (2FA)** | TOTP-based 2FA with QR code setup                          |
+| **OTP Verification**      | Email-based one-time password verification                 |
+| **Session Management**    | Secure sessions with automatic token refresh               |
+| **Password Recovery**     | Forgot password & reset password flow                      |
+| **Rate Limiting**         | IP-based rate limiting on auth endpoints                   |
+| **Security Headers**      | CSP, HSTS, X-Frame-Options, and more                       |
+| **Audit Logging**         | Track auth events, payments, and security incidents        |
+| **RBAC**                  | Granular role-based access control with custom permissions |
 
 ### 💳 Payments & Billing
 
-| Feature | Description |
-|---------|-------------|
-| **Stripe Integration** | Full Stripe Checkout & Customer Portal |
-| **Subscription Plans** | Starter, Professional, and Enterprise tiers |
-| **Webhook Handling** | Idempotent webhook processing with event deduplication |
-| **Billing Portal** | Self-service plan management for customers |
-| **Payment Receipts** | Automatic HTML email receipts after payment |
-| **Subscription Sync** | CLI tools to sync and verify subscription states |
+| Feature                | Description                                            |
+| ---------------------- | ------------------------------------------------------ |
+| **Stripe Integration** | Full Stripe Checkout & Customer Portal                 |
+| **Subscription Plans** | Starter, Professional, and Enterprise tiers            |
+| **Webhook Handling**   | Idempotent webhook processing with event deduplication |
+| **Billing Portal**     | Self-service plan management for customers             |
+| **Payment Receipts**   | Automatic HTML email receipts after payment            |
+| **Subscription Sync**  | CLI tools to sync and verify subscription states       |
 
 ### 🛠 Admin Dashboard
 
-| Feature | Description |
-|---------|-------------|
-| **User Management** | List, create, edit, delete users with filters |
-| **Blog CMS** | Rich text editor (Tiptap) with image support |
-| **Role Management** | Create custom roles and assign permissions |
-| **Permission System** | Fine-grained permissions for every feature |
-| **Organization Support** | Multi-tenant org management with member roles |
-| **Dashboard Analytics** | Interactive charts with Recharts |
-| **Settings Panel** | App-wide configuration management |
-| **Data Tables** | Sortable, filterable, paginated tables with drag-to-reorder columns |
+| Feature                  | Description                                                         |
+| ------------------------ | ------------------------------------------------------------------- |
+| **User Management**      | List, create, edit, delete users with filters                       |
+| **Blog CMS**             | Rich text editor (Tiptap) with image support                        |
+| **Role Management**      | Create custom roles and assign permissions                          |
+| **Permission System**    | Fine-grained permissions for every feature                          |
+| **Organization Support** | Multi-tenant org management with member roles                       |
+| **Dashboard Analytics**  | Interactive charts with Recharts                                    |
+| **Settings Panel**       | App-wide configuration management                                   |
+| **Data Tables**          | Sortable, filterable, paginated tables with drag-to-reorder columns |
 
 ### 📧 Email System
 
-| Feature | Description |
-|---------|-------------|
-| **Transactional Email** | Nodemailer with SMTP support |
-| **11 Email Templates** | Beautiful HTML templates for every event |
-| **Welcome Email** | Sent after email verification |
-| **OTP Email** | Verification codes with branded templates |
-| **Password Reset** | Secure reset links with expiry |
-| **Payment Receipts** | Detailed invoice-style receipts |
-| **Subscription Updates** | Plan change & cancellation notifications |
-| **Email Change** | Verification & notification for email updates |
-| **Contact Form** | Auto-response to contact submissions |
+| Feature                  | Description                                   |
+| ------------------------ | --------------------------------------------- |
+| **Transactional Email**  | Nodemailer with SMTP support                  |
+| **11 Email Templates**   | Beautiful HTML templates for every event      |
+| **Welcome Email**        | Sent after email verification                 |
+| **OTP Email**            | Verification codes with branded templates     |
+| **Password Reset**       | Secure reset links with expiry                |
+| **Payment Receipts**     | Detailed invoice-style receipts               |
+| **Subscription Updates** | Plan change & cancellation notifications      |
+| **Email Change**         | Verification & notification for email updates |
+| **Contact Form**         | Auto-response to contact submissions          |
 
 ### 🎨 UI & Design
 
-| Feature | Description |
-|---------|-------------|
-| **50+ Components** | Full shadcn/ui library + custom components |
-| **Dark Mode** | System, light, and dark theme toggle |
-| **Responsive Design** | Mobile-first layouts across all pages |
-| **Landing Page** | Hero, features, pricing, testimonials, FAQ sections |
-| **Cookie Consent** | GDPR-compliant cookie consent banner |
-| **Loading States** | Skeleton loaders and spinners throughout |
-| **Error Handling** | Custom error boundaries, 404, and error pages |
-| **Toast Notifications** | Sonner-based notification system |
+| Feature                 | Description                                         |
+| ----------------------- | --------------------------------------------------- |
+| **50+ Components**      | Full shadcn/ui library + custom components          |
+| **Dark Mode**           | System, light, and dark theme toggle                |
+| **Responsive Design**   | Mobile-first layouts across all pages               |
+| **Landing Page**        | Hero, features, pricing, testimonials, FAQ sections |
+| **Cookie Consent**      | GDPR-compliant cookie consent banner                |
+| **Loading States**      | Skeleton loaders and spinners throughout            |
+| **Error Handling**      | Custom error boundaries, 404, and error pages       |
+| **Toast Notifications** | Sonner-based notification system                    |
 
 ### 📈 SEO & Analytics
 
-| Feature | Description |
-|---------|-------------|
-| **SEO Optimized** | Dynamic sitemap.ts & robots.ts |
-| **Open Graph** | OG and Twitter Card meta tags |
-| **PostHog** | Product analytics integration |
-| **Google Analytics** | GA4 measurement support |
-| **Plausible** | Privacy-friendly analytics option |
+| Feature              | Description                       |
+| -------------------- | --------------------------------- |
+| **SEO Optimized**    | Dynamic sitemap.ts & robots.ts    |
+| **Open Graph**       | OG and Twitter Card meta tags     |
+| **PostHog**          | Product analytics integration     |
+| **Google Analytics** | GA4 measurement support           |
+| **Plausible**        | Privacy-friendly analytics option |
 
 ### 🏗 Developer Experience
 
-| Feature | Description |
-|---------|-------------|
-| **TypeScript** | Fully typed with strict mode |
-| **Prisma ORM** | Type-safe database queries with migrations |
-| **Zod Validation** | Runtime schema validation |
-| **Server Actions** | 30+ server actions for all CRUD operations |
-| **Server Components** | RSC-first architecture, minimal client JS |
-| **API Keys** | Generate and manage API keys per user |
-| **CLI Scripts** | Admin setup, plan seeding, subscription sync |
-| **ESLint** | Pre-configured linting |
+| Feature               | Description                                  |
+| --------------------- | -------------------------------------------- |
+| **TypeScript**        | Fully typed with strict mode                 |
+| **Prisma ORM**        | Type-safe database queries with migrations   |
+| **Zod Validation**    | Runtime schema validation                    |
+| **Server Actions**    | 30+ server actions for all CRUD operations   |
+| **Server Components** | RSC-first architecture, minimal client JS    |
+| **API Keys**          | Generate and manage API keys per user        |
+| **CLI Scripts**       | Admin setup, plan seeding, subscription sync |
+| **ESLint**            | Pre-configured linting                       |
 
 <br />
 
@@ -168,7 +168,7 @@
 ```bash
 git clone https://github.com/habibjutt/nextjs_boilerplate.git
 cd nextjs_boilerplate
-npm install
+pnpm install
 ```
 
 ### 2. Configure environment
@@ -182,14 +182,31 @@ Edit `.env` with your credentials — see [Environment Variables](#-environment-
 ### 3. Set up the database
 
 ```bash
-npx prisma generate
-npx prisma db push
+# Install VSCode Prisma extension, crate local postgres DB, get connecton DATABASE_URL
+pnpm prisma dev ls
+
+# Prisma version
+pnpm prisma version
+pnpm prisma validate
+pnpm prisma format
+
+pnpm prisma migrate reset                 # Redeploy and will delete existing data
+pnpm prisma migrate dev --name add_log1   # After schema change, generate migration change
+pnpm prisma migrate status
+pnpm prisma migrate deploy
+
+# Seed data, use package.json or in prisma.config.ts
+package.json
+"prisma": {
+  "schema": "prisma/seed.ts"
+}
 ```
 
 ### 4. Create your admin user
 
 ```bash
 npm run setup:admin
+pnpm setup:admin
 ```
 
 ### 5. Seed pricing plans
@@ -242,36 +259,36 @@ cp .env.example .env
 <details>
 <summary><strong>Click to expand full environment variable reference</strong></summary>
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| **App** | | |
-| `NEXT_PUBLIC_APP_NAME` | ✅ | Your app name (shown in UI & emails) |
-| `NEXT_PUBLIC_APP_URL` | ✅ | Public URL (e.g., `http://localhost:3000`) |
-| `NEXT_PUBLIC_APP_DESCRIPTION` | ❌ | App description for meta tags |
-| **Database** | | |
-| `DATABASE_URL` | ✅ | PostgreSQL connection string |
-| **Authentication** | | |
-| `BETTER_AUTH_SECRET` | ✅ | Secret key (min 32 chars) for signing tokens |
-| `BETTER_AUTH_URL` | ✅ | Auth base URL (same as app URL) |
-| **Stripe** | | |
-| `STRIPE_SECRET_KEY` | ✅ | Stripe secret key (`sk_test_...`) |
-| `STRIPE_WEBHOOK_SECRET` | ✅ | Webhook signing secret (`whsec_...`) |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅ | Publishable key (`pk_test_...`) |
-| **Email / SMTP** | | |
-| `SMTP_HOST` | ✅ | SMTP server host |
-| `SMTP_PORT` | ✅ | SMTP port (usually `587`) |
-| `SMTP_USER` | ✅ | SMTP username |
-| `SMTP_PASSWORD` | ✅ | SMTP password |
-| `EMAIL_FROM` | ✅ | Sender email address |
-| **OAuth (optional)** | | |
-| `GOOGLE_CLIENT_ID` | ❌ | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | ❌ | Google OAuth client secret |
-| `GITHUB_CLIENT_ID` | ❌ | GitHub OAuth client ID |
-| `GITHUB_CLIENT_SECRET` | ❌ | GitHub OAuth client secret |
-| **Analytics (optional)** | | |
-| `NEXT_PUBLIC_POSTHOG_KEY` | ❌ | PostHog project API key |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID` | ❌ | Google Analytics 4 measurement ID |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | ❌ | Plausible analytics domain |
+| Variable                             | Required | Description                                  |
+| ------------------------------------ | -------- | -------------------------------------------- |
+| **App**                              |          |                                              |
+| `NEXT_PUBLIC_APP_NAME`               | ✅       | Your app name (shown in UI & emails)         |
+| `NEXT_PUBLIC_APP_URL`                | ✅       | Public URL (e.g., `http://localhost:3000`)   |
+| `NEXT_PUBLIC_APP_DESCRIPTION`        | ❌       | App description for meta tags                |
+| **Database**                         |          |                                              |
+| `DATABASE_URL`                       | ✅       | PostgreSQL connection string                 |
+| **Authentication**                   |          |                                              |
+| `BETTER_AUTH_SECRET`                 | ✅       | Secret key (min 32 chars) for signing tokens |
+| `BETTER_AUTH_URL`                    | ✅       | Auth base URL (same as app URL)              |
+| **Stripe**                           |          |                                              |
+| `STRIPE_SECRET_KEY`                  | ✅       | Stripe secret key (`sk_test_...`)            |
+| `STRIPE_WEBHOOK_SECRET`              | ✅       | Webhook signing secret (`whsec_...`)         |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ✅       | Publishable key (`pk_test_...`)              |
+| **Email / SMTP**                     |          |                                              |
+| `SMTP_HOST`                          | ✅       | SMTP server host                             |
+| `SMTP_PORT`                          | ✅       | SMTP port (usually `587`)                    |
+| `SMTP_USER`                          | ✅       | SMTP username                                |
+| `SMTP_PASSWORD`                      | ✅       | SMTP password                                |
+| `EMAIL_FROM`                         | ✅       | Sender email address                         |
+| **OAuth (optional)**                 |          |                                              |
+| `GOOGLE_CLIENT_ID`                   | ❌       | Google OAuth client ID                       |
+| `GOOGLE_CLIENT_SECRET`               | ❌       | Google OAuth client secret                   |
+| `GITHUB_CLIENT_ID`                   | ❌       | GitHub OAuth client ID                       |
+| `GITHUB_CLIENT_SECRET`               | ❌       | GitHub OAuth client secret                   |
+| **Analytics (optional)**             |          |                                              |
+| `NEXT_PUBLIC_POSTHOG_KEY`            | ❌       | PostHog project API key                      |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID`      | ❌       | Google Analytics 4 measurement ID            |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`       | ❌       | Plausible analytics domain                   |
 
 </details>
 
@@ -400,19 +417,20 @@ npm run setup:admin
 
 # Option 2: Sign up normally, then promote via Prisma Studio
 npx prisma studio
+pnpm prisma studio  # Use VSCode Prisma Extension
 # → Navigate to the User table → Set isAdmin to true
 ```
 
 ### Available CLI Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run setup:admin` | Create an admin user |
-| `npm run seed:plans` | Seed Stripe subscription plans |
-| `npm run check:subscriptions` | Verify subscription states |
-| `npm run sync:subscriptions` | Sync subscriptions with Stripe |
-| `npm run setup:blog-permissions` | Set up blog-related permissions |
-| `npm run studio` | Open Prisma Studio (database GUI) |
+| Script                           | Description                       |
+| -------------------------------- | --------------------------------- |
+| `npm run setup:admin`            | Create an admin user              |
+| `npm run seed:plans`             | Seed Stripe subscription plans    |
+| `npm run check:subscriptions`    | Verify subscription states        |
+| `npm run sync:subscriptions`     | Sync subscriptions with Stripe    |
+| `npm run setup:blog-permissions` | Set up blog-related permissions   |
+| `npm run studio`                 | Open Prisma Studio (database GUI) |
 
 <br />
 
@@ -484,35 +502,3 @@ Project Link: [https://github.com/habibjutt/nextjs_boilerplate](https://github.c
 <div align="center">
   <sub>Built with ❤️ by <a href="https://github.com/habibjutt">Habib Jutt</a> — If this saved you time, consider starring the repo ⭐</sub>
 </div>
-
-
-# Color
-pageBg:    "#080c14",
-modalBg:   "#0c1120",
-sectionBg: "#0f1628",
-inputBg:   "#0a0f1d",
-bannerBg:  "#0d1a35",
-
-borderSub: "#1c2540",
-borderMid: "#1e2d52",
-borderAct: "#2a4080",
-
-textPrimary:   "#e8ecf4",
-textSecondary: "#7a8aab",
-textMuted:     "#3d4f72",
-
-blue:     "#3b82f6",
-blueTag:  "#1d3461",
-blueBrd:  "#2a4a8c",
-
-green:    "#22c55e",
-greenBg:  "#0a1e0d",
-greenBrd: "#14532d",
-
-amber:    "#f59e0b",
-amberBg:  "#1c1200",
-amberBrd: "#78350f",
-
-red:    "#f87171",
-redBg:  "#1f0808",
-redBrd: "#7f1d1d",

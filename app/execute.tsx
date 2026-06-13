@@ -17,7 +17,7 @@ export function ExecuteButton() {
         Execute Command
       </Button>
       {result && (
-        <pre className="p-4 bg-gray text-white rounded text-sm overflow-auto">
+        <pre className="text-left p-4 rounded text-sm overflow-auto">
           {result}
         </pre>
       )}

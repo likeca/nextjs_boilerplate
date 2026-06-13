@@ -1,0 +1,122 @@
+model User {
+  id               String   @id @default(cuid())
+  name             String
+  email            String   @unique
+  emailVerified    Boolean  @default(false)
+  image            String?
+  phone            String?
+  isAdmin          Boolean  @default(false)
+  roleId           String?
+  role             Role?    @relation(fields: [roleId], references: [id])
+  stripeCustomerId String?  @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  sessions                Session[]
+  accounts                Account[]
+  subscriptions           Subscription[]
+  blogs                   Blog[]
+  apiKeys                 ApiKey[]
+  ownedOrganizations      Organization[]       @relation("OwnedOrganizations")
+  organizationMemberships OrganizationMember[] @relation("OrganizationMemberships")
+  twoFactor               TwoFactor?
+  twoFactorEnabled        Boolean              @default(false)
+  emailChangeRequests     EmailChangeRequest[]
+
+  @@index([roleId])
+  @@index([isAdmin])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id           String    @id @default(cuid())
+  accountId    String
+  providerId   String
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken  String?
+  refreshToken String?
+  idToken      String?
+  expiresAt    DateTime?
+  password     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([providerId, accountId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([identifier, value])
+}
+
+model Log {
+  id        Int      @id @default(autoincrement())
+  message   String
+  level     String   @default("info")
+  metadata  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([level])
+  @@index([createdAt])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  isSystem    Boolean  @default(false) // System roles cannot be deleted
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users           User[]
+  rolePermissions RolePermission[]
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  resource    String // e.g., "user", "post", "settings"
+  action      String // e.g., "create", "read", "update", "delete"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  rolePermissions RolePermission[]
+
+  @@unique([resource, action])
+}
+
+model RolePermission {
+  id           String     @id @default(cuid())
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@unique([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
