@@ -1,7 +1,7 @@
-'use client';
-import { Button } from '@/components/ui/button';
-import { runMyScript } from '@/actions/backend/actions';
-import { useState as reactUseState } from 'react';
+"use client";
+import { Button } from "@/components/ui/button";
+import { runMyScript } from "@/actions/backend/actions";
+import { useState as reactUseState } from "react";
 
 export function ExecuteButton() {
   const [result, setResult] = reactUseState<string | null>(null);
@@ -14,7 +14,7 @@ export function ExecuteButton() {
   return (
     <div className="flex flex-col gap-4">
       <Button size="lg" onClick={handleAction}>
-        Execute Command
+        Backend Execute Command
       </Button>
       {result && (
         <pre className="text-left p-4 rounded text-sm overflow-auto">
