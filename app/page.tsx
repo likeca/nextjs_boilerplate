@@ -19,7 +19,7 @@ import {
   faqSchema,
 } from "@/lib/seo";
 
-import { ExecuteButton } from "./execute";
+import { BackendExecuteButton } from "./execute";
 
 export const metadata = buildMetadata({
   title: `${appConfig.name} — Launch Your SaaS Faster`,
@@ -75,9 +75,6 @@ const homeFaqs = [
   },
 ];
 
-
-
-
 export default async function Home() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -87,7 +84,14 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <JsonLd data={[organizationSchema(), webSiteSchema(), softwareAppSchema(), faqSchema(homeFaqs)]} />
+      <JsonLd
+        data={[
+          organizationSchema(),
+          webSiteSchema(),
+          softwareAppSchema(),
+          faqSchema(homeFaqs),
+        ]}
+      />
       <Header user={session?.user} isAdmin={isAdmin} />
 
       <main className="flex flex-col">
@@ -110,8 +114,7 @@ export default async function Home() {
               <Button size="lg" variant="outline" asChild>
                 <Link href="#features">Learn More</Link>
               </Button>
-              <ExecuteButton />
-              {/* <ToggleSwitch /> */}
+              <BackendExecuteButton />
             </div>
           </div>
         </section>

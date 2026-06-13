@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { runMyScript } from "@/actions/backend/actions";
 import { useState as reactUseState } from "react";
 
-export function ExecuteButton() {
+export function BackendExecuteButton() {
   const [result, setResult] = reactUseState<string | null>(null);
 
   const handleAction = async () => {
