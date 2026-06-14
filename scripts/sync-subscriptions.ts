@@ -107,8 +107,8 @@ async function main() {
             stripeSubscriptionId: stripeSub.id,
             stripeCustomerId: stripeSub.customer as string,
             status: stripeSub.status,
-            currentPeriodStart: new Date(stripeSub.current_period_start * 1000),
-            currentPeriodEnd: new Date(stripeSub.current_period_end * 1000),
+            currentPeriodStart: new Date(stripeSub.items.data[0].current_period_start * 1000),
+            currentPeriodEnd: new Date(stripeSub.items.data[0].current_period_end * 1000),
             cancelAtPeriodEnd: stripeSub.cancel_at_period_end,
           },
         });
