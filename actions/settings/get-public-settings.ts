@@ -18,6 +18,7 @@ const PUBLIC_SETTING_KEYS = [
   'whatsappNumber',
   'footerText',
   // Social Media
+  'meta',
   'facebook',
   'twitter',
   'instagram',
@@ -39,6 +40,7 @@ export type PublicSettings = {
   googleMapsUrl: string;
   whatsappNumber: string;
   footerText: string;
+  meta: string;
   facebook: string;
   twitter: string;
   instagram: string;
@@ -66,6 +68,7 @@ export async function getPublicSettings(): Promise<{ success: true; data: Public
       googleMapsUrl: '',
       whatsappNumber: '',
       footerText: '',
+      meta: '',
       facebook: '',
       twitter: '',
       instagram: '',
@@ -74,12 +77,15 @@ export async function getPublicSettings(): Promise<{ success: true; data: Public
       tiktok: '',
     };
 
-    const data = settings.reduce((acc, setting) => {
-      if (setting.key in acc) {
-        (acc as Record<string, string>)[setting.key] = setting.value || '';
-      }
-      return acc;
-    }, { ...defaults });
+    const data = settings.reduce(
+      (acc, setting) => {
+        if (setting.key in acc) {
+          (acc as Record<string, string>)[setting.key] = setting.value || '';
+        }
+        return acc;
+      },
+      { ...defaults },
+    );
 
     return { success: true, data };
   } catch (error) {

@@ -1,12 +1,12 @@
-import { headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import { stripe, stripeConfig } from "@/lib/payments/stripe/config";
-import { prisma } from "@/lib/prisma";
-import Stripe from "stripe";
-import { getClientIdentifier, createRateLimitMiddleware } from "@/lib/security/rate-limiter";
-import { auditLogger, AuditEventType } from "@/lib/security/audit-logger";
-import { createEventGuard } from "@/lib/security/webhook-event-store";
-import { EmailService } from "@/lib/email-service";
+import { headers } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
+import { stripe, stripeConfig } from '@/lib/payments/stripe/config';
+import { prisma } from '@/lib/prisma';
+import Stripe from 'stripe';
+import { getClientIdentifier, createRateLimitMiddleware } from '@/lib/security/rate-limiter';
+import { auditLogger, AuditEventType } from '@/lib/security/audit-logger';
+import { createEventGuard } from '@/lib/security/webhook-event-store';
+import { EmailService } from '@/lib/email-service';
 
 // Rate limiter: 100 requests per 15 minutes per IP
 const rateLimiter = createRateLimitMiddleware(100, 15 * 60 * 1000);
@@ -14,135 +14,109 @@ const rateLimiter = createRateLimitMiddleware(100, 15 * 60 * 1000);
 export async function POST(request: NextRequest) {
   const requestHeaders = await headers();
   const clientIp = getClientIdentifier(requestHeaders);
-  
+
   // Apply rate limiting
   const rateLimit = rateLimiter(clientIp);
   if (!rateLimit.allowed) {
-    auditLogger.logSecurity(
-      AuditEventType.RATE_LIMIT_EXCEEDED,
-      "Webhook rate limit exceeded",
-      {
-        ipAddress: clientIp,
-        metadata: {
-          remaining: rateLimit.remaining,
-          resetAt: rateLimit.resetAt,
-        },
-      }
-    );
-    
+    auditLogger.logSecurity(AuditEventType.RATE_LIMIT_EXCEEDED, 'Webhook rate limit exceeded', {
+      ipAddress: clientIp,
+      metadata: {
+        remaining: rateLimit.remaining,
+        resetAt: rateLimit.resetAt,
+      },
+    });
+
     return NextResponse.json(
-      { error: "Rate limit exceeded" },
-      { 
+      { error: 'Rate limit exceeded' },
+      {
         status: 429,
         headers: {
-          "X-RateLimit-Remaining": rateLimit.remaining.toString(),
-          "X-RateLimit-Reset": rateLimit.resetAt.toString(),
-          "Retry-After": Math.ceil(rateLimit.resetAt / 1000).toString(),
+          'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+          'X-RateLimit-Reset': rateLimit.resetAt.toString(),
+          'Retry-After': Math.ceil(rateLimit.resetAt / 1000).toString(),
         },
-      }
+      },
     );
   }
 
   const body = await request.text();
-  const signature = requestHeaders.get("stripe-signature");
+  const signature = requestHeaders.get('stripe-signature');
 
   if (!signature) {
-    auditLogger.logSecurity(
-      AuditEventType.WEBHOOK_SIGNATURE_INVALID,
-      "Missing webhook signature",
-      { ipAddress: clientIp }
-    );
-    
-    return NextResponse.json(
-      { error: "Signature required" },
-      { status: 400 }
-    );
+    auditLogger.logSecurity(AuditEventType.WEBHOOK_SIGNATURE_INVALID, 'Missing webhook signature', {
+      ipAddress: clientIp,
+    });
+
+    return NextResponse.json({ error: 'Signature required' }, { status: 400 });
   }
 
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      stripeConfig.webhookSecret
-    );
-    
-    auditLogger.logWebhook(
-      AuditEventType.WEBHOOK_SIGNATURE_VALID,
-      "success",
-      "Webhook signature verified",
-      {
-        ipAddress: clientIp,
-        webhookEventId: event.id,
-        stripeEventType: event.type,
-      }
-    );
+    event = stripe.webhooks.constructEvent(body, signature, stripeConfig.webhookSecret);
+
+    auditLogger.logWebhook(AuditEventType.WEBHOOK_SIGNATURE_VALID, 'success', 'Webhook signature verified', {
+      ipAddress: clientIp,
+      webhookEventId: event.id,
+      stripeEventType: event.type,
+    });
   } catch (error) {
     auditLogger.logWebhook(
       AuditEventType.WEBHOOK_SIGNATURE_INVALID,
-      "failure",
-      "Webhook signature verification failed",
+      'failure',
+      'Webhook signature verification failed',
       {
         ipAddress: clientIp,
         error: error instanceof Error ? error : new Error(String(error)),
-      }
+      },
     );
-    
-    return NextResponse.json(
-      { error: "Invalid signature" },
-      { status: 400 }
-    );
+
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
   // Check for replay attacks and duplicate processing
   const eventGuard = createEventGuard(event.id, event.type, event.created);
   if (!eventGuard.shouldProcess) {
-    auditLogger.logWebhook(
-      AuditEventType.WEBHOOK_PROCESSING_ERROR,
-      "warning",
-      `Event skipped: ${eventGuard.reason}`,
-      {
-        webhookEventId: event.id,
-        stripeEventType: event.type,
-        metadata: { reason: eventGuard.reason },
-      }
-    );
-    
+    auditLogger.logWebhook(AuditEventType.WEBHOOK_PROCESSING_ERROR, 'warning', `Event skipped: ${eventGuard.reason}`, {
+      webhookEventId: event.id,
+      stripeEventType: event.type,
+      metadata: { reason: eventGuard.reason },
+    });
+
     return NextResponse.json({ received: true, processed: false, reason: eventGuard.reason });
   }
 
   try {
     switch (event.type) {
-      case "checkout.session.completed":
+      case 'checkout.session.completed':
         await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
         break;
 
-      case "customer.subscription.updated":
+      case 'customer.subscription.updated':
         await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
         break;
 
-      case "customer.subscription.deleted":
+      case 'customer.subscription.deleted':
         await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
         break;
 
-      case "invoice.payment_succeeded":
+      case 'invoice.payment_succeeded':
         await handleInvoicePaymentSucceeded(event.data.object as Stripe.Invoice);
         break;
 
-      case "invoice.payment_failed":
+      case 'invoice.payment_failed':
         await handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
         break;
 
       default:
         auditLogger.logWebhook(
           AuditEventType.WEBHOOK_PROCESSING_ERROR,
-          "warning",
+          'warning',
           `Unhandled event type: ${event.type}`,
           {
             webhookEventId: event.id,
             stripeEventType: event.type,
-          }
+          },
         );
     }
 
@@ -152,27 +126,19 @@ export async function POST(request: NextRequest) {
       { received: true },
       {
         headers: {
-          "X-Content-Type-Options": "nosniff",
-          "X-Frame-Options": "DENY",
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY',
         },
-      }
+      },
     );
   } catch (error) {
-    auditLogger.logWebhook(
-      AuditEventType.WEBHOOK_PROCESSING_ERROR,
-      "failure",
-      "Error processing webhook",
-      {
-        webhookEventId: event.id,
-        stripeEventType: event.type,
-        error: error instanceof Error ? error : new Error(String(error)),
-      }
-    );
-    
-    return NextResponse.json(
-      { error: "Processing failed" },
-      { status: 500 }
-    );
+    auditLogger.logWebhook(AuditEventType.WEBHOOK_PROCESSING_ERROR, 'failure', 'Error processing webhook', {
+      webhookEventId: event.id,
+      stripeEventType: event.type,
+      error: error instanceof Error ? error : new Error(String(error)),
+    });
+
+    return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
   }
 }
 
@@ -184,37 +150,32 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
   auditLogger.logPayment(
     AuditEventType.CHECKOUT_SESSION_COMPLETED,
-    "success",
-    "Processing checkout session completed",
+    'success',
+    'Processing checkout session completed',
     {
       userId,
       resourceId: session.id,
       metadata: { subscriptionId, customerId, planId },
-    }
+    },
   );
 
   if (!userId || !planId) {
-    auditLogger.logPayment(
-      AuditEventType.CHECKOUT_SESSION_FAILED,
-      "failure",
-      "Missing metadata in checkout session",
-      {
-        resourceId: session.id,
-        metadata: { hasUserId: !!userId, hasPlanId: !!planId },
-      }
-    );
+    auditLogger.logPayment(AuditEventType.CHECKOUT_SESSION_FAILED, 'failure', 'Missing metadata in checkout session', {
+      resourceId: session.id,
+      metadata: { hasUserId: !!userId, hasPlanId: !!planId },
+    });
     return;
   }
 
   if (!subscriptionId) {
     auditLogger.logPayment(
       AuditEventType.CHECKOUT_SESSION_FAILED,
-      "failure",
-      "No subscription ID in checkout session",
+      'failure',
+      'No subscription ID in checkout session',
       {
         userId,
         resourceId: session.id,
-      }
+      },
     );
     return;
   }
@@ -230,13 +191,13 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     if (!plan) {
       auditLogger.logPayment(
         AuditEventType.PAYMENT_VALIDATION_FAILED,
-        "failure",
-        "Plan not found for checkout session",
+        'failure',
+        'Plan not found for checkout session',
         {
           userId,
           resourceId: session.id,
           metadata: { planId },
-        }
+        },
       );
       throw new Error(`Plan not found: ${planId}`);
     }
@@ -245,8 +206,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     if (session.amount_total !== plan.amount) {
       auditLogger.logPayment(
         AuditEventType.PAYMENT_VALIDATION_FAILED,
-        "failure",
-        "Amount mismatch in checkout session",
+        'failure',
+        'Amount mismatch in checkout session',
         {
           userId,
           resourceId: session.id,
@@ -255,19 +216,17 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
             received: session.amount_total,
             sessionId: session.id,
           },
-        }
+        },
       );
-      throw new Error(
-        `Amount mismatch: expected ${plan.amount}, got ${session.amount_total}`
-      );
+      throw new Error(`Amount mismatch: expected ${plan.amount}, got ${session.amount_total}`);
     }
 
     // 3. Validate currency matches expected plan currency
     if (session.currency !== plan.currency) {
       auditLogger.logPayment(
         AuditEventType.PAYMENT_VALIDATION_FAILED,
-        "failure",
-        "Currency mismatch in checkout session",
+        'failure',
+        'Currency mismatch in checkout session',
         {
           userId,
           resourceId: session.id,
@@ -275,11 +234,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
             expected: plan.currency,
             received: session.currency,
           },
-        }
+        },
       );
-      throw new Error(
-        `Currency mismatch: expected ${plan.currency}, got ${session.currency}`
-      );
+      throw new Error(`Currency mismatch: expected ${plan.currency}, got ${session.currency}`);
     }
 
     // 4. Fetch user early — needed for customer validation and email notification
@@ -292,8 +249,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     if (user?.stripeCustomerId && session.customer !== user.stripeCustomerId) {
       auditLogger.logPayment(
         AuditEventType.PAYMENT_VALIDATION_FAILED,
-        "failure",
-        "Customer ID mismatch in checkout session",
+        'failure',
+        'Customer ID mismatch in checkout session',
         {
           userId,
           resourceId: session.id,
@@ -301,23 +258,20 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
             expected: user.stripeCustomerId,
             received: session.customer,
           },
-        }
+        },
       );
-      throw new Error(
-        `Customer mismatch: expected ${user.stripeCustomerId}, got ${session.customer}`
-      );
+      throw new Error(`Customer mismatch: expected ${user.stripeCustomerId}, got ${session.customer}`);
     }
 
     // 6. Retrieve subscription and validate interval
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
-    const subscriptionInterval =
-      subscription.items.data[0]?.price?.recurring?.interval;
+    const subscriptionInterval = subscription.items.data[0]?.price?.recurring?.interval;
     if (!subscriptionInterval || subscriptionInterval !== plan.interval) {
       auditLogger.logPayment(
         AuditEventType.PAYMENT_VALIDATION_FAILED,
-        "failure",
-        "Subscription interval mismatch in checkout session",
+        'failure',
+        'Subscription interval mismatch in checkout session',
         {
           userId,
           resourceId: session.id,
@@ -325,11 +279,9 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
             expected: plan.interval,
             received: subscriptionInterval ?? null,
           },
-        }
+        },
       );
-      throw new Error(
-        `Interval mismatch: expected ${plan.interval}, got ${subscriptionInterval}`
-      );
+      throw new Error(`Interval mismatch: expected ${plan.interval}, got ${subscriptionInterval}`);
     }
 
     // --- All validations passed — proceed with database writes ---
@@ -338,8 +290,8 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       where: { stripeSubscriptionId: subscriptionId },
       update: {
         status: subscription.status,
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodStart: new Date(subscription.items.data[0].current_period_start * 1000),
+        currentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
         cancelAtPeriodEnd: subscription.cancel_at_period_end,
       },
       create: {
@@ -348,26 +300,21 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
         stripeSubscriptionId: subscriptionId,
         stripeCustomerId: customerId,
         status: subscription.status,
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodStart: new Date(subscription.items.data[0].current_period_start * 1000),
+        currentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
         cancelAtPeriodEnd: subscription.cancel_at_period_end,
       },
     });
 
-    auditLogger.logPayment(
-      AuditEventType.SUBSCRIPTION_CREATED,
-      "success",
-      "Subscription created successfully",
-      {
-        userId,
-        resourceId: dbSubscription.id,
-        metadata: {
-          stripeSubscriptionId: subscriptionId,
-          planId,
-          status: subscription.status,
-        },
-      }
-    );
+    auditLogger.logPayment(AuditEventType.SUBSCRIPTION_CREATED, 'success', 'Subscription created successfully', {
+      userId,
+      resourceId: dbSubscription.id,
+      metadata: {
+        stripeSubscriptionId: subscriptionId,
+        planId,
+        status: subscription.status,
+      },
+    });
 
     // Send subscription confirmation email (reuse user fetched above)
     try {
@@ -380,7 +327,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
             recipientEmail: user.email,
             recipientName: user.name || user.email.split('@')[0],
             planName: planId,
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000).toLocaleDateString(),
+            currentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000).toLocaleDateString(),
           },
         });
       }
@@ -396,35 +343,30 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
           // Non-null: amount_total and currency were validated equal to plan values above
           amount: session.amount_total!,
           currency: session.currency!,
-          status: "succeeded",
+          status: 'succeeded',
           description: `Subscription payment for plan ${planId}`,
         },
       });
 
-      auditLogger.logPayment(
-        AuditEventType.PAYMENT_SUCCEEDED,
-        "success",
-        "Payment record created",
-        {
-          userId,
-          resourceId: session.payment_intent as string,
-          metadata: {
-            amount: session.amount_total,
-            currency: session.currency,
-          },
-        }
-      );
+      auditLogger.logPayment(AuditEventType.PAYMENT_SUCCEEDED, 'success', 'Payment record created', {
+        userId,
+        resourceId: session.payment_intent as string,
+        metadata: {
+          amount: session.amount_total,
+          currency: session.currency,
+        },
+      });
     }
   } catch (error) {
     auditLogger.logPayment(
       AuditEventType.CHECKOUT_SESSION_FAILED,
-      "failure",
-      "Error in handleCheckoutSessionCompleted",
+      'failure',
+      'Error in handleCheckoutSessionCompleted',
       {
         userId,
         resourceId: session.id,
         error: error instanceof Error ? error : new Error(String(error)),
-      }
+      },
     );
     throw error;
   }
@@ -436,34 +378,24 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
       where: { stripeSubscriptionId: subscription.id },
       data: {
         status: subscription.status,
-        currentPeriodStart: new Date(subscription.current_period_start * 1000),
-        currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        currentPeriodStart: new Date(subscription.items.data[0].current_period_start * 1000),
+        currentPeriodEnd: new Date(subscription.items.data[0].current_period_end * 1000),
         cancelAtPeriodEnd: subscription.cancel_at_period_end,
       },
     });
 
-    auditLogger.logPayment(
-      AuditEventType.SUBSCRIPTION_UPDATED,
-      "success",
-      "Subscription updated",
-      {
-        resourceId: subscription.id,
-        metadata: {
-          status: subscription.status,
-          cancelAtPeriodEnd: subscription.cancel_at_period_end,
-        },
-      }
-    );
+    auditLogger.logPayment(AuditEventType.SUBSCRIPTION_UPDATED, 'success', 'Subscription updated', {
+      resourceId: subscription.id,
+      metadata: {
+        status: subscription.status,
+        cancelAtPeriodEnd: subscription.cancel_at_period_end,
+      },
+    });
   } catch (error) {
-    auditLogger.logPayment(
-      AuditEventType.SUBSCRIPTION_UPDATED,
-      "failure",
-      "Failed to update subscription",
-      {
-        resourceId: subscription.id,
-        error: error instanceof Error ? error : new Error(String(error)),
-      }
-    );
+    auditLogger.logPayment(AuditEventType.SUBSCRIPTION_UPDATED, 'failure', 'Failed to update subscription', {
+      resourceId: subscription.id,
+      error: error instanceof Error ? error : new Error(String(error)),
+    });
     throw error;
   }
 }
@@ -478,18 +410,13 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     await prisma.subscription.updateMany({
       where: { stripeSubscriptionId: subscription.id },
       data: {
-        status: "canceled",
+        status: 'canceled',
       },
     });
 
-    auditLogger.logPayment(
-      AuditEventType.SUBSCRIPTION_DELETED,
-      "success",
-      "Subscription deleted",
-      {
-        resourceId: subscription.id,
-      }
-    );
+    auditLogger.logPayment(AuditEventType.SUBSCRIPTION_DELETED, 'success', 'Subscription deleted', {
+      resourceId: subscription.id,
+    });
 
     // Send cancellation email
     if (dbSubscription) {
@@ -514,15 +441,10 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
       }
     }
   } catch (error) {
-    auditLogger.logPayment(
-      AuditEventType.SUBSCRIPTION_DELETED,
-      "failure",
-      "Failed to delete subscription",
-      {
-        resourceId: subscription.id,
-        error: error instanceof Error ? error : new Error(String(error)),
-      }
-    );
+    auditLogger.logPayment(AuditEventType.SUBSCRIPTION_DELETED, 'failure', 'Failed to delete subscription', {
+      resourceId: subscription.id,
+      error: error instanceof Error ? error : new Error(String(error)),
+    });
     throw error;
   }
 }
@@ -530,18 +452,18 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
   try {
     const subscription = await prisma.subscription.findFirst({
-      where: { stripeSubscriptionId: invoice.subscription as string },
+      where: { stripeSubscriptionId: invoice.lines.data[0].subscription as string },
     });
 
     if (!subscription) {
       auditLogger.logPayment(
         AuditEventType.PAYMENT_SUCCEEDED,
-        "warning",
-        "Subscription not found for invoice payment",
+        'warning',
+        'Subscription not found for invoice payment',
         {
           resourceId: invoice.id,
-          metadata: { subscriptionId: invoice.subscription },
-        }
+          metadata: { subscriptionId: invoice.lines.data[0].subscription },
+        },
       );
       return;
     }
@@ -549,28 +471,23 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
     await prisma.payment.create({
       data: {
         userId: subscription.userId,
-        stripePaymentId: invoice.payment_intent as string,
+        stripePaymentId: invoice.payments?.data[0].payment.payment_intent as string,
         amount: invoice.amount_paid,
         currency: invoice.currency,
-        status: "succeeded",
+        status: 'succeeded',
         description: `Invoice payment for subscription ${subscription.id}`,
       },
     });
 
-    auditLogger.logPayment(
-      AuditEventType.PAYMENT_SUCCEEDED,
-      "success",
-      "Invoice payment recorded",
-      {
-        userId: subscription.userId,
-        resourceId: invoice.payment_intent as string,
-        metadata: {
-          amount: invoice.amount_paid,
-          currency: invoice.currency,
-          invoiceId: invoice.id,
-        },
-      }
-    );
+    auditLogger.logPayment(AuditEventType.PAYMENT_SUCCEEDED, 'success', 'Invoice payment recorded', {
+      userId: subscription.userId,
+      resourceId: invoice.payments?.data[0].payment.payment_intent as string,
+      metadata: {
+        amount: invoice.amount_paid,
+        currency: invoice.currency,
+        invoiceId: invoice.id,
+      },
+    });
 
     // Send payment receipt email
     try {
@@ -586,7 +503,7 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
           data: {
             recipientEmail: user.email,
             recipientName: user.name || user.email.split('@')[0],
-            invoiceId: invoice.payment_intent as string,
+            invoiceId: invoice.payments?.data[0].payment.payment_intent as string,
             amount: invoice.amount_paid / 100,
             currency: invoice.currency.toUpperCase(),
             paymentDate: new Date().toLocaleDateString(),
@@ -598,15 +515,10 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
       console.error('Failed to send payment receipt email:', emailError);
     }
   } catch (error) {
-    auditLogger.logPayment(
-      AuditEventType.PAYMENT_FAILED,
-      "failure",
-      "Failed to record invoice payment",
-      {
-        resourceId: invoice.id,
-        error: error instanceof Error ? error : new Error(String(error)),
-      }
-    );
+    auditLogger.logPayment(AuditEventType.PAYMENT_FAILED, 'failure', 'Failed to record invoice payment', {
+      resourceId: invoice.id,
+      error: error instanceof Error ? error : new Error(String(error)),
+    });
     throw error;
   }
 }
@@ -614,51 +526,36 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
 async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
   try {
     const subscription = await prisma.subscription.findFirst({
-      where: { stripeSubscriptionId: invoice.subscription as string },
+      where: { stripeSubscriptionId: invoice.lines.data[0].subscription as string },
     });
 
     if (!subscription) {
-      auditLogger.logPayment(
-        AuditEventType.PAYMENT_FAILED,
-        "warning",
-        "Subscription not found for failed invoice",
-        {
-          resourceId: invoice.id,
-          metadata: { subscriptionId: invoice.subscription },
-        }
-      );
+      auditLogger.logPayment(AuditEventType.PAYMENT_FAILED, 'warning', 'Subscription not found for failed invoice', {
+        resourceId: invoice.id,
+        metadata: { subscriptionId: invoice.lines.data[0].subscription },
+      });
       return;
     }
 
     await prisma.subscription.update({
       where: { id: subscription.id },
-      data: { status: "past_due" },
+      data: { status: 'past_due' },
     });
 
-    auditLogger.logPayment(
-      AuditEventType.PAYMENT_FAILED,
-      "failure",
-      "Invoice payment failed",
-      {
-        userId: subscription.userId,
-        resourceId: invoice.id,
-        metadata: {
-          amount: invoice.amount_due,
-          currency: invoice.currency,
-          subscriptionId: subscription.id,
-        },
-      }
-    );
+    auditLogger.logPayment(AuditEventType.PAYMENT_FAILED, 'failure', 'Invoice payment failed', {
+      userId: subscription.userId,
+      resourceId: invoice.id,
+      metadata: {
+        amount: invoice.amount_due,
+        currency: invoice.currency,
+        subscriptionId: subscription.id,
+      },
+    });
   } catch (error) {
-    auditLogger.logPayment(
-      AuditEventType.PAYMENT_FAILED,
-      "failure",
-      "Failed to process failed invoice",
-      {
-        resourceId: invoice.id,
-        error: error instanceof Error ? error : new Error(String(error)),
-      }
-    );
+    auditLogger.logPayment(AuditEventType.PAYMENT_FAILED, 'failure', 'Failed to process failed invoice', {
+      resourceId: invoice.id,
+      error: error instanceof Error ? error : new Error(String(error)),
+    });
     throw error;
   }
 }

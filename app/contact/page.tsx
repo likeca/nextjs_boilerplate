@@ -1,19 +1,8 @@
 import { Metadata } from 'next';
 import { headers } from 'next/headers';
 import Link from 'next/link';
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Clock,
-  Globe,
-  MessageCircle,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Youtube,
-} from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Globe, MessageCircle } from 'lucide-react';
+import { IconBrandMeta } from '@tabler/icons-react';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { ContactForm } from '@/components/contact-form';
@@ -23,6 +12,7 @@ import { isUserAdmin } from '@/lib/auth-utils';
 import { appConfig } from '@/lib/config';
 
 import { buildMetadata } from '@/lib/seo';
+import { meta } from 'zod/v4/core';
 
 export const metadata: Metadata = buildMetadata({
   title: `Contact Us \u2014 ${appConfig.name}`,
@@ -32,20 +22,23 @@ export const metadata: Metadata = buildMetadata({
 });
 
 const SOCIAL_ICONS = {
-  facebook: Facebook,
-  twitter: Twitter,
-  instagram: Instagram,
-  linkedin: Linkedin,
-  youtube: Youtube,
+  meta: IconBrandMeta,
+  facebook: Globe,
+  // facebook: Facebook,
+  // twitter: Twitter,
+  // instagram: Instagram,
+  // linkedin: Linkedin,
+  // youtube: Youtube,
 } as const;
 
 const SOCIAL_LABELS: Record<string, string> = {
+  meta: 'Meta',
   facebook: 'Facebook',
-  twitter: 'Twitter / X',
-  instagram: 'Instagram',
-  linkedin: 'LinkedIn',
-  youtube: 'YouTube',
-  tiktok: 'TikTok',
+  // twitter: 'Twitter / X',
+  // instagram: 'Instagram',
+  // linkedin: 'LinkedIn',
+  // youtube: 'YouTube',
+  // tiktok: 'TikTok',
 };
 
 const FALLBACK_EMAIL = process.env.EMAIL_FROM || 'support@example.com';
@@ -70,14 +63,17 @@ export default async function ContactPage() {
     : null;
 
   const socialLinks = settings
-    ? ([
-        ['facebook', settings.facebook],
-        ['twitter', settings.twitter],
-        ['instagram', settings.instagram],
-        ['linkedin', settings.linkedin],
-        ['youtube', settings.youtube],
-        ['tiktok', settings.tiktok],
-      ] as [string, string][]).filter(([, url]) => Boolean(url))
+    ? (
+        [
+          ['meta', settings.meta],
+          ['facebook', settings.facebook],
+          // ['twitter', settings.twitter],
+          // ['instagram', settings.instagram],
+          // ['linkedin', settings.linkedin],
+          // ['youtube', settings.youtube],
+          // ['tiktok', settings.tiktok],
+        ] as [string, string][]
+      ).filter(([, url]) => Boolean(url))
     : [];
 
   const contactEmail = settings?.email || FALLBACK_EMAIL;
@@ -191,8 +187,7 @@ export default async function ContactPage() {
                   <h2 className="text-xl font-semibold mb-4">Follow Us</h2>
                   <ul className="space-y-3">
                     {socialLinks.map(([platform, url]) => {
-                      const Icon =
-                        SOCIAL_ICONS[platform as keyof typeof SOCIAL_ICONS] ?? Globe;
+                      const Icon = SOCIAL_ICONS[platform as keyof typeof SOCIAL_ICONS] ?? Globe;
                       return (
                         <li key={platform}>
                           <Link
