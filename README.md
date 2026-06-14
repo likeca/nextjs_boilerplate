@@ -205,7 +205,6 @@ package.json
 ### 4. Create your admin user
 
 ```bash
-npm run setup:admin
 pnpm setup:admin
 ```
 
