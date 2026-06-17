@@ -193,7 +193,7 @@ pnpm prisma format
 pnpm prisma migrate reset                 # Redeploy and will delete existing data
 pnpm prisma migrate dev --name add_log1   # After schema change, generate migration change
 pnpm prisma migrate status
-pnpm prisma migrate deploy
+pnpm prisma migrate deploy                # Deploy and sync DB
 
 # Seed data, use package.json or in prisma.config.ts
 package.json
@@ -391,7 +391,7 @@ The fastest way to deploy:
 ### 🐳 Docker
 
 ```bash
-docker build -t my-saas-app .
+docker build -t nextjs .
 docker run -p 3000:3000 --env-file .env my-saas-app
 ```
 

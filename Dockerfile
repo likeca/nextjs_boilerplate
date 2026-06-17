@@ -1,17 +1,22 @@
-FROM node:22-alpine AS base
+FROM node:lts-alpine AS base
 
 # --- Dependencies ---
 FROM base AS deps
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY prisma ./prisma/
-RUN npm ci
+COPY prisma.config.ts ./
+RUN npm install -g npm@latest
+RUN npm install -g pnpm@latest
+RUN pnpm install --frozen-lockfile
 
 # --- Build ---
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN npm install -g npm@latest
+RUN npm install -g pnpm@latest
 
 # Coolify passes env vars as --build-arg
 ARG DATABASE_URL
@@ -29,13 +34,14 @@ ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
 ENV NEXT_PUBLIC_ENABLE_TWO_FACTOR=${NEXT_PUBLIC_ENABLE_TWO_FACTOR}
 ENV NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION=${NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION}
 
-RUN npx prisma generate
-RUN npx prisma migrate deploy
-RUN npm run build
+RUN pnpm build
 
 # --- Production ---
 FROM base AS runner
 WORKDIR /app
+
+RUN npm install -g npm@latest
+RUN npm install -g pnpm@latest
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -51,8 +57,10 @@ COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+
 # Full node_modules for admin scripts (tsx, better-auth, pg, etc.)
 COPY --from=deps /app/node_modules ./node_modules
+
 # Overlay generated Prisma client
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
@@ -63,4 +71,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "pnpm prisma migrate deploy && node server.js"]
