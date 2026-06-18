@@ -1,0 +1,53 @@
+# Install PostgreSQL 18
+- name: Add nignx APT signing key
+  ansible.builtin.apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Add PostgreSQL deb to /etc/apt/sources.list repository
+  ansible.builtin.apt_repository:
+    repo: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ ubuntu_code_name }}-pgdg main'
+    state: present
+
+- name: APT Update
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Upgrade all packages to the latest version
+  apt:
+    name: '*'
+    state: latest
+
+- name: Update all packages to the latest dist version
+  apt:
+    upgrade: dist
+
+- name: Install latest version PostgreSQL packages
+  apt:
+    pkg:
+      # - postgresql-common
+      - postgresql-18
+      # - libpq-dev
+      # - binutils
+      # - libproj-dev
+      # - gdal-bin
+      # - postgis
+    state: present
+
+- name: start PostgreSQL
+  service:
+    name: postgresql
+    enabled: yes
+    state: started
+
+- name: Remove postgres user password
+  shell: passwd -d postgres
+
+# Clean up
+- name: Remove useless packages from the cache
+  apt:
+    autoclean: yes
+
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes

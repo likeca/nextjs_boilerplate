@@ -1,0 +1,14 @@
+[Unit]
+Description=django-q daemon
+After=network.target
+
+[Service]
+Environment="DJANGO_ENVIRONMENT=VirtualMachine" 
+User={{ ansible_user }}
+Group=nginx
+WorkingDirectory=/home/{{ ansible_user }}/{{ project_directory }}/
+ExecStart=/home/{{ ansible_user }}/{{ project_directory }}/venv/bin/python /home/{{ ansible_user }}/{{ project_directory }}/manage.py qcluster
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
