@@ -69,7 +69,7 @@
 #     dest: '/etc/nginx/conf.d/django.conf'
 
 # - name: Start nginx
-#   service:
+#   ansible.builtin.service:
 #     name: nginx
 #     enabled: yes
 #     state: reloaded

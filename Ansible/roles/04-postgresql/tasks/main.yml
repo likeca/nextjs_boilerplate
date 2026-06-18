@@ -1,53 +1,53 @@
-# Install PostgreSQL 18
-- name: Add nignx APT signing key
-  ansible.builtin.apt_key:
-    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+# Install PostgreSQL
+- name: Install latest version PostgreSQL packages
+  ansible.builtin.apt:
+    pkg:
+      - postgresql-common
     state: present
+    update_cache: true
 
-- name: Add PostgreSQL deb to /etc/apt/sources.list repository
-  ansible.builtin.apt_repository:
-    repo: 'deb http://apt.postgresql.org/pub/repos/apt/ {{ ubuntu_code_name }}-pgdg main'
-    state: present
+- name: Automated postgresql repository configuration
+  ansible.builtin.expect:
+    command: /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+    responses:
+      'Press Enter to continue, or Ctrl-C to abort.': ''
 
 - name: APT Update
   ansible.builtin.apt:
     update_cache: true
 
 - name: Upgrade all packages to the latest version
-  apt:
+  ansible.builtin.apt:
     name: '*'
     state: latest
 
 - name: Update all packages to the latest dist version
-  apt:
+  ansible.builtin.apt:
     upgrade: dist
 
 - name: Install latest version PostgreSQL packages
-  apt:
+  ansible.builtin.apt:
     pkg:
-      # - postgresql-common
       - postgresql-18
-      # - libpq-dev
-      # - binutils
-      # - libproj-dev
       # - gdal-bin
       # - postgis
     state: present
+    update_cache: true
 
 - name: start PostgreSQL
-  service:
+  ansible.builtin.service:
     name: postgresql
     enabled: yes
     state: started
 
 - name: Remove postgres user password
-  shell: passwd -d postgres
+  ansible.builtin.shell: passwd -d postgres
 
 # Clean up
 - name: Remove useless packages from the cache
-  apt:
+  ansible.builtin.apt:
     autoclean: yes
 
 - name: Remove dependencies that are no longer required
-  apt:
+  ansible.builtin.apt:
     autoremove: yes

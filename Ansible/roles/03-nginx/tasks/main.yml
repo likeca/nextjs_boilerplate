@@ -25,30 +25,30 @@
     state: present
 
 - name: APT Update
-  apt:
+  ansible.builtin.apt:
     update_cache: yes
     upgrade: dist
 
 - name: Install latest version nginx
-  apt:
+  ansible.builtin.apt:
     name: nginx
     state: latest
     update_cache: yes
 
 - name: Copy nginx.conf file to {{ ansible_hostname }} /etc/ngnix/nginx.conf
-  template:
+  ansible.builtin.template:
     src: nginx.conf
     dest: '/etc/nginx/nginx.conf'
 
 - name: Start nginx
-  service:
+  ansible.builtin.service:
     name: nginx
     enabled: yes
     state: reloaded
 
 # UFW Configuration, Need to reboot the server after this step
 - name: Install UFW firewall
-  apt:
+  ansible.builtin.apt:
     name: ufw
     state: latest
     update_cache: yes
@@ -72,9 +72,9 @@
 
 # Clean up
 - name: Remove useless packages from the cache
-  apt:
+  ansible.builtin.apt:
     autoclean: yes
 
 - name: Remove dependencies that are no longer required
-  apt:
+  ansible.builtin.apt:
     autoremove: yes
