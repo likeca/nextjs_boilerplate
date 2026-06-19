@@ -392,6 +392,7 @@ The fastest way to deploy:
 
 ```bash
 docker build -t nextjs .
+docker build -t nextjs --no-cache --progress=plain .
 docker run -p 3000:3000 --env-file .env my-saas-app
 ```
 

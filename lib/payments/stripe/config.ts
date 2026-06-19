@@ -1,12 +1,26 @@
 import Stripe from 'stripe';
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('STRIPE_SECRET_KEY is not set');
+let stripeClient: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!stripeClient) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('STRIPE_SECRET_KEY is not set');
+    }
+    stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2026-05-27.dahlia',
+      typescript: true,
+    });
+  }
+  return stripeClient;
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2026-05-27.dahlia',
-  typescript: true,
+// Lazy proxy: the Stripe client is only created on first property access (at runtime), 
+// So importing this module during `next build` never requires the secret key.
+export const stripe = new Proxy({} as Stripe, {
+  get(_target, prop, receiver) {
+    return Reflect.get(getStripe(), prop, receiver);
+  },
 });
 
 export const stripeConfig = {
