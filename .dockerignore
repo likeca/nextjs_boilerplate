@@ -1,10 +1,5 @@
-# node_modules
-# !node_modules/dotenv
-# !node_modules/.prisma
-# !node_modules/@prisma
+node_modules
 .next
-!.next/standalone
-!.next/static
 .git
 .gitignore
 *.md

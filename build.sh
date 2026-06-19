@@ -1,11 +1,17 @@
-echo "======== pnpm install ========"
+# echo -e "======== pnpm install ========"
 # pnpm install
-echo "======== End of pnpm install ========\n"
+# echo -e "======== End of pnpm install ========\n"
 
-echo "======== pnpm build ========"
+# echo -e "======== pnpm build ========"
 # pnpm build
-echo "======== End of pnpm build ========\n"
+# echo -e "======== End of pnpm build ========\n"
 
-echo "======== Docker build ========"
-docker build --no-cache -t nextjs . -f Dockerfile-Prod
-echo "======== End of docker build ========\n"
+echo -e "======== Docker build ========"
+# docker build --no-cache -t nextjs . -f Dockerfile-Prod
+docker build --no-cache -t nextjs . -f Dockerfile
+echo -e "======== End of docker build ========\n"
+
+echo -e "======== Docker compose up ========"
+docker compose up -d
+echo -e "======== End of docker compose up ========\n"
+
