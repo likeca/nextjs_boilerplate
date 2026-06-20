@@ -412,8 +412,12 @@ npm run start
 After deploying, create your first admin user:
 
 ```bash
+# Generate Prisma Client
+pnpm prisma generate
+
 # Option 1: Use the CLI script
 npm run setup:admin
+
 
 # Option 2: Sign up normally, then promote via Prisma Studio
 npx prisma studio

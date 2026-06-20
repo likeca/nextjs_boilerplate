@@ -13,22 +13,20 @@ const prisma = new PrismaClient({ adapter });
 // Initialize Better Auth with same config as your app
 const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql",
+    provider: 'postgresql',
   }),
-  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
   },
   secret: process.env.BETTER_AUTH_SECRET,
-  trustedOrigins: [
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  ],
+  trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'],
 });
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 function question(query: string): Promise<string> {
@@ -54,27 +52,27 @@ async function createAdminUser() {
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (existingUser) {
       console.error('\n❌ User with this email already exists!');
-      
+
       const update = await question('\nDo you want to make this user an admin with full permissions? (yes/no): ');
       if (update.toLowerCase() === 'yes' || update.toLowerCase() === 'y') {
         // Get or create Super Admin role
         const superAdminRole = await getOrCreateSuperAdminRole();
-        
+
         await prisma.user.update({
           where: { email },
-          data: { 
+          data: {
             isAdmin: true,
             roleId: superAdminRole.id,
-          }
+          },
         });
         console.log('\n✅ User updated to admin with Super Admin role successfully!');
       }
-      
+
       rl.close();
       await prisma.$disconnect();
       await pool.end();
@@ -98,17 +96,17 @@ async function createAdminUser() {
 
     // Now update the user to be an admin with the Super Admin role
     const createdUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (createdUser) {
       await prisma.user.update({
         where: { email },
-        data: { 
+        data: {
           isAdmin: true,
           emailVerified: true,
           roleId: superAdminRole.id,
-        }
+        },
       });
 
       console.log('\n✅ Admin account created successfully!');
@@ -121,7 +119,6 @@ async function createAdminUser() {
     } else {
       console.error('\n❌ Failed to create user account');
     }
-
   } catch (error) {
     console.error('\n❌ Error creating admin user:', error);
     process.exit(1);
@@ -172,7 +169,7 @@ async function getOrCreateSuperAdminRole() {
   for (const resource of resources) {
     for (const action of actions) {
       const permissionName = `${resource}:${action}`;
-      
+
       let permission = await prisma.permission.findUnique({
         where: { name: permissionName },
       });
@@ -193,8 +190,8 @@ async function getOrCreateSuperAdminRole() {
   }
 
   // Assign all permissions to Super Admin role if not already assigned
-  const existingPermissionIds = role.rolePermissions.map(rp => rp.permissionId);
-  
+  const existingPermissionIds = role.rolePermissions.map((rp) => rp.permissionId);
+
   for (const permission of allPermissions) {
     if (!existingPermissionIds.includes(permission.id)) {
       await prisma.rolePermission.create({
@@ -207,7 +204,7 @@ async function getOrCreateSuperAdminRole() {
   }
 
   // Fetch the updated role with all permissions
-  return await prisma.role.findUnique({
+  return (await prisma.role.findUnique({
     where: { id: role.id },
     include: {
       rolePermissions: {
@@ -216,7 +213,7 @@ async function getOrCreateSuperAdminRole() {
         },
       },
     },
-  }) as any;
+  })) as any;
 }
 
 createAdminUser();
