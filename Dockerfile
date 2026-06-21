@@ -42,9 +42,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# # RUN addgroup --system --gid 1001 nodejs
-# # RUN adduser --system --uid 1001 nextjs
-
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
@@ -54,18 +51,21 @@ COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
-# # # Full node_modules for admin scripts (tsx, better-auth, pg, etc.)
-# COPY --from=dependencies /app/node_modules ./node_modules
+# Full node_modules
+COPY --from=dependencies /app/node_modules ./node_modules
 
-# # # Overlay generated Prisma client
-# COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+# Overlay generated Prisma client
+# COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+# COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
+# COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 # COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-
-# # USER nextjs
+# COPY --from=builder /app/node_modules/.pnpm/@prisma+engines-version* ./node_modules/.pnpm/
+# COPY --from=builder /app/node_modules/.pnpm/@prisma+engines* ./node_modules/.pnpm/
+# COPY --from=builder /app/node_modules/.pnpm/node_modules/@prisma ./node_modules/.pnpm/node_modules/@prisma
 
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["sh", "-c", "node server.js"]
-# CMD ["sh", "-c", "pnpm prisma migrate deploy && node server.js"]
+# CMD ["sh", "-c", "node server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]

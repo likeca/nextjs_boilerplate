@@ -1,7 +1,7 @@
 # docker run -it -p 3000:3000 nextjs:latest --env-file .env
 # docker compose up -d
 services:
-  nextjs-app:
+  nextjs:
     image: nextjs
     container_name: nextjs
     build:

@@ -195,6 +195,8 @@ pnpm prisma migrate dev --name add_log1   # After schema change, generate migrat
 pnpm prisma migrate status
 pnpm prisma migrate deploy                # Deploy and sync DB
 
+pnpm prisma migrate resolve --rolled-back "20260325113600_xxx_xxx"
+
 # Seed data, use package.json or in prisma.config.ts
 package.json
 "prisma": {
