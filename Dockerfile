@@ -51,21 +51,12 @@ COPY --from=builder /app/lib ./lib
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
-# Full node_modules
-COPY --from=dependencies /app/node_modules ./node_modules
-
-# Overlay generated Prisma client
-# COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
-# COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
-# COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-# COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-# COPY --from=builder /app/node_modules/.pnpm/@prisma+engines-version* ./node_modules/.pnpm/
-# COPY --from=builder /app/node_modules/.pnpm/@prisma+engines* ./node_modules/.pnpm/
-# COPY --from=builder /app/node_modules/.pnpm/node_modules/@prisma ./node_modules/.pnpm/node_modules/@prisma
-
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# CMD ["sh", "-c", "node server.js"]
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+CMD ["node", "server.js"]
+
+# Full node_modules
+# COPY --from=dependencies /app/node_modules ./node_modules
+# CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]

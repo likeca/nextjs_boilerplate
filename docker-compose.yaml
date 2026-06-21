@@ -2,7 +2,7 @@
 # docker compose up -d
 services:
   nextjs:
-    image: nextjs
+    image: likeca/nextjs
     container_name: nextjs
     build:
       context: .
