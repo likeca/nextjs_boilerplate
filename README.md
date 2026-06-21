@@ -202,6 +202,11 @@ package.json
 "prisma": {
   "schema": "prisma/seed.ts"
 }
+
+# DB
+sudo su - postgres
+psql
+ALTER USER postgres WITH PASSWORD 'postgres';
 ```
 
 ### 4. Create your admin user
@@ -395,7 +400,13 @@ The fastest way to deploy:
 ```bash
 docker build -t nextjs .
 docker build -t nextjs --no-cache --progress=plain .
-docker run -p 3000:3000 --env-file .env my-saas-app
+docker run -p 3000:3000 --env-file .env likeca/nextjs
+
+# Prisma PostgreSQL
+docker run -d -p 127.0.0.1:3000:3000 --env-file nextjs/.env likeca/nextjs
+
+# Local PostgreSQL
+docker run -d -p 3000:3000 --network="host" --env-file .env likeca/nextjs
 ```
 
 ### 🔧 Self-Hosted
