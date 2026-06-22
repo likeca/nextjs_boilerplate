@@ -29,8 +29,8 @@ jobs:
             # 1. Update code from github
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && /usr/bin/git pull
 
-            # # 2. Update packages
-            # cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && uv sync
+            # 2. Update packages
+            cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && pnpm install
 
             # # 3. Copy static files to STATIC_ROOT
             # source /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/.venv/bin/activate && cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }} && python ./manage.py collectstatic --noinput
