@@ -12,7 +12,7 @@ name: Release to lhchub.com
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
 
 jobs:
   release:
