@@ -38,6 +38,7 @@ jobs:
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && pnpm install
 
             # 3. Copy static files to STATIC_ROOT
+            source /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && docker build -t likeca/nextjs . -f Dockerfile
             source /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && docker update --restart=always nextjs
 
             # # 5. Clean static cache and compress CSS & JS
