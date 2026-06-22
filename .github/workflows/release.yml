@@ -38,7 +38,7 @@ jobs:
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && pnpm install
 
             # 3. Copy static files to STATIC_ROOT
-            # source /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && ./build.sh
+            source /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && ./build.sh
 
             # # 5. Clean static cache and compress CSS & JS
             # sudo rm -rf /usr/share/nginx/html/static/CACHE
