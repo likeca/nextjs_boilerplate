@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Remote ssh
-        uses: appleboy/ssh-action@v1
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -28,6 +28,8 @@ jobs:
           script: |
             # 1. Update code from github
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && /usr/bin/git pull
+
+            ls -al /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/
 
             # 2. Update packages
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && pnpm install
