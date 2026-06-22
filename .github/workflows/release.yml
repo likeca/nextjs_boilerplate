@@ -26,6 +26,11 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            # 0. Environment: pnpm 
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
             # 1. Update code from github
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && /usr/bin/git pull
 
