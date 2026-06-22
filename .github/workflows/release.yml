@@ -34,13 +34,11 @@ jobs:
             # 1. Update code from github
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && /usr/bin/git pull
 
-            ls -al /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/
-
             # 2. Update packages
             cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && pnpm install
 
-            # # 3. Copy static files to STATIC_ROOT
-            # source /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/.venv/bin/activate && cd /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }} && python ./manage.py collectstatic --noinput
+            # 3. Copy static files to STATIC_ROOT
+            # source /home/${{ secrets.USERNAME }}/${{ secrets.FOLDER }}/ && ./build.sh
 
             # # 5. Clean static cache and compress CSS & JS
             # sudo rm -rf /usr/share/nginx/html/static/CACHE
