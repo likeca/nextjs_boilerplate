@@ -407,6 +407,17 @@ docker run -d -p 127.0.0.1:3000:3000 --env-file nextjs/.env likeca/nextjs
 
 # Local PostgreSQL
 docker run -d -p 3000:3000 --network="host" --env-file .env likeca/nextjs
+
+
+# Docker app and pull latest image and restart
+docker compose down
+docker compose pull
+docker compose up -d
+docker compose up -d --pull always
+
+docker pull likeca/nextjs:latest
+docker restart nextjs
+docker inspect -f '{{.Image}}' nextjs
 ```
 
 ### 🔧 Self-Hosted
