@@ -418,6 +418,9 @@ docker compose up -d --pull always
 docker pull likeca/nextjs:latest
 docker restart nextjs
 docker inspect -f '{{.Image}}' nextjs
+
+
+docker exec -it nextjs sh
 ```
 
 ### 🔧 Self-Hosted
