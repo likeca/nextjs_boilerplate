@@ -1,4 +1,12 @@
-export type EmailType = 'otp' | 'reset_password' | 'payment_receipt' | 'welcome' | 'subscription_created' | 'subscription_cancelled' | 'email_change_verification' | 'email_change_notification';
+export type EmailType =
+  | 'otp'
+  | 'reset_password'
+  | 'payment_receipt'
+  | 'welcome'
+  | 'subscription_created'
+  | 'subscription_cancelled'
+  | 'email_change_verification'
+  | 'email_change_notification';
 
 export interface BaseEmailData {
   recipientEmail: string;
@@ -71,7 +79,14 @@ export interface BookingConfirmationEmailData {
   customerPhone?: string;
 }
 
-export type EmailData = OTPEmailData | ResetPasswordEmailData | PaymentReceiptEmailData | WelcomeEmailData | SubscriptionEmailData | EmailChangeVerificationData | EmailChangeNotificationData;
+export type EmailData =
+  | OTPEmailData
+  | ResetPasswordEmailData
+  | PaymentReceiptEmailData
+  | WelcomeEmailData
+  | SubscriptionEmailData
+  | EmailChangeVerificationData
+  | EmailChangeNotificationData;
 
 export interface SendEmailRequest {
   type: EmailType;

@@ -1,10 +1,6 @@
-import { redirect } from "next/navigation";
-import { auth } from "./auth";
-import {
-  canAccessProtectedRoutes,
-  hasPermission,
-  hasRole,
-} from "./permissions";
+import { redirect } from 'next/navigation';
+import { auth } from './auth';
+import { canAccessProtectedRoutes, hasPermission, hasRole } from './permissions';
 
 /**
  * Require authentication and optionally check for specific roles
@@ -12,24 +8,24 @@ import {
  */
 export async function requireAuth(options?: { roles?: string[] }) {
   const session = await auth.api.getSession({
-    headers: await import("next/headers").then((mod) => mod.headers()),
+    headers: await import('next/headers').then((mod) => mod.headers()),
   });
 
   if (!session?.user) {
-    redirect("/login");
+    redirect('/login');
   }
 
   // Check if user can access protected routes
   const canAccess = await canAccessProtectedRoutes(session.user.id);
   if (!canAccess) {
-    redirect("/unauthorized");
+    redirect('/unauthorized');
   }
 
   // Check for specific roles if provided
   if (options?.roles) {
     const hasRequiredRole = await hasRole(session.user.id, options.roles);
     if (!hasRequiredRole) {
-      redirect("/unauthorized");
+      redirect('/unauthorized');
     }
   }
 
@@ -42,17 +38,17 @@ export async function requireAuth(options?: { roles?: string[] }) {
  */
 export async function requirePermission(resource: string, action: string) {
   const session = await auth.api.getSession({
-    headers: await import("next/headers").then((mod) => mod.headers()),
+    headers: await import('next/headers').then((mod) => mod.headers()),
   });
 
   if (!session?.user) {
-    redirect("/login");
+    redirect('/login');
   }
 
   const allowed = await hasPermission(session.user.id, resource, action);
   // console.log("Permission check:", { resource, action, allowed });
   if (!allowed) {
-    redirect("/unauthorized");
+    redirect('/unauthorized');
   }
 
   return session;
@@ -64,17 +60,14 @@ export async function requirePermission(resource: string, action: string) {
  */
 export async function getSession() {
   return await auth.api.getSession({
-    headers: await import("next/headers").then((mod) => mod.headers()),
+    headers: await import('next/headers').then((mod) => mod.headers()),
   });
 }
 
 /**
  * Check if current user has permission without redirecting
  */
-export async function checkPermission(
-  resource: string,
-  action: string
-): Promise<boolean> {
+export async function checkPermission(resource: string, action: string): Promise<boolean> {
   const session = await getSession();
   if (!session?.user) return false;
 

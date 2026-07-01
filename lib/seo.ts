@@ -1,5 +1,5 @@
-import { appConfig } from "@/lib/config";
-import type { Metadata } from "next";
+import { appConfig } from '@/lib/config';
+import type { Metadata } from 'next';
 
 const baseUrl = appConfig.url;
 
@@ -10,7 +10,7 @@ type PageSeoOptions = {
   path: string;
   keywords?: string[];
   noIndex?: boolean;
-  ogType?: "website" | "article";
+  ogType?: 'website' | 'article';
   ogImage?: string;
   publishedTime?: string;
   modifiedTime?: string;
@@ -23,21 +23,14 @@ export const buildMetadata = ({
   path,
   keywords = [],
   noIndex = false,
-  ogType = "website",
+  ogType = 'website',
   ogImage,
   publishedTime,
   modifiedTime,
   authors,
 }: PageSeoOptions): Metadata => {
   const url = `${baseUrl}${path}`;
-  const defaultKeywords = [
-    "SaaS",
-    "Next.js",
-    "boilerplate",
-    "starter kit",
-    "TypeScript",
-    "React",
-  ];
+  const defaultKeywords = ['SaaS', 'Next.js', 'boilerplate', 'starter kit', 'TypeScript', 'React'];
 
   return {
     title,
@@ -50,14 +43,14 @@ export const buildMetadata = ({
       url,
       siteName: appConfig.name,
       type: ogType,
-      locale: "en_US",
+      locale: 'en_US',
       ...(ogImage && { images: [{ url: ogImage, width: 1200, height: 630, alt: title }] }),
       ...(publishedTime && { publishedTime }),
       ...(modifiedTime && { modifiedTime }),
       ...(authors && { authors }),
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title,
       description,
       ...(ogImage && { images: [ogImage] }),
@@ -71,54 +64,50 @@ export const buildMetadata = ({
 // ─── JSON-LD Schema Generators ──────────────────────────────────────────────
 
 export const organizationSchema = () => ({
-  "@context": "https://schema.org",
-  "@type": "Organization",
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
   name: appConfig.company.name,
   url: baseUrl,
   logo: `${baseUrl}/logo.svg`,
   contactPoint: {
-    "@type": "ContactPoint",
+    '@type': 'ContactPoint',
     email: appConfig.supportEmail,
-    contactType: "customer support",
+    contactType: 'customer support',
   },
   ...(appConfig.company.twitter && {
-    sameAs: [
-      appConfig.company.twitter,
-      appConfig.company.github,
-      appConfig.company.linkedin,
-    ].filter(Boolean),
+    sameAs: [appConfig.company.twitter, appConfig.company.github, appConfig.company.linkedin].filter(Boolean),
   }),
 });
 
 export const webSiteSchema = () => ({
-  "@context": "https://schema.org",
-  "@type": "WebSite",
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
   name: appConfig.name,
   url: baseUrl,
   description: appConfig.description,
-  publisher: { "@type": "Organization", name: appConfig.company.name },
+  publisher: { '@type': 'Organization', name: appConfig.company.name },
   potentialAction: {
-    "@type": "SearchAction",
+    '@type': 'SearchAction',
     target: `${baseUrl}/blog?q={search_term_string}`,
-    "query-input": "required name=search_term_string",
+    'query-input': 'required name=search_term_string',
   },
 });
 
 export const webPageSchema = (name: string, description: string, path: string) => ({
-  "@context": "https://schema.org",
-  "@type": "WebPage",
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
   name,
   description,
   url: `${baseUrl}${path}`,
-  isPartOf: { "@type": "WebSite", url: baseUrl },
-  publisher: { "@type": "Organization", name: appConfig.company.name },
+  isPartOf: { '@type': 'WebSite', url: baseUrl },
+  publisher: { '@type': 'Organization', name: appConfig.company.name },
 });
 
 export const breadcrumbSchema = (items: { name: string; path: string }[]) => ({
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
   itemListElement: items.map((item, index) => ({
-    "@type": "ListItem",
+    '@type': 'ListItem',
     position: index + 1,
     name: item.name,
     item: `${baseUrl}${item.path}`,
@@ -126,12 +115,12 @@ export const breadcrumbSchema = (items: { name: string; path: string }[]) => ({
 });
 
 export const faqSchema = (items: { question: string; answer: string }[]) => ({
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
   mainEntity: items.map((item) => ({
-    "@type": "Question",
+    '@type': 'Question',
     name: item.question,
-    acceptedAnswer: { "@type": "Answer", text: item.answer },
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
   })),
 });
 
@@ -143,36 +132,36 @@ export const articleSchema = (article: {
   publishedAt: string;
   modifiedAt?: string;
 }) => ({
-  "@context": "https://schema.org",
-  "@type": "Article",
+  '@context': 'https://schema.org',
+  '@type': 'Article',
   headline: article.title,
   description: article.description,
   url: `${baseUrl}/blog/${article.slug}`,
   datePublished: article.publishedAt,
   ...(article.modifiedAt && { dateModified: article.modifiedAt }),
   author: {
-    "@type": "Person",
+    '@type': 'Person',
     name: article.authorName ?? appConfig.company.name,
   },
   publisher: {
-    "@type": "Organization",
+    '@type': 'Organization',
     name: appConfig.company.name,
-    logo: { "@type": "ImageObject", url: `${baseUrl}/logo.svg` },
+    logo: { '@type': 'ImageObject', url: `${baseUrl}/logo.svg` },
   },
-  isPartOf: { "@type": "WebSite", url: baseUrl },
+  isPartOf: { '@type': 'WebSite', url: baseUrl },
 });
 
 export const softwareAppSchema = () => ({
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
   name: appConfig.name,
   description: appConfig.description,
   url: baseUrl,
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
   offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
   },
 });

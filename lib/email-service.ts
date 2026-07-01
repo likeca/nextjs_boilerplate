@@ -1,5 +1,14 @@
 import nodemailer from 'nodemailer';
-import type { SendEmailRequest, OTPEmailData, ResetPasswordEmailData, PaymentReceiptEmailData, WelcomeEmailData, SubscriptionEmailData, EmailChangeVerificationData, EmailChangeNotificationData } from './email-templates/types';
+import type {
+  SendEmailRequest,
+  OTPEmailData,
+  ResetPasswordEmailData,
+  PaymentReceiptEmailData,
+  WelcomeEmailData,
+  SubscriptionEmailData,
+  EmailChangeVerificationData,
+  EmailChangeNotificationData,
+} from './email-templates/types';
 import { getOTPEmailTemplate } from './email-templates/otp-template';
 import { getResetPasswordTemplate } from './email-templates/reset-password-template';
 import { getPaymentReceiptTemplate } from './email-templates/payment-receipt-template';
@@ -25,7 +34,7 @@ export class EmailService {
 
   async sendEmail(request: SendEmailRequest): Promise<void> {
     const { type, data, recipients, subject } = request;
-    
+
     let htmlContent: string;
     let emailSubject: string;
 

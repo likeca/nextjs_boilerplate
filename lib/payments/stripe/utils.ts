@@ -1,5 +1,5 @@
-import { stripe } from "./config";
-import { prisma } from "@/lib/prisma";
+import { stripe } from './config';
+import { prisma } from '@/lib/prisma';
 
 export const createOrRetrieveCustomer = async (userId: string, email: string) => {
   const user = await prisma.user.findUnique({
@@ -28,14 +28,14 @@ export const createOrRetrieveCustomer = async (userId: string, email: string) =>
   return customer.id;
 };
 
-export const formatAmount = (amount: number, currency: string = "usd"): string => {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
+export const formatAmount = (amount: number, currency: string = 'usd'): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
     currency: currency.toUpperCase(),
     minimumFractionDigits: 0,
   }).format(amount / 100);
 };
 
 export const getInterval = (interval: string): string => {
-  return interval === "month" ? "mo" : "yr";
+  return interval === 'month' ? 'mo' : 'yr';
 };

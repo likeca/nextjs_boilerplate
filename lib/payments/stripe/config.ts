@@ -15,7 +15,7 @@ function getStripe(): Stripe {
   return stripeClient;
 }
 
-// Lazy proxy: the Stripe client is only created on first property access (at runtime), 
+// Lazy proxy: the Stripe client is only created on first property access (at runtime),
 // So importing this module during `next build` never requires the secret key.
 export const stripe = new Proxy({} as Stripe, {
   get(_target, prop, receiver) {

@@ -1,21 +1,21 @@
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { emailOTP, twoFactor } from "better-auth/plugins";
-import { prisma } from "./prisma";
-import { EmailService } from "./email-service";
-import { appConfig } from "./config";
+import { betterAuth } from 'better-auth';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { emailOTP, twoFactor } from 'better-auth/plugins';
+import { prisma } from './prisma';
+import { EmailService } from './email-service';
+import { appConfig } from './config';
 
-const isTwoFactorEnabled = process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== "false";
-const isEmailVerificationEnabled = process.env.NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION !== "false";
+const isTwoFactorEnabled = process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== 'false';
+const isEmailVerificationEnabled = process.env.NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION !== 'false';
 
 // Track newly created users who need a welcome email after verification
 const pendingWelcomeEmails = new Set<string>();
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql",
+    provider: 'postgresql',
   }),
-  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   databaseHooks: {
     user: {
       create: {
@@ -59,7 +59,7 @@ export const auth = betterAuth({
     sendResetPassword: async ({ user, url }) => {
       console.log('🔐 [Auth] sendResetPassword called', { email: user.email, url });
       const emailService = new EmailService();
-      
+
       try {
         console.log('📧 [Auth] Sending password reset email to:', user.email);
         await emailService.sendEmail({
@@ -108,16 +108,14 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24, // 1 day (every 1 day the session expiration is updated)
   },
   secret: process.env.BETTER_AUTH_SECRET,
-  trustedOrigins: [
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-  ],
+  trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'],
   plugins: [
     emailOTP({
       overrideDefaultEmailVerification: true,
       async sendVerificationOTP({ email, otp, type }) {
         console.log('🔐 [Auth] sendVerificationOTP called', { email, otp, type });
         const emailService = new EmailService();
-        
+
         try {
           if (type === 'email-verification') {
             console.log('📧 [Auth] Sending email verification OTP to:', email);
@@ -170,8 +168,6 @@ export const auth = betterAuth({
       sendVerificationOnSignUp: true,
       disableSignUp: false,
     }),
-    ...(isTwoFactorEnabled
-      ? [twoFactor({ issuer: process.env.NEXT_PUBLIC_APP_NAME || "SaaS App" })]
-      : []),
+    ...(isTwoFactorEnabled ? [twoFactor({ issuer: process.env.NEXT_PUBLIC_APP_NAME || 'SaaS App' })] : []),
   ],
 });

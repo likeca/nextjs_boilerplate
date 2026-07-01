@@ -2,10 +2,7 @@ import { getBaseEmailTemplate } from './base-template';
 import { appConfig } from '@/lib/config';
 import type { SubscriptionEmailData } from './types';
 
-export const getSubscriptionEmailTemplate = (
-  data: SubscriptionEmailData,
-  event: 'created' | 'cancelled'
-): string => {
+export const getSubscriptionEmailTemplate = (data: SubscriptionEmailData, event: 'created' | 'cancelled'): string => {
   const { recipientName, planName, currentPeriodEnd } = data;
   const companyName = appConfig.name;
 

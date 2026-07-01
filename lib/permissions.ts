@@ -1,4 +1,4 @@
-import { db as prisma } from "./db";
+import { db as prisma } from './db';
 
 /**
  * Determine whether `editorId` is allowed to access or edit the user identified by `targetUserId`.
@@ -9,10 +9,7 @@ import { db as prisma } from "./db";
  *  3. Any admin whose role carries the permission with resource="user" and action="update_any" can access/edit anyone.
  *  4. Everyone else is denied.
  */
-export async function canAccessUser(
-  editorId: string,
-  targetUserId: string
-): Promise<boolean> {
+export async function canAccessUser(editorId: string, targetUserId: string): Promise<boolean> {
   // Rule 1: users can always access/edit themselves
   if (editorId === targetUserId) return true;
 
@@ -32,14 +29,12 @@ export async function canAccessUser(
   if (!editor) return false;
 
   // Rule 2: Super Admin can access/edit anyone
-  if (editor.isAdmin && editor.role?.name === "Super Admin") return true;
+  if (editor.isAdmin && editor.role?.name === 'Super Admin') return true;
 
   // Rule 3: explicit permission with resource="user" and action="update_any"
   return (
     editor.role?.rolePermissions.some(
-      (rp) =>
-        rp.permission.resource === "user" &&
-        rp.permission.action === "update_any"
+      (rp) => rp.permission.resource === 'user' && rp.permission.action === 'update_any',
     ) ?? false
   );
 }
@@ -48,11 +43,7 @@ export async function canAccessUser(
  * Check if a user has a specific permission
  * This checks role-based permissions for specific CRUD operations
  */
-export async function hasPermission(
-  userId: string,
-  resource: string,
-  action: string
-): Promise<boolean> {
+export async function hasPermission(userId: string, resource: string, action: string): Promise<boolean> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     include: {
@@ -77,10 +68,7 @@ export async function hasPermission(
   if (!user.role) return false;
 
   // Check if the role has the specific permission for this action
-  return user.role.rolePermissions.some(
-    (rp) =>
-      rp.permission.resource === resource && rp.permission.action === action
-  );
+  return user.role.rolePermissions.some((rp) => rp.permission.resource === resource && rp.permission.action === action);
 }
 
 /**
@@ -102,9 +90,7 @@ export async function hasRole(userId: string, roleNames: string[]): Promise<bool
 /**
  * Check if a user can access protected routes
  */
-export async function canAccessProtectedRoutes(
-  userId: string
-): Promise<boolean> {
+export async function canAccessProtectedRoutes(userId: string): Promise<boolean> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { isAdmin: true },

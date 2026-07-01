@@ -1,7 +1,7 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { prisma } from '@/lib/prisma';
 
 /**
  * Check if the current user is authenticated
@@ -14,7 +14,7 @@ export async function requireAuth() {
   });
 
   if (!session) {
-    redirect("/login");
+    redirect('/login');
   }
 
   return session;
@@ -36,7 +36,7 @@ export async function requireAdmin() {
   });
 
   if (!user?.isAdmin) {
-    redirect("/");
+    redirect('/');
   }
 
   return session;
@@ -59,7 +59,7 @@ export async function requireRole(roleName: string) {
   });
 
   if (!user?.role || user.role.name !== roleName) {
-    redirect("/");
+    redirect('/');
   }
 
   return session;
@@ -94,11 +94,11 @@ export async function requirePermission(resource: string, action: string) {
 
   // Check if user has the required permission
   const hasPermission = user?.role?.rolePermissions.some(
-    (rp) => rp.permission.resource === resource && rp.permission.action === action
+    (rp) => rp.permission.resource === resource && rp.permission.action === action,
   );
 
   if (!hasPermission) {
-    redirect("/");
+    redirect('/');
   }
 
   return session;
@@ -113,16 +113,16 @@ export async function requirePermission(resource: string, action: string) {
 export async function isUserAdmin(userId?: string): Promise<boolean> {
   try {
     let targetUserId = userId;
-    
+
     if (!targetUserId) {
       const session = await auth.api.getSession({
         headers: await headers(),
       });
-      
+
       if (!session) {
         return false;
       }
-      
+
       targetUserId = session.user.id;
     }
 
@@ -133,7 +133,7 @@ export async function isUserAdmin(userId?: string): Promise<boolean> {
 
     return user?.isAdmin || false;
   } catch (error) {
-    console.error("Error checking admin status:", error);
+    console.error('Error checking admin status:', error);
     return false;
   }
 }

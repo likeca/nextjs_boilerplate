@@ -21,12 +21,16 @@ export const getContactFormTemplate = (data: ContactFormEmailData): string => {
           <a href="mailto:${email}" style="color: #3b82f6; text-decoration: none;">${email}</a>
         </span>
       </div>
-      ${phoneNumber ? `
+      ${
+        phoneNumber
+          ? `
       <div class="info-row">
         <span class="info-label">Phone:</span>
         <span class="info-value">${phoneNumber}</span>
       </div>
-      ` : ''}
+      `
+          : ''
+      }
     </div>
 
     <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
