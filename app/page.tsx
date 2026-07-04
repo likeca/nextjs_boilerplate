@@ -13,7 +13,7 @@ import { FaqSection } from '@/components/faq-section';
 import { JsonLd } from '@/components/json-ld';
 import { buildMetadata, organizationSchema, webSiteSchema, softwareAppSchema, faqSchema } from '@/lib/seo';
 
-import { BackendExecuteButton, InfuraButton } from './execute';
+import { BackendExecuteButton, InfuraButton, SignButton } from './execute';
 
 export const metadata = buildMetadata({
   title: `${appConfig.name} — Launch Your SaaS Faster`,
@@ -100,6 +100,7 @@ export default async function Home() {
               </Button>
               {/* <BackendExecuteButton /> */}
               <InfuraButton />
+              <SignButton />
             </div>
           </div>
         </section>
