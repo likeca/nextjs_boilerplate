@@ -1,7 +1,5 @@
 import { env } from 'next-runtime-env';
 
-// Read at runtime (browser: window.__ENV, server: process.env) via next-runtime-env,
-// so the site key does NOT need to be present at build time.
 function getSiteKey(): string | undefined {
   return env('NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY');
 }
