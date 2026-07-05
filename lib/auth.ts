@@ -1,12 +1,14 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { emailOTP, twoFactor } from 'better-auth/plugins';
+import { emailOTP, twoFactor, captcha } from 'better-auth/plugins';
 import { prisma } from './prisma';
 import { EmailService } from './email-service';
 import { appConfig } from './config';
 
 const isTwoFactorEnabled = process.env.NEXT_PUBLIC_ENABLE_TWO_FACTOR !== 'false';
 const isEmailVerificationEnabled = process.env.NEXT_PUBLIC_ENABLE_EMAIL_VERIFICATION !== 'false';
+const recaptchaSecretKey = process.env.GOOGLE_RECAPTCHA_SECRET_KEY;
+const recaptchaMinScore = parseFloat(process.env.GOOGLE_RECAPTCHA_MIN_SCORE || '0.5'); // Default minimum score for Google reCAPTCHA v3
 
 // Track newly created users who need a welcome email after verification
 const pendingWelcomeEmails = new Set<string>();
@@ -169,5 +171,16 @@ export const auth = betterAuth({
       disableSignUp: false,
     }),
     ...(isTwoFactorEnabled ? [twoFactor({ issuer: process.env.NEXT_PUBLIC_APP_NAME || 'SaaS App' })] : []),
+    ...(recaptchaSecretKey
+      ? [
+          captcha({
+            provider: 'google-recaptcha',
+            secretKey: recaptchaSecretKey,
+            // Only guard the credential login endpoint.
+            endpoints: ['/sign-in/email'],
+            minScore: recaptchaMinScore,
+          }),
+        ]
+      : []),
   ],
 });

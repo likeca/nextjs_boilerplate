@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -370,4 +370,9 @@
 
 .dark .ProseMirror hr {
   border-top-color: #4b5563;
+}
+
+/* Hide the Google reCAPTCHA v3 badge */
+.grecaptcha-badge {
+  visibility: hidden;
 }
