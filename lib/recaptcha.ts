@@ -1,5 +1,10 @@
-export const GOOGLE_RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY;
-console.log('GOOGLE_RECAPTCHA_SITE_KEY:', GOOGLE_RECAPTCHA_SITE_KEY);
+import { env } from 'next-runtime-env';
+
+// Read at runtime (browser: window.__ENV, server: process.env) via next-runtime-env,
+// so the site key does NOT need to be present at build time.
+function getSiteKey(): string | undefined {
+  return env('NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY');
+}
 
 declare global {
   interface Window {
@@ -13,6 +18,7 @@ declare global {
 let scriptPromise: Promise<void> | null = null;
 
 export function loadRecaptcha(): Promise<void> {
+  const GOOGLE_RECAPTCHA_SITE_KEY = getSiteKey();
   if (!GOOGLE_RECAPTCHA_SITE_KEY || typeof window === 'undefined') return Promise.resolve();
   if (scriptPromise) return scriptPromise;
 
@@ -37,7 +43,8 @@ export function loadRecaptcha(): Promise<void> {
 }
 
 export async function getRecaptchaToken(action: string): Promise<string | null> {
-  if (!GOOGLE_RECAPTCHA_SITE_KEY || typeof window === 'undefined') return null;
+  const siteKey = getSiteKey();
+  if (!siteKey || typeof window === 'undefined') return null;
 
   await loadRecaptcha();
   const grecaptcha = window.grecaptcha;
@@ -45,7 +52,7 @@ export async function getRecaptchaToken(action: string): Promise<string | null> 
 
   return new Promise<string>((resolve, reject) => {
     grecaptcha.ready(() => {
-      grecaptcha.execute(GOOGLE_RECAPTCHA_SITE_KEY!, { action }).then(resolve).catch(reject);
+      grecaptcha.execute(siteKey, { action }).then(resolve).catch(reject);
     });
   });
 }
