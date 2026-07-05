@@ -6,6 +6,8 @@ import { COOKIE_CONSENT_KEY } from "@/lib/config"
 
 export function PostHogConsent() {
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) return
+
     const consent = localStorage.getItem(COOKIE_CONSENT_KEY)
     if (consent === "accepted") posthog.opt_in_capturing()
 
