@@ -1,4 +1,5 @@
 export const GOOGLE_RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY;
+console.log('GOOGLE_RECAPTCHA_SITE_KEY:', GOOGLE_RECAPTCHA_SITE_KEY);
 
 declare global {
   interface Window {
