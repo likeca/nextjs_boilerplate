@@ -87,7 +87,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <PublicEnvScript disableNextScript />
+        <PublicEnvScript />
       </head>
       <body className={`${outfit.variable} ${dmMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
