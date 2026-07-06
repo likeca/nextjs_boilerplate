@@ -42,8 +42,7 @@ export function loadRecaptcha(): Promise<void> {
 
 export async function getRecaptchaToken(action: string): Promise<string | null> {
   const siteKey = getSiteKey();
-  // if (!siteKey || typeof window === 'undefined') return null;
-  if (!siteKey) return null;
+  if (!siteKey || typeof window === 'undefined') return null;
 
   await loadRecaptcha();
   const grecaptcha = window.grecaptcha;
