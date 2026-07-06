@@ -49,7 +49,7 @@ const nextConfig: NextConfig = {
                 // Cloudflare Insights + Google reCAPTCHA
                 "connect-src 'self' https://cloudflareinsights.com https://www.google.com",
                 "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com https://www.google.com https://www.gstatic.com",
-                // "frame-src 'self' https://www.google.com",
+                "frame-src 'self' https://www.google.com",
 
                 // "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
                 "style-src 'self' 'unsafe-inline'",
