@@ -40,19 +40,16 @@ const nextConfig: NextConfig = {
                 "default-src 'self'",
                 // Posthog
                 // "connect-src 'self' https://us.i.posthog.com https://us-assets.i.posthog.com",
-                // "script-src 'self' 'unsafe-eval' 'unsafe-inline' 'https://us-assets.i.posthog.com'",
+                // "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://us-assets.i.posthog.com",
 
                 // Cloudflare Insights + Google reCAPTCHA
                 // "connect-src 'self' https://cloudflareinsights.com",
-                // "script-src 'self' 'unsafe-eval' 'unsafe-inline' 'https://static.cloudflareinsights.com'",
+                // "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com",
 
                 // Cloudflare Insights + Google reCAPTCHA
                 "connect-src 'self' https://cloudflareinsights.com https://www.google.com",
                 "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com https://www.google.com https://www.gstatic.com",
                 "frame-src 'self' https://www.google.com",
-
-                // "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com https://www.google.com https://www.gstatic.com",
-                // // Google reCAPTCHA renders its challenge/badge in an iframe from www.google.com
 
                 // "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
                 "style-src 'self' 'unsafe-inline'",
